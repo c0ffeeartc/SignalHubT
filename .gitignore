@@ -1,0 +1,11 @@
+*.orig
+*.meta
+.DS_Store
+
+.idea/
+bin/
+obj/
+*.csproj.DotSettings
+packages/*
+
+*.sln.DotSettings.user
