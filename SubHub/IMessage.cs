@@ -1,4 +1,4 @@
-namespace SubHub
+namespace SubH
 {
 public interface IMessage
 {

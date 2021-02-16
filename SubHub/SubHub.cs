@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SubHub
+namespace SubH
 {
 public class SubHub : ISubHub
 {
@@ -16,20 +16,22 @@ public class SubHub : ISubHub
 		}
 
 		Type messageType			= typeof(TMessage);
-		if ( _subscriptions.ContainsKey( messageType ) )
+		if ( !_subscriptions.ContainsKey( messageType ) )
 		{
-			var subscriptionList	= _subscriptions[messageType];
-			foreach( var subscription in subscriptionList )
-			{
-				((ISubscription<TMessage>) subscription).Action.Invoke( message );
-			}
+			return;
+		}
+
+		var subscriptionList		= _subscriptions[messageType];
+		foreach( var subscription in subscriptionList )
+		{
+			((ISubscription<TMessage>) subscription).Action.Invoke( message );
 		}
 	}
 
-	public					ISubscription<TMessage>	Sub<TMessage>			( Action<TMessage> action ) where TMessage : IMessage
+	public					ISubscription<TMessage>	Sub<TMessage>			( Action<TMessage> action, int order = 0 ) where TMessage : IMessage
 	{
 		Type messageType			= typeof(TMessage);
-		var subscription			= new Subscription<TMessage>(action);
+		var subscription			= new Subscription<TMessage>( action, order );
 
 		if( _subscriptions.ContainsKey( messageType ) )
 		{

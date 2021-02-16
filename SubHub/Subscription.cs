@@ -1,14 +1,16 @@
 using System;
 
-namespace SubHub
+namespace SubH
 {
 public sealed class Subscription<TMessage> : ISubscription<TMessage> where TMessage : IMessage
 {
-	public					Subscription			( Action<TMessage> action )
+	public					Subscription			( Action<TMessage> action, Int32 order )
 	{
+		Order						= order;
 		Action						= action;
 	}
 
-	public					Action<TMessage>		Action					{ get; private set; }
+	public					Int32					Order					{ get; }
+	public					Action<TMessage>		Action					{ get; }
 }
 }
