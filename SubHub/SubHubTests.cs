@@ -4,19 +4,12 @@ using System.Linq;
 
 namespace SubH
 {
-public partial class SubHub : ISubHubTests
+public partial class SubHub<TMessage> : ISubHubTests<TMessage>
+		where TMessage : IMessage
 {
-	public			List<ISubscription<TMessage>>	Tests_GetFor<TMessage>	( ) where TMessage : IMessage
+	public			List<ISubscription<TMessage>>	GetSubscriptions	(  )
 	{
-		var subs 					= new List<ISubscription<TMessage>>();
-		Type messageType			= typeof(TMessage);
-		if ( !_subscriptions.ContainsKey( messageType ) )
-		{
-			return subs;
-		}
-
-		subs.AddRange( _subscriptions[messageType].Cast<ISubscription<TMessage>>() );
-		return subs;
+		return _subscriptions;
 	}
 }
 }

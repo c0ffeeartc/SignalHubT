@@ -2,8 +2,9 @@ using System.Collections.Generic;
 
 namespace SubH
 {
-public interface ISubHubTests
+public interface ISubHubTests<TMessage> : ISubHub<TMessage>
+		where TMessage : IMessage
 {
-	List<ISubscription<TMessage>> Tests_GetFor<TMessage>() where TMessage : IMessage;
+	List<ISubscription<TMessage>> GetSubscriptions();
 }
 }

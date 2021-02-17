@@ -1,56 +1,52 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace SubH
 {
-public partial class SubHub : ISubHub
+public partial class SubHub<TMessage> : ISubHub<TMessage>
+	where TMessage : IMessage
 {
-	private readonly		IDictionary<Type, IList> _subscriptions			= new Dictionary<Type, IList>();
+	private readonly		List<ISubscription<TMessage>>					_subscriptions			= new List<ISubscription<TMessage>>();
 
-	public					void					Publish<TMessage>		( TMessage message ) where TMessage : IMessage
+	public					ISubscription<TMessage>	Sub						( Action<TMessage> action, int order = 0 )
+	{
+		var subscription			= new Subscription<TMessage>(   false, null, order, action );
+		AddSubscription( subscription );
+		return subscription;
+	}
+
+	public					ISubscription<TMessage>	Sub						( Object filter, Action<TMessage> action, int order = 0 )
+	{
+		if ( filter == null )
+		{
+			throw new ArgumentNullException( "filter == null" );
+		}
+
+		var subscription			= new Subscription<TMessage>(   true, filter, order, action );
+		AddSubscription( subscription );
+		return subscription;
+	}
+
+	private					void					AddSubscription			( Subscription<TMessage> subscription )
+	{
+		_subscriptions.Add( subscription );
+	}
+
+	public					void					Unsub					( ISubscription<TMessage> subscription )
+	{
+		_subscriptions.Remove( subscription );
+	}
+
+	public					void					Publish					( TMessage message )
 	{
 		if ( message == null )
 		{
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		Type messageType			= typeof(TMessage);
-		if ( !_subscriptions.ContainsKey( messageType ) )
+		foreach( var subscription in _subscriptions )
 		{
-			return;
-		}
-
-		var subscriptionList		= _subscriptions[messageType];
-		foreach( var subscription in subscriptionList )
-		{
-			((ISubscription<TMessage>) subscription).Action.Invoke( message );
-		}
-	}
-
-	public					ISubscription<TMessage>	Sub<TMessage>			( Action<TMessage> action, int order = 0 ) where TMessage : IMessage
-	{
-		Type messageType			= typeof(TMessage);
-		var subscription			= new Subscription<TMessage>( action, order );
-
-		if( _subscriptions.ContainsKey( messageType ) )
-		{
-			_subscriptions[messageType].Add(subscription);
-		}
-		else
-		{
-			_subscriptions.Add(messageType, new List<ISubscription<TMessage>>{subscription});
-		}
-
-		return subscription;
-	}
-
-	public					void					Unsub<TMessage>			( ISubscription<TMessage> subscription ) where TMessage : IMessage
-	{
-		Type messageType			= typeof(TMessage);
-		if ( _subscriptions.ContainsKey( messageType ) )
-		{
-			_subscriptions[messageType].Remove( subscription );
+			subscription.Action.Invoke( message );
 		}
 	}
 

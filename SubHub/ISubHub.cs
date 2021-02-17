@@ -2,12 +2,15 @@ using System;
 
 namespace SubH
 {
-public interface ISubHub
+public interface ISubHub<TMessage>
+		where TMessage : IMessage
 {
-	ISubscription<TMessage>	Sub<TMessage>			( Action<TMessage> action, int order = 0 ) where TMessage : IMessage;
-	void					Unsub<TMessage>			( ISubscription<TMessage> subscription ) where TMessage : IMessage;
+	ISubscription<TMessage>	Sub						( Action<TMessage> action, int order = 0 );
+	ISubscription<TMessage>	Sub						( Object filter, Action<TMessage> action, int order = 0 );
 
-	void					Publish<TMessage>		( TMessage message ) where TMessage : IMessage;
+	void					Unsub					( ISubscription<TMessage> subscription );
+
+	void					Publish					( TMessage message );
 
 	void					ClearAllSubscriptions	(  );
 }

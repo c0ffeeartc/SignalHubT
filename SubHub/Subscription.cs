@@ -4,13 +4,17 @@ namespace SubH
 {
 public sealed class Subscription<TMessage> : ISubscription<TMessage> where TMessage : IMessage
 {
-	public					Subscription			( Action<TMessage> action, Int32 order )
+	public					Subscription			( Boolean hasFilter, Object filter, Int32 order, Action<TMessage> action )
 	{
-		Order						= order;
+		HasFilter					= hasFilter;
+		Filter						= filter;
 		Action						= action;
+		Order						= order;
 	}
 
-	public					Int32					Order					{ get; }
+	public					Boolean					HasFilter				{ get; }
+	public					Object					Filter					{ get; }
 	public					Action<TMessage>		Action					{ get; }
+	public					Int32					Order					{ get; }
 }
 }
