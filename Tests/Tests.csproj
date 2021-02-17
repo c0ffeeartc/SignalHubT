@@ -87,7 +87,7 @@
     <ItemGroup>
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Sources\describe_Tests.cs" />
+        <Compile Include="Sources\describe_SubHub.cs" />
         <Compile Include="Sources\Fixtures.cs" />
     </ItemGroup>
     <ItemGroup>
