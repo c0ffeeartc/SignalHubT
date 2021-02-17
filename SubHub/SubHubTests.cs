@@ -11,5 +11,10 @@ public partial class SubHub<TMessage> : ISubHubTests<TMessage>
 	{
 		return _subscriptions;
 	}
+
+	public					void					Sub					( ISubscription<TMessage> subscription )
+	{
+		AddSubscription( subscription );
+	}
 }
 }

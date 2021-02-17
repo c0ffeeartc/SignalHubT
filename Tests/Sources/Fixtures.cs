@@ -2,10 +2,10 @@ using SubH;
 
 namespace Tests
 {
-internal sealed class Message1 : IMessage
+public sealed class Message1 : IMessage
 {
 }
-internal sealed class Message2 : IMessage
+public sealed class Message2 : IMessage
 {
 }
 }

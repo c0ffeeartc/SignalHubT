@@ -5,6 +5,7 @@ namespace SubH
 public interface ISubHubTests<TMessage> : ISubHub<TMessage>
 		where TMessage : IMessage
 {
-	List<ISubscription<TMessage>> GetSubscriptions();
+	List<ISubscription<TMessage>> GetSubscriptions	(  );
+	void					Sub						( ISubscription<TMessage> subscription);
 }
 }

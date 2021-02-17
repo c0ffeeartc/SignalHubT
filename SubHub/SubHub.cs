@@ -27,7 +27,7 @@ public partial class SubHub<TMessage> : ISubHub<TMessage>
 		return subscription;
 	}
 
-	private					void					AddSubscription			( Subscription<TMessage> subscription )
+	private					void					AddSubscription			( ISubscription<TMessage> subscription )
 	{
 		_subscriptions.Add( subscription );
 	}
@@ -46,7 +46,30 @@ public partial class SubHub<TMessage> : ISubHub<TMessage>
 
 		foreach( var subscription in _subscriptions )
 		{
-			subscription.Action.Invoke( message );
+			if ( subscription.HasFilter )
+			{
+				continue;
+			}
+
+			subscription.Invoke( message );
+		}
+	}
+
+	public					void					Publish					( Object filter, TMessage message )
+	{
+		if ( message == null )
+		{
+			throw new ArgumentNullException( "message == null" );
+		}
+
+		foreach( var subscription in _subscriptions )
+		{
+			if ( subscription.HasFilter && subscription.Filter != filter )
+			{
+				continue;
+			}
+
+			subscription.Invoke( message );
 		}
 	}
 

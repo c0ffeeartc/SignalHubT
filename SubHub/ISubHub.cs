@@ -11,6 +11,7 @@ public interface ISubHub<TMessage>
 	void					Unsub					( ISubscription<TMessage> subscription );
 
 	void					Publish					( TMessage message );
+	void					Publish					( Object filter, TMessage message );
 
 	void					ClearAllSubscriptions	(  );
 }

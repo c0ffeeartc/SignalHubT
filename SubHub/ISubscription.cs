@@ -8,6 +8,6 @@ public interface ISubscription<TMessage>
 	Int32					Order					{ get; }
 	Boolean					HasFilter				{ get; }
 	Object 					Filter					{ get; }
-	Action<TMessage>		Action					{ get; }
+	void 					Invoke					( TMessage message );
 }
 }
