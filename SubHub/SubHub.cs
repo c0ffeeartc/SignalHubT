@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SubH
 {
-public class SubHub : ISubHub
+public partial class SubHub : ISubHub
 {
 	private readonly		IDictionary<Type, IList> _subscriptions			= new Dictionary<Type, IList>();
 
