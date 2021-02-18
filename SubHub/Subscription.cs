@@ -5,11 +5,10 @@ namespace SubH
 public sealed class Subscription<TMessage> : ISubscription<TMessage>
 		where TMessage : IMessage
 {
-	public					Subscription			( Boolean hasFilter, Object filter, Int32 order, Action<TMessage> action )
+	public					Subscription			( Boolean hasFilter, Object filter, Action<TMessage> action )
 	{
 		HasFilter					= hasFilter;
 		Filter						= filter;
-		Order						= order;
 		_action						= action;
 	}
 

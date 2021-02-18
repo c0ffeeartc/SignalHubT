@@ -10,7 +10,7 @@ public partial class SubHub<TMessage> : ISubHub<TMessage>
 
 	public					ISubscription<TMessage>	Sub						( Action<TMessage> action, int order = 0 )
 	{
-		var subscription			= new Subscription<TMessage>(   false, null, order, action );
+		var subscription			= new Subscription<TMessage>( false, null, action );
 		AddSubscription( subscription );
 		return subscription;
 	}
@@ -22,7 +22,7 @@ public partial class SubHub<TMessage> : ISubHub<TMessage>
 			throw new ArgumentNullException( "filter == null" );
 		}
 
-		var subscription			= new Subscription<TMessage>(   true, filter, order, action );
+		var subscription			= new Subscription<TMessage>( true, filter, action );
 		AddSubscription( subscription );
 		return subscription;
 	}

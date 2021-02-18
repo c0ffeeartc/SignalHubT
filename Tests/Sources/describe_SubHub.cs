@@ -38,12 +38,18 @@ public sealed class describe_SubHub : nspec
 
 		it["Unsubs correct subscription"] = ()=>
 		{
+			// given
 			var subscription1 = subHubM1.Sub( m1 => {} );
 			var subscription2 = subHubM1.Sub( m1 => {} );
+			var subscription3 = subHubM1.Sub( m1 => {} );
 
-			subHubM1.Unsub( subscription1 );
-			subHubM1.GetSubscriptions(  ).Contains( subscription1 ).ShouldBe( false );
-			subHubM1.GetSubscriptions(  ).Contains( subscription2 ).ShouldBe( true );
+			// when
+			subHubM1.Unsub( subscription2 );
+
+			// then
+			subHubM1.GetSubscriptions(  ).Contains( subscription1 ).ShouldBe( true );
+			subHubM1.GetSubscriptions(  ).Contains( subscription2 ).ShouldBe( false );
+			subHubM1.GetSubscriptions(  ).Contains( subscription3 ).ShouldBe( true );
 		};
 	}
 
@@ -69,10 +75,19 @@ public sealed class describe_SubHub : nspec
 
 		it["Sub order is sorted"] = ()=>
 		{
-			var subscription1		= subHubM1.Sub( m1 => {}, 123 );
+			// when
+			var subscription1		= subHubM1.Sub( m1 => {}, 5 );
 			var subscription2		= subHubM1.Sub( m1 => {}, 0 );
+			var subscription3		= subHubM1.Sub( m1 => {}, 3 );
+
+			// then
 			subHubM1.GetSubscriptions(  )[0].Order.ShouldBe( subscription2.Order );
-			subHubM1.GetSubscriptions(  )[1].Order.ShouldBe( subscription1.Order );
+			subHubM1.GetSubscriptions(  )[1].Order.ShouldBe( subscription3.Order );
+			subHubM1.GetSubscriptions(  )[2].Order.ShouldBe( subscription1.Order );
+
+			subHubM1.GetSubscriptions(  )[0].ShouldBe( subscription2 );
+			subHubM1.GetSubscriptions(  )[1].ShouldBe( subscription3 );
+			subHubM1.GetSubscriptions(  )[2].ShouldBe( subscription1 );
 		};
 	}
 
