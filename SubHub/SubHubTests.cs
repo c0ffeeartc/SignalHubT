@@ -9,7 +9,9 @@ public partial class SubHub<TMessage> : ISubHubTests<TMessage>
 {
 	public			List<ISubscription<TMessage>>	GetSubscriptions	(  )
 	{
-		return _subscriptions;
+		return _subscriptions
+			.Select( kv => kv.Value )
+			.ToList(  );
 	}
 
 	public					void					Sub					( ISubscription<TMessage> subscription )

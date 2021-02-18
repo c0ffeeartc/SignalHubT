@@ -6,11 +6,11 @@ namespace SubH
 public partial class SubHub<TMessage> : ISubHub<TMessage>
 	where TMessage : IMessage
 {
-	private readonly		List<ISubscription<TMessage>>					_subscriptions			= new List<ISubscription<TMessage>>();
+	private readonly		SortedDictionary<ISubscription<TMessage>,ISubscription<TMessage>>	_subscriptions	= new SortedDictionary<ISubscription<TMessage>, ISubscription<TMessage>>();
 
 	public					ISubscription<TMessage>	Sub						( Action<TMessage> action, int order = 0 )
 	{
-		var subscription			= new Subscription<TMessage>( false, null, action );
+		var subscription			= new Subscription<TMessage>( false, null, action, order );
 		AddSubscription( subscription );
 		return subscription;
 	}
@@ -22,14 +22,14 @@ public partial class SubHub<TMessage> : ISubHub<TMessage>
 			throw new ArgumentNullException( "filter == null" );
 		}
 
-		var subscription			= new Subscription<TMessage>( true, filter, action );
+		var subscription			= new Subscription<TMessage>( true, filter, action, order );
 		AddSubscription( subscription );
 		return subscription;
 	}
 
 	private					void					AddSubscription			( ISubscription<TMessage> subscription )
 	{
-		_subscriptions.Add( subscription );
+		_subscriptions.Add( subscription, subscription );
 	}
 
 	public					void					Unsub					( ISubscription<TMessage> subscription )
@@ -44,14 +44,14 @@ public partial class SubHub<TMessage> : ISubHub<TMessage>
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		foreach( var subscription in _subscriptions )
+		foreach( var kv in _subscriptions )
 		{
-			if ( subscription.HasFilter )
+			if ( kv.Value.HasFilter )
 			{
 				continue;
 			}
 
-			subscription.Invoke( message );
+			kv.Value.Invoke( message );
 		}
 	}
 
@@ -62,14 +62,14 @@ public partial class SubHub<TMessage> : ISubHub<TMessage>
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		foreach( var subscription in _subscriptions )
+		foreach( var kv in _subscriptions )
 		{
-			if ( subscription.HasFilter && subscription.Filter != filter )
+			if ( kv.Value.HasFilter && kv.Value.Filter != filter )
 			{
 				continue;
 			}
 
-			subscription.Invoke( message );
+			kv.Value.Invoke( message );
 		}
 	}
 

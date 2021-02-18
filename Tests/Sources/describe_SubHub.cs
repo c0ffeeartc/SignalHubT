@@ -1,3 +1,4 @@
+using System;
 using NSpec;
 using NSubstitute;
 using Shouldly;
@@ -19,7 +20,7 @@ public sealed class describe_SubHub : nspec
 		{
 			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 0 );
 			subHubM1.Sub( m1 => {} );
-			subHubM1.Sub( m1 => {} );
+			subHubM1.Sub( m1 => {Console.Write("");} );
 			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 2 );
 		};
 
@@ -73,22 +74,28 @@ public sealed class describe_SubHub : nspec
 			subscription.Order.ShouldBe( 123 );
 		};
 
-		it["Sub order is sorted"] = ()=>
+		new Each<int[], int[]>
+		{
+			{new[]{5,0,3}, new[]{0,3,5}},
+			{new[]{1,0,3,2,5,4,7,6,9,8}, new[]{0,1,2,3,4,5,6,7,8,9}},
+			{new[]{0,3,0,3,5,5}, new[]{0,0,3,3,5,5}},
+		}.Do( (given, expected) =>
+		it["Sub order is sorted"] = ( )=>
 		{
 			// when
-			var subscription1		= subHubM1.Sub( m1 => {}, 5 );
-			var subscription2		= subHubM1.Sub( m1 => {}, 0 );
-			var subscription3		= subHubM1.Sub( m1 => {}, 3 );
+			foreach ( var givenOrder in given )
+			{
+				subHubM1.Sub( m1 => {}, givenOrder );
+			}
 
 			// then
-			subHubM1.GetSubscriptions(  )[0].Order.ShouldBe( subscription2.Order );
-			subHubM1.GetSubscriptions(  )[1].Order.ShouldBe( subscription3.Order );
-			subHubM1.GetSubscriptions(  )[2].Order.ShouldBe( subscription1.Order );
-
-			subHubM1.GetSubscriptions(  )[0].ShouldBe( subscription2 );
-			subHubM1.GetSubscriptions(  )[1].ShouldBe( subscription3 );
-			subHubM1.GetSubscriptions(  )[2].ShouldBe( subscription1 );
-		};
+			var subscriptions			= subHubM1.GetSubscriptions(  );
+			for ( var i = 0; i < subscriptions.Count; i++ )
+			{
+				var sub = subscriptions[i];
+				sub.Order.ShouldBe( expected[i] );
+			}
+		});
 	}
 
 	private					void					test_SubHub_Filter		(  )
