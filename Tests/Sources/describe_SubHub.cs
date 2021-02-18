@@ -96,6 +96,22 @@ public sealed class describe_SubHub : nspec
 				sub.Order.ShouldBe( expected[i] );
 			}
 		});
+
+		it["Sub inserts subscription after same order"] = ( )=>
+		{
+			// given
+			subHubM1.Sub( m1 => {}, 0 );
+			subHubM1.Sub( m1 => {}, 1 );
+			subHubM1.Sub( m1 => {}, 1 );
+			subHubM1.Sub( m1 => {}, 2 );
+
+			// when
+			var subscripton = subHubM1.Sub( m1 => {}, 1 );
+
+			// then
+			subHubM1.GetSubscriptions(  )[1].ShouldNotBe( subscripton );
+			subHubM1.GetSubscriptions(  )[3].ShouldBe( subscripton );
+		};
 	}
 
 	private					void					test_SubHub_Filter		(  )

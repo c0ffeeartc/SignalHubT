@@ -41,7 +41,7 @@ public sealed class Subscription<TMessage> : ISubscription<TMessage>
 			return order;
 		}
 
-		return -1;
+		return 1;
 	}
 }
 }
