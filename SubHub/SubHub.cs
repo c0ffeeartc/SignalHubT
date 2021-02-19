@@ -6,6 +6,7 @@ namespace SubH
 public partial class SubHub<TMessage> : ISubHub<TMessage>
 	where TMessage : IMessage
 {
+	public static			ISubHub<TMessage>		I						= new SubHub<TMessage>(  );
 	private readonly		SortedDictionary<ISubscription<TMessage>,ISubscription<TMessage>>	_subscriptions	= new SortedDictionary<ISubscription<TMessage>, ISubscription<TMessage>>();
 
 	public					ISubscription<TMessage>	Sub						( Action<TMessage> action, int order = 0 )
