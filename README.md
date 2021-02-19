@@ -31,19 +31,19 @@ public class Example
 {
   private void SubPublishUnsub()
   {
-    var sub1 = SubHub<Message1>.I.Sub( Handle1 );
-    var sub2 = SubHub<Message2>.I.Sub( Handle2 );
-    var sub1Filtered = SubHub<Message1>.I.Sub( filter: this, Handle1Filtered );
-    var sub1Priority = SubHub<Message1>.I.Sub( Handle1Priority, order: -5 );
+    var sub1 = SubHub.I.Sub<Message1>( Handle1 );
+    var sub2 = SubHub.I.Sub<Message2>( Handle2 );
+    var sub1Filtered = SubHub.I.Sub<Message1>( filter: this, Handle1Filtered );
+    var sub1Priority = SubHub.I.Sub<Message1>( Handle1Priority, order: -5 );
 
-    SubHub<Message1>.I.Publish(new Message1()); // Callbacks: Handle1Priority(), Handle1()
-    SubHub<Message1>.I.Publish(this, new Message1());// Callbacks: Handle1Priority(), Handle1(), Handle1Filtered()
-    SubHub<Message2>.I.Publish(new Message2()); // Callbacks: Handle2
+    SubHub.I.Publish(new Message1()); // Callbacks: Handle1Priority(), Handle1()
+    SubHub.I.Publish(this, new Message1());// Callbacks: Handle1Priority(), Handle1(), Handle1Filtered()
+    SubHub.I.Publish(new Message2()); // Callbacks: Handle2
 
-    SubHub<Message1>.I.Unsub(sub1);
-    SubHub<Message2>.I.Unsub(sub2);
-    SubHub<Message1>.I.Unsub(sub1Filtered);
-    SubHub<Message1>.I.Unsub(sub1Priority);
+    SubHub.I.Unsub(sub1);
+    SubHub.I.Unsub(sub2);
+    SubHub.I.Unsub(sub1Filtered);
+    SubHub.I.Unsub(sub1Priority);
   }
 
   private void Handle1(Message1 message) { /*Some code here*/ }
