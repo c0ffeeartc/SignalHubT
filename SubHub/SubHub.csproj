@@ -39,7 +39,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="ISubHubTests.cs" />
-        <Compile Include="SubHub.cs" />
+        <Compile Include="SubHubT.cs" />
         <Compile Include="ISubHub.cs" />
         <Compile Include="IMessage.cs" />
         <Compile Include="ISubscription.cs" />
