@@ -19,6 +19,7 @@ Not yet ready work-in-progress single-threaded EventAggregator/EventBroker C# so
   - Global and Filtered subscription
     - Global are triggered on all messages of matching Type
     - Filtered are triggered only on messages of matching Type and matching filter object
+    - Global and Filtered subscriptions are ordered in same queue
   - Subscription Priority
     - uses `SortedDictionary` for performance
   - Unsubscribe by object handle
