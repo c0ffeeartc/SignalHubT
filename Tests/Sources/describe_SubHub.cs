@@ -11,7 +11,7 @@ public sealed class describe_SubHub : nspec
 	private					void					test_SubUnsub				(  )
 	{
 		ISubHubTests<Message1> subHubM1	= null;
-		beforeEach = ()=>
+		before = ()=>
 		{
 			subHubM1				= new SubHub<Message1>();
 		};
@@ -57,7 +57,7 @@ public sealed class describe_SubHub : nspec
 	private					void					test_SubHub_SortOrder	(  )
 	{
 		ISubHubTests<Message1> subHubM1	= null;
-		beforeEach = ()=>
+		before = ()=>
 		{
 			subHubM1				= new SubHub<Message1>();
 		};
@@ -117,7 +117,7 @@ public sealed class describe_SubHub : nspec
 	private					void					test_SubHub_Filter		(  )
 	{
 		ISubHubTests<Message1> subHubM1	= null;
-		beforeEach = ()=>
+		before = ()=>
 		{
 			subHubM1				= new SubHub<Message1>();
 		};
@@ -223,7 +223,7 @@ public sealed class describe_SubHub : nspec
 	private					void					test_SubHub_Recursion	(  )
 	{
 		ISubHubTests<Message1> subHubM1	= null;
-		beforeEach = ()=>
+		before = ()=>
 		{
 			subHubM1				= new SubHub<Message1>();
 		};

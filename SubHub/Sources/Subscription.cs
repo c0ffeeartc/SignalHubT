@@ -5,18 +5,20 @@ namespace SubH
 public sealed class Subscription<TMessage> : ISubscription<TMessage>
 		where TMessage : IMessage
 {
-	public					Subscription			( Boolean hasFilter, Object filter, Action<TMessage> action, Int32 order )
+	public					ISubscription<TMessage>	Init					( Boolean hasFilter, Object filter, Action<TMessage> action, Int32 order )
 	{
 		HasFilter					= hasFilter;
 		Filter						= filter;
 		_action						= action;
 		Order						= order;
+		return this;
 	}
 
 	private					Action<TMessage>		_action;
-	public					Boolean					HasFilter				{ get; }
-	public					Object					Filter					{ get; }
-	public					Int32					Order					{ get; }
+	public					Boolean					HasFilter				{ get; private set; }
+	public					Object					Filter					{ get; private set; }
+	public					Int32					Order					{ get; private set; }
+	public					Boolean					IsInPool				{ get; set; }
 
 	public					void					Invoke					( TMessage message )
 	{
@@ -42,6 +44,14 @@ public sealed class Subscription<TMessage> : ISubscription<TMessage>
 		}
 
 		return 1;
+	}
+
+	public					void					BeforeRepool			(  )
+	{
+		_action						= null;
+		HasFilter					= false;
+		Filter						= null;
+		Order						= 0;
 	}
 }
 }

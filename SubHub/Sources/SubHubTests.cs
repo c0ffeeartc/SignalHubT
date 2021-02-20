@@ -1,19 +1,18 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SubH
 {
-public partial class SubHub<TMessage> : ISubHubTests<TMessage> where TMessage : IMessage, IPoolable
+public partial class SubHub<T> : ISubHubTests<T> where T : IMessage, IPoolable
 {
-	public			List<ISubscription<TMessage>>	GetSubscriptions	(  )
+	public			List<ISubscription<T>>			GetSubscriptions	(  )
 	{
 		return _subscriptions
 			.Select( kv => kv.Value )
 			.ToList(  );
 	}
 
-	public					void					Sub					( ISubscription<TMessage> subscription )
+	public					void					Sub					( ISubscription<T> subscription )
 	{
 		AddSubscription( subscription );
 	}

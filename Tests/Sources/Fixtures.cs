@@ -7,12 +7,7 @@ public sealed class Message1 : IMessage, IPoolable
 {
 	public string Str;
 
-	private Boolean _isInPool;
-	public Boolean IsInPool { get => _isInPool; set => _isInPool = value; }
-
-	public void BeforeRent( )
-	{
-	}
+	public Boolean IsInPool { get; set; }
 
 	public void BeforeRepool( )
 	{

@@ -19,7 +19,7 @@ public class Pool<T> : IPool<T> where T : IPoolable
 		var item					= _items.Count == 0
 			? _factory.Invoke(  ) // item.IsInPool == false here(depends on factory method). Can be used in BeforeRent for some weird check
 			: _items.Pop(  );
-		item.BeforeRent(  );
+		//item.BeforeRent(  );
 		item.IsInPool				= false;
 		return item;
 	}
