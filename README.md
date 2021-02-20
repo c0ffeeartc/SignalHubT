@@ -2,7 +2,8 @@
 Not yet ready work-in-progress single-threaded EventAggregator/EventBroker C# solution
 
 ## TODO
-  - Pooling for Subscriptions and Messages
+  - IoC initialization tree
+  - Allow more than 1 EventAggregator object by not using static objects
   - Subscribe/unsubscribe during triggering
     - Deterministic handling
     - Cover with tests
@@ -13,7 +14,6 @@ Not yet ready work-in-progress single-threaded EventAggregator/EventBroker C# so
     - Explain in README
   - Test order of matching priority subscriptions when `SortedDictionary` gets rehashed. Maybe introduce Subscrition.creationIndex for additional sorting value
   - Improve API
-  - IoC initialization tree
 
 ## Features
   - Global and Filtered subscription
@@ -24,6 +24,7 @@ Not yet ready work-in-progress single-threaded EventAggregator/EventBroker C# so
     - uses `SortedDictionary` for performance
   - Unsubscribe by object handle
     - allows unsubscription from middle of queue
+  - Pooling for Subscriptions and Messages
 
 ## Example
 ```csharp
