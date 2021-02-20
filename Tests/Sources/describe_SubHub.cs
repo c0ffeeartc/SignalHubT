@@ -219,5 +219,36 @@ public sealed class describe_SubHub : nspec
 				.Invoke( null );
 		};
 	}
+
+	private					void					test_SubHub_Recursion	(  )
+	{
+		ISubHubTests<Message1> subHubM1	= null;
+		beforeEach = ()=>
+		{
+			subHubM1				= new SubHub<Message1>();
+		};
+
+		xit["During Publish inside callback subscribe to same Message with same or higher priorityOrder.\nAdded subscription should be invoked during this same publish"] = ()=>
+		{
+			// given
+			var message1			= new Message1(  ){Str = "strInit"};
+
+			ISubscription<Message1> sub2;
+			var sub1				= subHubM1.Sub( m1 =>
+				{
+					m1.Str = "sub1";
+					sub2 = subHubM1.Sub( m2 =>
+						{
+							m2.Str = "sub2";
+						} );
+				} );
+
+			// when
+			subHubM1.Publish( message1 );
+
+			// then
+			message1.Str.ShouldBe( "sub2" );
+		};
+	}
 }
 }

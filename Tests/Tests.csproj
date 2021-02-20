@@ -87,6 +87,7 @@
     <ItemGroup>
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Sources\descirbe_Pool.cs" />
         <Compile Include="Sources\describe_SubHub.cs" />
         <Compile Include="Sources\Fixtures.cs" />
     </ItemGroup>

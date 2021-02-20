@@ -4,8 +4,7 @@ using System.Linq;
 
 namespace SubH
 {
-public partial class SubHub<TMessage> : ISubHubTests<TMessage>
-		where TMessage : IMessage
+public partial class SubHub<TMessage> : ISubHubTests<TMessage> where TMessage : IMessage, IPoolable
 {
 	public			List<ISubscription<TMessage>>	GetSubscriptions	(  )
 	{

@@ -42,6 +42,9 @@
         <Compile Include="Sources\ISubHub.cs" />
         <Compile Include="Sources\ISubHubTests.cs" />
         <Compile Include="Sources\ISubscription.cs" />
+        <Compile Include="Sources\Pool\IPool.cs" />
+        <Compile Include="Sources\Pool\IPoolable.cs" />
+        <Compile Include="Sources\Pool\Pool.cs" />
         <Compile Include="Sources\SubHub.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Sources\SubHubT.cs" />
