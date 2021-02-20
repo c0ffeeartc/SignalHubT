@@ -13,7 +13,7 @@ public interface ISubHub<T>
 	void					Publish					( T message );
 	void					Publish					( Object filter, T message );
 
-	void					ClearAllSubscriptions	(  );
+	void					UnsubAll				(  );
 }
 
 public interface ISubHub

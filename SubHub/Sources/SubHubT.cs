@@ -88,8 +88,9 @@ public partial class SubHub<TMessage> : ISubHub<TMessage>
 		Pool<TMessage>.I.Repool( message );
 	}
 
-	public					void					ClearAllSubscriptions	(  )
+	public					void					UnsubAll				(  )
 	{
+		// TODO: loop Unsub
 		_subscriptions.Clear(  );
 	}
 }
