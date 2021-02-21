@@ -3,7 +3,7 @@ Not yet ready work-in-progress single-threaded EventAggregator/EventBroker C# so
 
 ## TODO
   - IoC initialization tree
-  - Allow more than 1 EventAggregator object by not using static objects
+  - Allow more than 1 EventAggregator object by not using static objects. SubHubLocal class?
   - Subscribe/unsubscribe during triggering
     - Deterministic handling
     - Cover with tests
