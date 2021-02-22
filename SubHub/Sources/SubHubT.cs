@@ -7,7 +7,7 @@ public partial class SubHub<T> : ISubHub<T>
 	where T : IMessage, IPoolable
 {
 	public static			ISubHub<T>				I						= new SubHub<T>(  );
-	private readonly		SortedDictionary<ISubscription<T>,ISubscription<T>> _subscriptions	= new SortedDictionary<ISubscription<T>, ISubscription<T>>();
+	private readonly		SortedList<ISubscription<T>,ISubscription<T>> _subscriptions	= new SortedList<ISubscription<T>, ISubscription<T>>();
 
 	public					ISubscription<T>		Sub						( Action<T> action, int order = 0 )
 	{
@@ -77,14 +77,15 @@ public partial class SubHub<T> : ISubHub<T>
 
 	private					void					PublishInternal			( Object filter, T message )
 	{
-		foreach( var kv in _subscriptions )
+		for ( var i = 0; i < _subscriptions.Keys.Count; i++ )
 		{
-			if ( kv.Value.HasFilter && kv.Value.Filter != filter )
+			var subscription		= _subscriptions.Keys[i];
+			if ( subscription.HasFilter && subscription.Filter != filter )
 			{
 				continue;
 			}
 
-			kv.Value.Invoke( message );
+			subscription.Invoke( message );
 		}
 
 		Pool<T>.I.Repool( message );

@@ -229,7 +229,7 @@ public sealed class describe_SubHub : nspec
 			subHubM1				= new SubHub<Message1>();
 		};
 
-		it["During Publish inside callback subscribe to same Message with same or higher priorityOrder.\nAdded subscription should be invoked during this same publish"] = ()=>
+		it["During Publish inside callback subscribe to same Message with SAME or HIGHER priorityOrder.\nAdded subscription should be invoked during this same publish"] = ()=>
 		{
 			// given
 			// var subscrpition		= Substitute.For<ISubscription<Message1>>(  );
@@ -254,6 +254,32 @@ public sealed class describe_SubHub : nspec
 
 			// then
 			message1.Str.ShouldBe( "m1sub2" );
+		};
+
+		it["During Publish inside callback subscribe to same Message with LOWER priorityOrder.\nAdded subscription should NOT be invoked during this same publish"] = ()=>
+		{
+			// given
+			subHubM1.Sub( m1 =>
+				{
+					m1.Str += "sub1";
+					// subHubM1.Sub( subscrpition );
+					if (m1.Str.Length > 8)
+					{
+						return;
+					}
+					var sub2 = subHubM1.Sub( m2 =>
+						{
+							m2.Str += "sub2";
+						}, order: -5 );
+				} );
+
+			// when
+			var message1			= Pool<Message1>.I.Rent()
+				.Init("m1");
+			subHubM1.Publish( message1 );
+
+			// then
+			message1.Str.ShouldBe( "m1sub1" );
 		};
 	}
 }

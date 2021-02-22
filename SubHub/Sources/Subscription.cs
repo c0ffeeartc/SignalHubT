@@ -5,6 +5,8 @@ namespace SubH
 public sealed class Subscription<TMessage> : ISubscription<TMessage>
 		where TMessage : IMessage
 {
+	private static			Int32					sCreationIndex			= 1;
+
 	public					ISubscription<TMessage>	Init					( Boolean hasFilter, Object filter, Action<TMessage> action, Int32 order )
 	{
 		HasFilter					= hasFilter;
@@ -18,6 +20,7 @@ public sealed class Subscription<TMessage> : ISubscription<TMessage>
 	public					Boolean					HasFilter				{ get; private set; }
 	public					Object					Filter					{ get; private set; }
 	public					Int32					Order					{ get; private set; }
+	public					Int32					CreationIndex			{ get; private set; }
 	public					Boolean					IsInPool				{ get; set; }
 
 	public					void					Invoke					( TMessage message )
@@ -43,7 +46,12 @@ public sealed class Subscription<TMessage> : ISubscription<TMessage>
 			return order;
 		}
 
-		return 1;
+		return CreationIndex.CompareTo( other.CreationIndex );
+	}
+
+	public					void					BeforeRent				(  )
+	{
+		CreationIndex				= ++sCreationIndex;
 	}
 
 	public					void					BeforeRepool			(  )

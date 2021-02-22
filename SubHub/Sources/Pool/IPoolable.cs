@@ -5,7 +5,7 @@ namespace SubH
 public interface IPoolable
 {
 	Boolean					IsInPool				{ get;set; }
-	//void					BeforeRent				(  );
+	void					BeforeRent				(  );
 	void					BeforeRepool			(  );
 }
 }

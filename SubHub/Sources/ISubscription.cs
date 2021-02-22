@@ -10,6 +10,7 @@ public interface ISubscription<T>
 	Int32					Order					{ get; }
 	Boolean					HasFilter				{ get; }
 	Object 					Filter					{ get; }
+	Int32 					CreationIndex			{ get; }
 
 	void 					Invoke					( T message );
 	ISubscription<T>		Init					(

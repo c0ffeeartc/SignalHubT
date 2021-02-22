@@ -15,6 +15,10 @@ public sealed class Message1 : IMessage, IPoolable
 
 	public Boolean IsInPool { get; set; }
 
+	public void BeforeRent( )
+	{
+	}
+
 	public void BeforeRepool( )
 	{
 		// Don't set to null for tests

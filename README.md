@@ -12,7 +12,7 @@ Not yet ready work-in-progress single-threaded EventAggregator/EventBroker C# so
     - Deterministic handling
     - Cover with tests
     - Explain in README
-  - Test order of matching priority subscriptions when `SortedDictionary` gets rehashed. Maybe introduce Subscrition.creationIndex for additional sorting value
+  - Cover with tests case when subscriptions collection gets rehashed and keeps order of elements in matching priority chains.
   - Improve API
 
 ## Features
@@ -21,7 +21,7 @@ Not yet ready work-in-progress single-threaded EventAggregator/EventBroker C# so
     - Filtered are triggered only on messages of matching Type and matching filter object
     - Global and Filtered subscriptions are ordered in same queue
   - Subscription Priority
-    - uses `SortedDictionary` for performance
+    - uses `SortedList` for performance
   - Unsubscribe by object handle
     - allows unsubscription from middle of queue
   - Pooling for Subscriptions and Messages
