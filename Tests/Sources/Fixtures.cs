@@ -7,11 +7,18 @@ public sealed class Message1 : IMessage, IPoolable
 {
 	public string Str;
 
+	public Message1 Init( String str)
+	{
+		Str = str;
+		return this;
+	}
+
 	public Boolean IsInPool { get; set; }
 
 	public void BeforeRepool( )
 	{
-		Str = null;
+		// Don't set to null for tests
+		// Str = null;
 	}
 }
 public sealed class Message2 : IMessage

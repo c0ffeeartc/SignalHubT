@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NSpec;
 using NSubstitute;
 using Shouldly;
@@ -228,26 +229,31 @@ public sealed class describe_SubHub : nspec
 			subHubM1				= new SubHub<Message1>();
 		};
 
-		xit["During Publish inside callback subscribe to same Message with same or higher priorityOrder.\nAdded subscription should be invoked during this same publish"] = ()=>
+		it["During Publish inside callback subscribe to same Message with same or higher priorityOrder.\nAdded subscription should be invoked during this same publish"] = ()=>
 		{
 			// given
-			var message1			= new Message1(  ){Str = "strInit"};
+			// var subscrpition		= Substitute.For<ISubscription<Message1>>(  );
+			// subscrpition.Filter.Returns(null);
+			// subscrpition.HasFilter.Returns(false);
 
 			ISubscription<Message1> sub2;
+
 			var sub1				= subHubM1.Sub( m1 =>
 				{
-					m1.Str = "sub1";
+					m1.Str = "m1sub1";
+					// subHubM1.Sub( subscrpition );
 					sub2 = subHubM1.Sub( m2 =>
 						{
-							m2.Str = "sub2";
+							m2.Str = "m1sub2";
 						} );
 				} );
 
 			// when
+			var message1			= Pool<Message1>.I.Rent().Init("m1");
 			subHubM1.Publish( message1 );
 
 			// then
-			message1.Str.ShouldBe( "sub2" );
+			message1.Str.ShouldBe( "m1sub2" );
 		};
 	}
 }
