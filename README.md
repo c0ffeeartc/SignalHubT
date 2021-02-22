@@ -23,8 +23,11 @@ Not yet ready work-in-progress single-threaded EventAggregator/EventBroker C# so
   - Subscription Priority
     - uses `SortedList` for performance
   - Unsubscribe by object handle
-    - allows unsubscription from middle of queue
+    - allows unsubscribing handle from middle of queue
   - Pooling for Subscriptions and Messages
+  - Subscribing to currently publishing Message behavior:
+    - will run new subscriptions with SAME or HIGHER priorityOrder compared to priorityOrder of currently invoked subscription
+    - will NOT run new subscriptions with LOWER priorityOrder compared to priorityOrder of currently invoked subscription
 
 ## Example
 ```csharp

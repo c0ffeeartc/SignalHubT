@@ -262,15 +262,20 @@ public sealed class describe_SubHub : nspec
 			subHubM1.Sub( m1 =>
 				{
 					m1.Str += "sub1";
-					// subHubM1.Sub( subscrpition );
-					if (m1.Str.Length > 8)
+					if (m1.Str.Length > 18) // Protection against endless loop
 					{
 						return;
 					}
+
 					var sub2 = subHubM1.Sub( m2 =>
 						{
 							m2.Str += "sub2";
 						}, order: -5 );
+
+					var sub3 = subHubM1.Sub( m2 =>
+						{
+							m2.Str += "sub3";
+						}, order: -1 );
 				} );
 
 			// when

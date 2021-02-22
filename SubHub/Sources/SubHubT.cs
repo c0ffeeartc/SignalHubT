@@ -86,6 +86,11 @@ public partial class SubHub<T> : ISubHub<T>
 			}
 
 			subscription.Invoke( message );
+			// Ensure continue from same subscription if collection was prepended before current index
+			while (_subscriptions.Keys[i] != subscription)
+			{
+				i++;
+			}
 		}
 
 		Pool<T>.I.Repool( message );
