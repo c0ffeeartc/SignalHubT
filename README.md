@@ -1,12 +1,5 @@
 # SubHubT
-Not battle tested work-in-progress single-threaded EventAggregator/EventBroker C# solution
-
-## TODO
-  - IoC initialization tree
-  - Allow more than 1 EventAggregator object by not using static objects. SubHubLocal class?
-  - Cover with tests case when subscriptions collection gets rehashed and keeps order of elements in matching priority chains.
-  - Improve API
-  - Add performance tests
+Single-threaded EventAggregator/EventBroker C# solution
 
 ## Features
   - Global and Filtered subscription
@@ -18,6 +11,7 @@ Not battle tested work-in-progress single-threaded EventAggregator/EventBroker C
   - Unsubscribe by object handle
     - allows unsubscribing handle from middle of queue
   - Pooling for Subscriptions and Messages
+  - Allows more than 1 EventAggregator through SubHLocal instances
   - Subscribing to currently publishing Message behavior:
     - will run new subscriptions with SAME or HIGHER priorityOrder compared to priorityOrder of currently invoked subscription
     - will NOT run new subscriptions with LOWER priorityOrder compared to priorityOrder of currently invoked subscription
@@ -81,3 +75,8 @@ public class Message : IMessage, IPoolable
   #endregion
 }
 ```
+
+## TODO
+  - IoC initialization tree. AbstractFactory?
+  - Cover with tests case when subscriptions collection gets rehashed and keeps order of elements in matching priority chains.
+  - Add performance tests
