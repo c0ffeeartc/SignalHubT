@@ -1,6 +1,6 @@
 using System;
 
-namespace SubH
+namespace SubHubT
 {
 public interface ISubscription<T>
 		: IComparable<ISubscription<T>>  // IComparable for Order

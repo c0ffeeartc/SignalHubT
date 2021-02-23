@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NSpec;
 using NSubstitute;
 using Shouldly;
-using SubH;
+using SubHubT;
 
 namespace Tests
 {
@@ -401,6 +401,40 @@ public sealed class describe_SubHub : nspec
 			// then
 			message1.Str.ShouldBe( "m1sub1sub2sub3" );
 			message2.Str.ShouldBe( "m2sub1sub2sub3" );
+		};
+	}
+
+	private					void					test_SubHubLocal(  )
+	{
+		ISubHubTests<Message1> subHubM1	= null;
+		before = ()=>
+		{
+			subHubM1				= new SubHub<Message1>();
+		};
+
+		it["Two SubHubLocal have different inner subHubT instances."] = ()=>
+		{
+			// given
+			var subHLocal = new SubHLocal(  );
+			var subHLocal2 = new SubHLocal(  );
+
+			// then
+			subHLocal.GetSubHubT<Message1>().ShouldNotBeNull(  );
+			subHLocal2.GetSubHubT<Message1>().ShouldNotBeNull(  );
+			subHLocal.GetSubHubT<Message1>().ShouldNotBe( subHLocal2.GetSubHubT<Message1>() );
+		};
+
+		it["SubHubLocal has different inner subHubT instances compared to SubH static instances."] = ()=>
+		{
+			// given
+			var subHLocal = new SubHLocal(  );
+
+			// then
+			subHLocal.GetSubHubT<Message1>().ShouldNotBeNull(  );
+			SubH.I.GetSubHubT<Message1>().ShouldNotBeNull(  );
+			subHLocal.GetSubHubT<Message1>().ShouldBe( subHLocal.GetSubHubT<Message1>() );
+			SubH.I.GetSubHubT<Message1>().ShouldBe( SubH.I.GetSubHubT<Message1>() );
+			subHLocal.GetSubHubT<Message1>().ShouldNotBe( SubH.I.GetSubHubT<Message1>() );
 		};
 	}
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace SubH
+namespace SubHubT
 {
 public partial class SubHub<T> : ISubHub<T>
 	where T : IMessage, IPoolable
@@ -128,11 +129,26 @@ public partial class SubHub<T> : ISubHub<T>
 
 	public					void					UnsubAll				(  )
 	{
-		foreach ( var kv in _subscriptions )
+		for ( var i = _subscriptions.Keys.Count - 1; i >= 0; --i )
 		{
-			Pool<ISubscription<T>>.I.Repool( kv.Key );
+			Pool<ISubscription<T>>.I.Repool( _subscriptions.Keys[i] );
 		}
 		_subscriptions.Clear(  );
+	}
+}
+
+public partial class SubHub<T> : ISubHubTests<T> where T : IMessage, IPoolable
+{
+	public			List<ISubscription<T>>			GetSubscriptions	(  )
+	{
+		return _subscriptions
+			.Select( kv => kv.Value )
+			.ToList(  );
+	}
+
+	public					void					Sub					( ISubscription<T> subscription )
+	{
+		AddSubscription( subscription );
 	}
 }
 }

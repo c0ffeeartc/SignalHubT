@@ -1,22 +1,8 @@
 using System;
 
-namespace SubH
+namespace SubHubT
 {
-public interface ISubHub<T>
-		where T : IMessage, IPoolable
-{
-	ISubscription<T>		Sub						( Action<T> action, int order = 0 );
-	ISubscription<T>		Sub						( Object filter, Action<T> action, int order = 0 );
-
-	void					Unsub					( ISubscription<T> subscription );
-
-	void					Publish					( T message );
-	void					Publish					( Object filter, T message );
-
-	void					UnsubAll				(  );
-}
-
-public interface ISubHub
+public interface ISubH
 {
 	ISubscription<T>		Sub<T>					( Action<T> action, int order = 0 ) where T : IMessage, IPoolable;
 	ISubscription<T>		Sub<T>					( Object filter, Action<T> action, int order = 0 ) where T : IMessage, IPoolable;
@@ -25,5 +11,12 @@ public interface ISubHub
 
 	void					Publish<T>				( T message ) where T : IMessage, IPoolable;
 	void					Publish<T>				( Object filter, T message ) where T : IMessage, IPoolable;
+
+	T						Args<T>					(  ) where T : IMessage, IPoolable;
+}
+
+public interface ISubHTests : ISubH
+{
+	ISubHub<T>				GetSubHubT<T>			(  ) where T : IMessage, IPoolable;
 }
 }

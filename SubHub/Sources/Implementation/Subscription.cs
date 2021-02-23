@@ -1,6 +1,6 @@
 using System;
 
-namespace SubH
+namespace SubHubT
 {
 public sealed class Subscription<TMessage> : ISubscription<TMessage>
 		where TMessage : IMessage

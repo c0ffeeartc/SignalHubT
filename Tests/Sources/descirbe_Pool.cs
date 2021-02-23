@@ -1,6 +1,6 @@
 using NSpec;
 using Shouldly;
-using SubH;
+using SubHubT;
 
 namespace Tests
 {

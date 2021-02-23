@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SubH
+namespace SubHubT
 {
 public class Pool<T> : IPool<T> where T : IPoolable
 {

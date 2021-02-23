@@ -1,4 +1,4 @@
-namespace SubH
+namespace SubHubT
 {
 public interface IPool<T> where T : IPoolable
 {

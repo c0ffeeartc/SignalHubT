@@ -1,9 +1,9 @@
 using System;
 
-namespace SubH
+namespace SubHubT
 {
 // Facade for an arguably better API
-public class SubH : ISubHub
+public partial class SubH : ISubH
 {
 	public static SubH I = new SubH();
 
@@ -35,6 +35,14 @@ public class SubH : ISubHub
 	public T Args<T>( ) where T : IMessage, IPoolable
 	{
 		return Pool<T>.I.Rent();
+	}
+}
+
+public partial class SubH : ISubHTests
+{
+	public ISubHub<T> GetSubHubT<T>( ) where T : IMessage, IPoolable
+	{
+		return SubHub<T>.I;
 	}
 }
 }
