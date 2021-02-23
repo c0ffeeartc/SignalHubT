@@ -28,24 +28,29 @@ public class Example
 {
   private void SubPublishUnsub()
   {
-    var sub1 = SubH.I.Sub<Message>( Handle1 );
-    var sub1Filtered = SubH.I.Sub<Message>( filter: this, Handle1Filtered );
-    var sub1Priority = SubH.I.Sub<Message>( Handle1Priority, order: -5 );
+    // Subscribe
+    var sub = SubH.I.Sub<Message>( Handle );
+    var subFiltered = SubH.I.Sub<Message>( filter: this, HandleFiltered );
+    var subPriority = SubH.I.Sub<Message>( HandlePriority, order: -5 );
 
+    // Publish
     var m1 = SubH.I.Args<Message>();
-    SubH.I.Publish(m1.Init("Publish m1"));//Callbacks: Handle1Priority(), Handle1()
+    // Callbacks: HandlePriority(), Handle()
+    SubH.I.Publish(m1.Init("Publish m1"));
 
     var m2 = SubH.I.Args<Message>();
-    SubH.I.Publish(this, m2.Init("Publish filtered m2"));//Callbacks: Handle1Priority(), Handle1(), Handle1Filtered()
+    // Callbacks: HandlePriority(), Handle(), HandleFiltered()
+    SubH.I.Publish(filter:this, m2.Init("Publish filtered m2"));
 
-    SubH.I.Unsub(sub1);
-    SubH.I.Unsub(sub1Filtered);
-    SubH.I.Unsub(sub1Priority);
+    // Unsubscribe
+    SubH.I.Unsub(sub);
+    SubH.I.Unsub(subFiltered);
+    SubH.I.Unsub(subPriority);
   }
 
-  private void Handle1(Message message) { /*Some code here*/ }
-  private void Handle1Filtered(Message message) { /*Some code here*/ }
-  private void Handle1Priority(Message message) { /*Some code here*/ }
+  private void Handle(Message message) { /*Some code here*/ }
+  private void HandleFiltered(Message message) { /*Some code here*/ }
+  private void HandlePriority(Message message) { /*Some code here*/ }
 }
 
 public class Message : IMessage, IPoolable
