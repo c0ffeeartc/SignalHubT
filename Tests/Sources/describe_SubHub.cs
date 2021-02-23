@@ -343,10 +343,10 @@ public sealed class describe_SubHub : nspec
 				}, order: 11 );
 
 			var sub2				= subHubM1.Sub( m2 =>
-			{
-				m2.Str				+= "sub2";
-				subHubM1.Unsub(sub3);
-			} );
+				{
+					m2.Str			+= "sub2";
+					subHubM1.Unsub(sub3);
+				} );
 
 			// when
 			var message1			= Pool<Message1>.I.Rent()
@@ -355,6 +355,52 @@ public sealed class describe_SubHub : nspec
 
 			// then
 			message1.Str.ShouldBe( "m1sub1sub2sub4" );
+		};
+	}
+
+	private					void					test_SubHub_PublishInsideCallback(  )
+	{
+		ISubHubTests<Message1> subHubM1	= null;
+		before = ()=>
+		{
+			subHubM1				= new SubHub<Message1>();
+		};
+
+		it["Publish inside callback to message with same type works as a regular call stack."] = ()=>
+		{
+			// given
+			var counter				= 0;
+			var sub1				= subHubM1.Sub( m1 =>
+				{
+					m1.Str			+= "sub1";
+				} );
+
+			Message1 message2		= null;
+			var sub2				= subHubM1.Sub( m2 =>
+				{
+					m2.Str			+= "sub2";
+					if ( counter < 1 )
+					{
+						++counter;
+						message2	= Pool<Message1>.I.Rent()
+							.Init( "m2" );
+						subHubM1.Publish( message2 );
+					}
+				} );
+
+			var sub3				= subHubM1.Sub( m2 =>
+				{
+					m2.Str			+= "sub3";
+				});
+
+			// when
+			var message1			= Pool<Message1>.I.Rent()
+				.Init( "m1" );
+			subHubM1.Publish( message1 );
+
+			// then
+			message1.Str.ShouldBe( "m1sub1sub2sub3" );
+			message2.Str.ShouldBe( "m2sub1sub2sub3" );
 		};
 	}
 }

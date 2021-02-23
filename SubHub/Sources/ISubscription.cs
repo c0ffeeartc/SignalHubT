@@ -7,7 +7,7 @@ public interface ISubscription<T>
 		, IPoolable
 		where T : IMessage
 {
-	Int32					Order					{ get; }
+	Int32					Order					{ get; }  // lower values get invoked before higher values
 	Boolean					HasFilter				{ get; }
 	Object 					Filter					{ get; }
 	Int32 					CreationIndex			{ get; set; }
