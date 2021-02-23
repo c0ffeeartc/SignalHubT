@@ -221,7 +221,7 @@ public sealed class describe_SubHub : nspec
 		};
 	}
 
-	private					void					test_SubHub_Recursion	(  )
+	private					void					test_SubHub_NestedSubToSameMessage(  )
 	{
 		ISubHubTests<Message1> subHubM1	= null;
 		before = ()=>
@@ -285,6 +285,76 @@ public sealed class describe_SubHub : nspec
 
 			// then
 			message1.Str.ShouldBe( "m1sub1" );
+		};
+	}
+
+	private					void					test_SubHub_NestedUnsubToSameMessage(  )
+	{
+		ISubHubTests<Message1> subHubM1	= null;
+		before = ()=>
+		{
+			subHubM1				= new SubHub<Message1>();
+		};
+
+		it["During Publish inside callback Unsub to current or previous subscription HAS NO effect on current invoke chain."] = ()=>
+		{
+			// given
+			var sub1				= subHubM1.Sub( m1 =>
+				{
+					m1.Str			+= "sub1";
+				} );
+
+			var sub2				= subHubM1.Sub( m2 =>
+			{
+				m2.Str				+= "sub2";
+				subHubM1.Unsub(sub1);
+			} );
+
+			var sub3				= subHubM1.Sub( m2 =>
+				{
+					m2.Str			+= "sub3";
+				} );
+
+			// when
+			var message1			= Pool<Message1>.I.Rent()
+				.Init( "m1" );
+			subHubM1.Publish( message1 );
+
+			// then
+			message1.Str.ShouldBe( "m1sub1sub2sub3" );
+		};
+
+		it["During Publish inside callback Unsub to some next subscription."] = ()=>
+		{
+			// given
+			var sub1				= subHubM1.Sub( m1 =>
+				{
+					m1.Str			+= "sub1";
+				} );
+
+			var sub3				= subHubM1.Sub( m2 =>
+				{
+					m2.Str			+= "sub3";
+				}, order: 10 );
+
+			var sub4				= subHubM1.Sub( m2 =>
+				{
+					m2.Str			+= "sub4";
+				}, order: 11 );
+
+			var sub2				= subHubM1.Sub( m2 =>
+			{
+				m2.Str				+= "sub2";
+				subHubM1.Unsub(sub3);
+			} );
+
+			// when
+			var message1			= Pool<Message1>.I.Rent()
+				.Init( "m1" );
+			subHubM1.Publish( message1 );
+
+			// then
+			message1.Str.ShouldBe( "m1sub1sub2sub4" );
 		};
 	}
 }

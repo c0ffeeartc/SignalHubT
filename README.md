@@ -1,13 +1,9 @@
 # SubHubT
-Not yet ready work-in-progress single-threaded EventAggregator/EventBroker C# solution
+Not battle tested work-in-progress single-threaded EventAggregator/EventBroker C# solution
 
 ## TODO
   - IoC initialization tree
   - Allow more than 1 EventAggregator object by not using static objects. SubHubLocal class?
-  - Subscribe/unsubscribe during triggering
-    - Deterministic handling
-    - Cover with tests
-    - Explain in README
   - Recursive triggering
     - Deterministic handling
     - Cover with tests

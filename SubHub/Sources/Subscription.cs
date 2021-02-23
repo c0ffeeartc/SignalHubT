@@ -20,7 +20,7 @@ public sealed class Subscription<TMessage> : ISubscription<TMessage>
 	public					Boolean					HasFilter				{ get; private set; }
 	public					Object					Filter					{ get; private set; }
 	public					Int32					Order					{ get; private set; }
-	public					Int32					CreationIndex			{ get; private set; }
+	public					Int32					CreationIndex			{ get; set; }
 	public					Boolean					IsInPool				{ get; set; }
 
 	public					void					Invoke					( TMessage message )

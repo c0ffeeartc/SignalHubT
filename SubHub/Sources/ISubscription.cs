@@ -10,7 +10,7 @@ public interface ISubscription<T>
 	Int32					Order					{ get; }
 	Boolean					HasFilter				{ get; }
 	Object 					Filter					{ get; }
-	Int32 					CreationIndex			{ get; }
+	Int32 					CreationIndex			{ get; set; }
 
 	void 					Invoke					( T message );
 	ISubscription<T>		Init					(
@@ -19,5 +19,9 @@ public interface ISubscription<T>
 			, Action<T> action
 			, Int32 order
 			);
+}
+public static class SubState
+{
+	public const			Int32					Inactive				= -1;  // Consider distinguish inactive from waitForUnsub
 }
 }
