@@ -10,6 +10,7 @@ Not battle tested work-in-progress single-threaded EventAggregator/EventBroker C
     - Explain in README
   - Cover with tests case when subscriptions collection gets rehashed and keeps order of elements in matching priority chains.
   - Improve API
+  - Add performance tests
 
 ## Features
   - Global and Filtered subscription
