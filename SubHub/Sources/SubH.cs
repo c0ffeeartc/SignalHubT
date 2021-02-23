@@ -3,9 +3,9 @@ using System;
 namespace SubH
 {
 // Facade for an arguably better API
-public class SubHub : ISubHub
+public class SubH : ISubHub
 {
-	public static SubHub I = new SubHub();
+	public static SubH I = new SubH();
 
 	public ISubscription<T> Sub<T>( Action<T> action, Int32 order = 0) where T : IMessage, IPoolable
 	{
@@ -30,6 +30,11 @@ public class SubHub : ISubHub
 	public void Publish<T>( Object filter, T message) where T : IMessage, IPoolable
 	{
 		SubHub<T>.I.Publish(filter, message);
+	}
+
+	public T Args<T>( ) where T : IMessage, IPoolable
+	{
+		return Pool<T>.I.Rent();
 	}
 }
 }

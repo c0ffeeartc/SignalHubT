@@ -34,27 +34,50 @@ public class Example
 {
   private void SubPublishUnsub()
   {
-    var sub1 = SubHub.I.Sub<Message1>( Handle1 );
-    var sub2 = SubHub.I.Sub<Message2>( Handle2 );
-    var sub1Filtered = SubHub.I.Sub<Message1>( filter: this, Handle1Filtered );
-    var sub1Priority = SubHub.I.Sub<Message1>( Handle1Priority, order: -5 );
+    var sub1 = SubH.I.Sub<Message>( Handle1 );
+    var sub1Filtered = SubH.I.Sub<Message>( filter: this, Handle1Filtered );
+    var sub1Priority = SubH.I.Sub<Message>( Handle1Priority, order: -5 );
 
-    SubHub.I.Publish(new Message1()); // Callbacks: Handle1Priority(), Handle1()
-    SubHub.I.Publish(this, new Message1());// Callbacks: Handle1Priority(), Handle1(), Handle1Filtered()
-    SubHub.I.Publish(new Message2()); // Callbacks: Handle2
+	var m1 = SubH.I.Args<Message>();
+    SubH.I.Publish(m1.Init("Publish m1"));//Callbacks: Handle1Priority(), Handle1()
 
-    SubHub.I.Unsub(sub1);
-    SubHub.I.Unsub(sub2);
-    SubHub.I.Unsub(sub1Filtered);
-    SubHub.I.Unsub(sub1Priority);
+	var m2 = SubH.I.Args<Message>();
+    SubH.I.Publish(this, m2.Init("Publish filtered m2"));//Callbacks: Handle1Priority(), Handle1(), Handle1Filtered()
+
+    SubH.I.Unsub(sub1);
+    SubH.I.Unsub(sub1Filtered);
+    SubH.I.Unsub(sub1Priority);
   }
 
-  private void Handle1(Message1 message) { /*Some code here*/ }
-  private void Handle1Filtered(Message1 message) { /*Some code here*/ }
-  private void Handle1Priority(Message1 message) { /*Some code here*/ }
-  private void Handle2(Message2 message) { /*Some code here*/ }
+  private void Handle1(Message message) { /*Some code here*/ }
+  private void Handle1Filtered(Message message) { /*Some code here*/ }
+  private void Handle1Priority(Message message) { /*Some code here*/ }
 }
 
-public class Message1 : IMessage {public string Str;}
-public class Message2 : IMessage {public int Foo;}
+public class Message : IMessage, IPoolable
+{
+  public string Str;
+
+  #region Implement IPoolable
+  // To ensure compile time correctness even after refactoring:
+  //   - always implement init-like method for IPoolable(especially when no arguments)
+  //   - always call it every time after poolable is rented
+  public Message Init(string str)
+  {
+    Str = str;
+    return this;
+  }
+
+  public Boolean IsInPool { get; set; }
+  public void BeforeRent( )
+  {
+  }
+
+  // Free resources here
+  public void BeforeRepool( )
+  {
+    Str = null;
+  }
+  #endregion
+}
 ```
