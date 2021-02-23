@@ -38,10 +38,10 @@ public class Example
     var sub1Filtered = SubH.I.Sub<Message>( filter: this, Handle1Filtered );
     var sub1Priority = SubH.I.Sub<Message>( Handle1Priority, order: -5 );
 
-	var m1 = SubH.I.Args<Message>();
+    var m1 = SubH.I.Args<Message>();
     SubH.I.Publish(m1.Init("Publish m1"));//Callbacks: Handle1Priority(), Handle1()
 
-	var m2 = SubH.I.Args<Message>();
+    var m2 = SubH.I.Args<Message>();
     SubH.I.Publish(this, m2.Init("Publish filtered m2"));//Callbacks: Handle1Priority(), Handle1(), Handle1Filtered()
 
     SubH.I.Unsub(sub1);
