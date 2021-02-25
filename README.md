@@ -12,6 +12,7 @@ Single-threaded EventAggregator/EventBroker C# solution
     - allows unsubscribing handle from middle of queue
   - Pooling for Subscriptions and Messages
   - Allows more than 1 EventAggregator through SubHLocal instances
+  - Interfaces are used everywhere, `IoC` AbstractFactory/Facade class wraps concrete classes into virtual methods, allowing inheriting `IoC` to override them
   - Subscribing to currently publishing Message behavior:
     - will run new subscriptions with SAME or HIGHER priorityOrder compared to priorityOrder of currently invoked subscription
     - will NOT run new subscriptions with LOWER priorityOrder compared to priorityOrder of currently invoked subscription
@@ -82,6 +83,5 @@ public class Message : IMessage, IPoolable
 ```
 
 ## TODO
-  - IoC initialization tree. AbstractFactory?
   - Cover with tests case when subscriptions collection gets rehashed and keeps order of elements in matching priority chains.
   - Add performance tests

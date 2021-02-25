@@ -5,16 +5,16 @@ using System.Linq;
 namespace SubHubT
 {
 public partial class SubHub<T> : ISubHub<T>
-	where T : IMessage, IPoolable
+	where T : IMessage, IPoolable, new( )
 {
-	public static			ISubHub<T>				I						= new SubHub<T>(  );
+	public static			ISubHub<T>				I						= IoC.I.CreateSubHub<T>(  );
 	private					Int32					_publishActiveCount;
 	private					Boolean					_isWaitingUnsub;
 	private readonly		SortedList<ISubscription<T>,ISubscription<T>> _subscriptions	= new SortedList<ISubscription<T>, ISubscription<T>>();
 
 	public					ISubscription<T>		Sub						( Action<T> action, int order = 0 )
 	{
-		var subscription			= Pool<ISubscription<T>>.I.Rent()
+		var subscription			= IoC.I.RentSubscription<T>(  )
 			.Init( false, null, action, order );
 		AddSubscription( subscription );
 		return subscription;
@@ -27,7 +27,7 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentNullException( "filter == null" );
 		}
 
-		var subscription			= Pool<ISubscription<T>>.I.Rent()
+		var subscription			= IoC.I.RentSubscription<T>(  )
 			.Init( true, filter, action, order );
 		AddSubscription( subscription );
 		return subscription;
@@ -47,6 +47,7 @@ public partial class SubHub<T> : ISubHub<T>
 			return;
 		}
 
+		IoC.I.RepoolSubscription( subscription );
 		_subscriptions.Remove( subscription );
 	}
 
@@ -124,20 +125,20 @@ public partial class SubHub<T> : ISubHub<T>
 			}
 		}
 
-		Pool<T>.I.Repool( message );
+		IoC.I.Repool( message );
 	}
 
 	public					void					UnsubAll				(  )
 	{
 		for ( var i = _subscriptions.Keys.Count - 1; i >= 0; --i )
 		{
-			Pool<ISubscription<T>>.I.Repool( _subscriptions.Keys[i] );
+			IoC.I.RepoolSubscription( _subscriptions.Keys[i] );
 		}
 		_subscriptions.Clear(  );
 	}
 }
 
-public partial class SubHub<T> : ISubHubTests<T> where T : IMessage, IPoolable
+public partial class SubHub<T> : ISubHubTests<T> where T : IMessage, IPoolable, new( )
 {
 	public			List<ISubscription<T>>			GetSubscriptions	(  )
 	{

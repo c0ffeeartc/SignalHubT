@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace SubHubT
 {
-public class Pool<T> : IPool<T> where T : IPoolable
+public class Pool<T> : IPool<T>
+		where T : IPoolable, new(  )
 {
-	public					Pool					( Func<T> factory )
+	public					Pool					( Func<T> factory = null )
 	{
 		_factory					= factory;
 	}
-	public static			IPool<T>				I;
+
+	public static			IPool<T>				I						= IoC.I.CreatePool( () => new T() );
 
 	private					Stack<T>				_items					= new Stack<T>();
 	private					Func<T>					_factory;

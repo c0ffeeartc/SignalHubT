@@ -14,7 +14,7 @@ public sealed class describe_SubHub : nspec
 		ISubHubTests<Message1> subHubM1	= null;
 		before = ()=>
 		{
-			subHubM1				= new SubHub<Message1>();
+			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
 		};
 
 		it["Sub twice count matches"] = ()=>
@@ -60,7 +60,7 @@ public sealed class describe_SubHub : nspec
 		ISubHubTests<Message1> subHubM1	= null;
 		before = ()=>
 		{
-			subHubM1				= new SubHub<Message1>();
+			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
 		};
 
 		it["Sub default order == 0"] = ()=>
@@ -120,7 +120,7 @@ public sealed class describe_SubHub : nspec
 		ISubHubTests<Message1> subHubM1	= null;
 		before = ()=>
 		{
-			subHubM1				= new SubHub<Message1>();
+			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
 		};
 
 		it["Sub Global is invoked"] = ()=>
@@ -226,7 +226,7 @@ public sealed class describe_SubHub : nspec
 		ISubHubTests<Message1> subHubM1	= null;
 		before = ()=>
 		{
-			subHubM1				= new SubHub<Message1>();
+			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
 		};
 
 		it["During Publish inside callback subscribe to same Message with SAME or HIGHER priorityOrder.\nAdded subscription should be invoked during this same publish"] = ()=>
@@ -249,7 +249,7 @@ public sealed class describe_SubHub : nspec
 				} );
 
 			// when
-			var message1			= Pool<Message1>.I.Rent().Init("m1");
+			var message1			= IoC.I.Rent<Message1>().Init("m1");
 			subHubM1.Publish( message1 );
 
 			// then
@@ -279,7 +279,7 @@ public sealed class describe_SubHub : nspec
 				} );
 
 			// when
-			var message1			= Pool<Message1>.I.Rent()
+			var message1			= IoC.I.Rent<Message1>(  )
 				.Init("m1");
 			subHubM1.Publish( message1 );
 
@@ -293,7 +293,7 @@ public sealed class describe_SubHub : nspec
 		ISubHubTests<Message1> subHubM1	= null;
 		before = ()=>
 		{
-			subHubM1				= new SubHub<Message1>();
+			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
 		};
 
 		it["During Publish inside callback Unsub to current or previous subscription HAS NO effect on current invoke chain."] = ()=>
@@ -316,7 +316,7 @@ public sealed class describe_SubHub : nspec
 				} );
 
 			// when
-			var message1			= Pool<Message1>.I.Rent()
+			var message1			= IoC.I.Rent<Message1>(  )
 				.Init( "m1" );
 			subHubM1.Publish( message1 );
 
@@ -349,7 +349,7 @@ public sealed class describe_SubHub : nspec
 				} );
 
 			// when
-			var message1			= Pool<Message1>.I.Rent()
+			var message1			= IoC.I.Rent<Message1>()
 				.Init( "m1" );
 			subHubM1.Publish( message1 );
 
@@ -363,7 +363,7 @@ public sealed class describe_SubHub : nspec
 		ISubHubTests<Message1> subHubM1	= null;
 		before = ()=>
 		{
-			subHubM1				= new SubHub<Message1>();
+			subHubM1				= (ISubHubTests<Message1>) IoC.I.CreateSubHub<Message1>(  );
 		};
 
 		it["Publish inside callback to message with same type works as a regular call stack."] = ()=>
@@ -382,7 +382,7 @@ public sealed class describe_SubHub : nspec
 					if ( counter < 1 )
 					{
 						++counter;
-						message2	= Pool<Message1>.I.Rent()
+						message2	= IoC.I.Rent<Message1>()
 							.Init( "m2" );
 						subHubM1.Publish( message2 );
 					}
@@ -394,7 +394,7 @@ public sealed class describe_SubHub : nspec
 				});
 
 			// when
-			var message1			= Pool<Message1>.I.Rent()
+			var message1			= IoC.I.Rent<Message1>()
 				.Init( "m1" );
 			subHubM1.Publish( message1 );
 
@@ -409,14 +409,14 @@ public sealed class describe_SubHub : nspec
 		ISubHubTests<Message1> subHubM1	= null;
 		before = ()=>
 		{
-			subHubM1				= new SubHub<Message1>();
+			subHubM1				= (ISubHubTests<Message1>) IoC.I.CreateSubHub<Message1>(  );
 		};
 
 		it["Two SubHubLocal have different inner subHubT instances."] = ()=>
 		{
 			// given
-			var subHLocal = new SubHLocal(  );
-			var subHLocal2 = new SubHLocal(  );
+			ISubHTests subHLocal = IoC.I.CreateSubHLocal(  ) as ISubHTests;
+			ISubHTests subHLocal2 = IoC.I.CreateSubHLocal(  ) as ISubHTests;
 
 			// then
 			subHLocal.GetSubHubT<Message1>().ShouldNotBeNull(  );
@@ -427,14 +427,14 @@ public sealed class describe_SubHub : nspec
 		it["SubHubLocal has different inner subHubT instances compared to SubH static instances."] = ()=>
 		{
 			// given
-			var subHLocal = new SubHLocal(  );
+			ISubHTests subHLocal = IoC.I.CreateSubHLocal(  ) as ISubHTests;
 
 			// then
 			subHLocal.GetSubHubT<Message1>().ShouldNotBeNull(  );
-			SubH.I.GetSubHubT<Message1>().ShouldNotBeNull(  );
+			(SubH.I as ISubHTests).GetSubHubT<Message1>().ShouldNotBeNull(  );
 			subHLocal.GetSubHubT<Message1>().ShouldBe( subHLocal.GetSubHubT<Message1>() );
-			SubH.I.GetSubHubT<Message1>().ShouldBe( SubH.I.GetSubHubT<Message1>() );
-			subHLocal.GetSubHubT<Message1>().ShouldNotBe( SubH.I.GetSubHubT<Message1>() );
+			(SubH.I as ISubHTests).GetSubHubT<Message1>().ShouldBe( (SubH.I as ISubHTests).GetSubHubT<Message1>() );
+			subHLocal.GetSubHubT<Message1>().ShouldNotBe( (SubH.I as ISubHTests).GetSubHubT<Message1>() );
 		};
 	}
 }

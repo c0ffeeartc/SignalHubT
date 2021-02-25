@@ -2,12 +2,12 @@ using System;
 
 namespace SubHubT
 {
-public sealed class Subscription<TMessage> : ISubscription<TMessage>
-		where TMessage : IMessage
+public sealed class Subscription<T> : ISubscription<T>
+		where T : IMessage
 {
 	private static			Int32					sCreationIndex			= 1;
 
-	public					ISubscription<TMessage>	Init					( Boolean hasFilter, Object filter, Action<TMessage> action, Int32 order )
+	public					ISubscription<T>		Init					( Boolean hasFilter, Object filter, Action<T> action, Int32 order )
 	{
 		HasFilter					= hasFilter;
 		Filter						= filter;
@@ -16,19 +16,19 @@ public sealed class Subscription<TMessage> : ISubscription<TMessage>
 		return this;
 	}
 
-	private					Action<TMessage>		_action;
+	private					Action<T>				_action;
 	public					Boolean					HasFilter				{ get; private set; }
 	public					Object					Filter					{ get; private set; }
 	public					Int32					Order					{ get; private set; }
 	public					Int32					CreationIndex			{ get; set; }
 	public					Boolean					IsInPool				{ get; set; }
 
-	public					void					Invoke					( TMessage message )
+	public					void					Invoke					( T message )
 	{
 		_action.Invoke( message );
 	}
 
-	public int CompareTo(ISubscription<TMessage> other)
+	public int CompareTo(ISubscription<T> other)
 	{
 		if ( ReferenceEquals( this, other ) )
 		{
