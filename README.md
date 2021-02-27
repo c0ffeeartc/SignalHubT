@@ -10,8 +10,8 @@ Single-threaded EventAggregator/EventBroker C# solution
     - uses `SortedList` for performance
   - Unsubscribe by object handle
     - allows unsubscribing handle from middle of queue
-  - Implicit pooling for Subscriptions. It just works
-  - Explicit pooling for Messages
+  - Automatic pooling for Subscriptions
+  - Manual pooling for Messages
     - use `SubH.I.Pub( new Message() )` for not `IPoolable` messages
     - use `SubH.I.Publish( SubH.I.Args<Message>().Init(value1) );` for `IPoolable` messages
   - Allows more than 1 EventAggregator through SubHLocal instances
