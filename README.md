@@ -12,8 +12,8 @@ Single-threaded EventAggregator/EventBroker C# solution
     - allows unsubscribing handle from middle of queue
   - Implicit pooling for Subscriptions. It just works
   - Explicit pooling for Messages
-    - use `SubH.I.Pub( new Message() )` if you don't want pooling for messages in your project
-    - use `SubH.I.Publish( SubH.I.Args<Message>().Init(value1) );` if you want pooling for messages
+    - use `SubH.I.Pub( new Message() )` for not `IPoolable` messages
+    - use `SubH.I.Publish( SubH.I.Args<Message>().Init(value1) );` for `IPoolable` messages
   - Allows more than 1 EventAggregator through SubHLocal instances
   - Interfaces are used everywhere, `IoC` AbstractFactory/Facade class wraps concrete classes into virtual methods, allowing inheriting `IoC` to override them
   - Subscribing to currently publishing Message behavior:
