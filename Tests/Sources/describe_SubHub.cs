@@ -55,6 +55,32 @@ public sealed class describe_SubHub : nspec
 		};
 	}
 
+	private					void					test_SubUnsub_Pub			(  )
+	{
+		ISubHubTests<MessageNoPool> subHubT = null;
+		before = ()=>
+		{
+			subHubT				= IoC.I.CreateSubHub<MessageNoPool>(  ) as ISubHubTests<MessageNoPool>;
+		};
+
+		it["Pub can publish non-poolable message"] = ()=>
+		{
+			// given
+			var subscription		= Substitute.For<ISubscription<MessageNoPool>>(  );
+			subHubT.Sub( subscription );
+
+			// when
+			MessageNoPool message = new MessageNoPool(  );
+			subHubT.Pub( message );
+			// subHubT.Publish( message ); // compile time error
+
+			// then
+			subscription
+				.Received( 1 )
+				.Invoke( message );
+		};
+	}
+
 	private					void					test_SubHub_SortOrder	(  )
 	{
 		ISubHubTests<Message1> subHubM1	= null;

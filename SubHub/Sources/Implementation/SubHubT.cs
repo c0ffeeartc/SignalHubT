@@ -5,7 +5,7 @@ using System.Linq;
 namespace SubHubT
 {
 public partial class SubHub<T> : ISubHub<T>
-	where T : IMessage, IPoolable, new( )
+		where T : IMessage
 {
 	public static			ISubHub<T>				I						= IoC.I.CreateSubHub<T>(  );
 	private					Int32					_publishActiveCount;
@@ -51,7 +51,33 @@ public partial class SubHub<T> : ISubHub<T>
 		_subscriptions.Remove( subscription );
 	}
 
-	public					void					Publish					( T message )
+	public					void					Pub						( T message )
+	{
+		if ( message == null )
+		{
+			throw new ArgumentNullException( "message == null" );
+		}
+
+		PublishInternal( null, message );
+	}
+
+	public					void					Pub						( Object filter, T message )
+	{
+		if (filter == null)
+		{
+			throw new ArgumentNullException( "filter == null" );
+		}
+
+		if ( message == null )
+		{
+			throw new ArgumentNullException( "message == null" );
+		}
+
+		PublishInternal( null, message );
+	}
+
+	public					void					Publish<T2>				( T2 message )
+			where T2 : T, IPoolable, new()
 	{
 		if ( message == null )
 		{
@@ -64,9 +90,12 @@ public partial class SubHub<T> : ISubHub<T>
 		}
 
 		PublishInternal( null, message );
+
+		IoC.I.Repool( message );
 	}
 
-	public					void					Publish					( Object filter, T message )
+	public					void					Publish<T2>					( Object filter, T2 message )
+			where T2 : T, IPoolable, new()
 	{
 		if (filter == null)
 		{
@@ -84,6 +113,8 @@ public partial class SubHub<T> : ISubHub<T>
 		}
 
 		PublishInternal( filter, message );
+
+		IoC.I.Repool( message );
 	}
 
 	private					void					PublishInternal			( Object filter, T message )
@@ -124,8 +155,6 @@ public partial class SubHub<T> : ISubHub<T>
 				}
 			}
 		}
-
-		IoC.I.Repool( message );
 	}
 
 	public					void					UnsubAll				(  )
@@ -138,7 +167,8 @@ public partial class SubHub<T> : ISubHub<T>
 	}
 }
 
-public partial class SubHub<T> : ISubHubTests<T> where T : IMessage, IPoolable, new( )
+public partial class SubHub<T> : ISubHubTests<T>
+		where T : IMessage
 {
 	public			List<ISubscription<T>>			GetSubscriptions	(  )
 	{

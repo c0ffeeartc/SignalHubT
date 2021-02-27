@@ -8,21 +8,33 @@ public partial class SubHLocal : ISubH
 	private				Dictionary<Type, Object>	_subHubTs				= new Dictionary<Type, Object>();
 
 	public					ISubscription<T>		Sub<T>					( Action<T> action, Int32 order = 0 )
-			where T : IMessage, IPoolable, new()
+			where T : IMessage
 	{
 		return GetOrCreateSubHubT<T>(  ).Sub( action, order );
 	}
 
 	public					ISubscription<T>		Sub<T>					( Object filter, Action<T> action, Int32 order = 0 )
-			where T : IMessage, IPoolable, new()
+			where T : IMessage
 	{
 		return GetOrCreateSubHubT<T>(  ).Sub( filter, action, order );
 	}
 
 	public					void					Unsub<T>				( ISubscription<T> subscription )
-			where T : IMessage, IPoolable, new()
+			where T : IMessage
 	{
 		GetOrCreateSubHubT<T>(  ).Unsub( subscription );
+	}
+
+	public					void					Pub<T>					( T message )
+			where T : IMessage
+	{
+		GetOrCreateSubHubT<T>(  ).Pub( message );
+	}
+
+	public					void					Pub<T>					( Object filter, T message )
+			where T : IMessage
+	{
+		GetOrCreateSubHubT<T>(  ).Pub( filter, message );
 	}
 
 	public					void					Publish<T>				( T message )
@@ -44,7 +56,7 @@ public partial class SubHLocal : ISubH
 	}
 
 	private					ISubHub<T>				GetOrCreateSubHubT<T>	(  )
-			where T : IMessage, IPoolable, new()
+			where T : IMessage
 	{
 		var messageType				= typeof(T);
 		ISubHub<T> subHubT;
@@ -62,7 +74,7 @@ public partial class SubHLocal : ISubH
 public partial class SubHLocal : ISubHTests
 {
 	public					ISubHub<T>				GetSubHubT<T>			(  )
-			where T : IMessage, IPoolable, new()
+			where T : IMessage
 	{
 		return GetOrCreateSubHubT<T>(  );
 	}

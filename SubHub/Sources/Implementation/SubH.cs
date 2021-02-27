@@ -8,27 +8,39 @@ public partial class SubH : ISubH
 	public static			ISubH					I						= IoC.I.CreateSubH(  );
 
 	public					ISubscription<T>		Sub<T>					( Action<T> action, Int32 order = 0 )
-			where T : IMessage, IPoolable, new()
+			where T : IMessage
 	{
 		return SubHub<T>.I.Sub( action, order);
 	}
 
 	public					ISubscription<T>		Sub<T>					( Object filter, Action<T> action, Int32 order=0 )
-			where T : IMessage, IPoolable, new()
+			where T : IMessage
 	{
 		return SubHub<T>.I.Sub( filter, action, order);
 	}
 
 	public					void					Unsub<T>				( ISubscription<T> subscription )
-			where T : IMessage, IPoolable, new()
+			where T : IMessage
 	{
 		SubHub<T>.I.Unsub(subscription);
 	}
 
-	public					void					Publish<T>				( T message )
-			where T : IMessage, IPoolable, new()
+	public					void					Pub<T2>					( T2 message )
+			where T2: IMessage
 	{
-		SubHub<T>.I.Publish(message);
+		SubHub<T2>.I.Pub(message);
+	}
+
+	public					void					Pub<T>					( Object filter, T message )
+			where T : IMessage
+	{
+		SubHub<T>.I.Pub(filter, message);
+	}
+
+	public					void					Publish<T2>				( T2 message )
+			where T2: IMessage, IPoolable, new()
+	{
+		SubHub<T2>.I.Publish(message);
 	}
 
 	public					void					Publish<T>				( Object filter, T message )
@@ -47,7 +59,7 @@ public partial class SubH : ISubH
 public partial class SubH : ISubHTests
 {
 	public					ISubHub<T>				GetSubHubT<T>			(  )
-			where T : IMessage, IPoolable, new()
+			where T : IMessage
 	{
 		return SubHub<T>.I;
 	}

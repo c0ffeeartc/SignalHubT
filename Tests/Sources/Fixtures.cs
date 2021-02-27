@@ -25,7 +25,9 @@ public sealed class Message1 : IMessage, IPoolable
 		// Str = null;
 	}
 }
-public sealed class Message2 : IMessage
+
+public sealed class MessageNoPool : IMessage
 {
+	public int Value;
 }
 }
