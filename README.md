@@ -14,8 +14,8 @@ Single-threaded EventAggregator/EventBroker C# solution
   - Manual pooling for Messages
     - use `SubH.I.Pub( new Message() )` for not `IPoolable` messages
     - use `SubH.I.Publish( SubH.I.Args<Message>().Init(value1) );` for `IPoolable` messages
-  - Allows more than 1 EventAggregator through SubHLocal instances
-  - Interfaces are used everywhere, `IoC` AbstractFactory/Facade class wraps concrete classes into virtual methods, allowing inheriting `IoC` to override them
+  - Allows more than 1 EventAggregator through `SubHLocal` instances
+  - `IoC` AbstractFactory/Facade class wraps concrete classes into virtual methods, allowing inheriting `IoC` to override them
   - Subscribing to currently publishing Message behavior:
     - will run new subscriptions with SAME or HIGHER priorityOrder compared to priorityOrder of currently invoked subscription
     - will NOT run new subscriptions with LOWER priorityOrder compared to priorityOrder of currently invoked subscription
