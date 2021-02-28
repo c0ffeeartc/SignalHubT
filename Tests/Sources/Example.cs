@@ -12,15 +12,17 @@ public class Example
     var subFiltered = SubH.I.Sub<Message>( filter: this, HandleFiltered );
     var subPriority = SubH.I.Sub<Message>( HandlePriority, order: -5 );
 
-    // Pub - to publish message. Callbacks: HandlePriority(), Handle()
-    SubH.I.Pub(new Message("Publish m1"));
-    // Pub with filter. Callbacks: HandlePriority(), Handle(), HandleFiltered()
-    SubH.I.Pub(filter:this, new Message("Publish filtered m2"));
+    { // Pub - to publish message. Callbacks: HandlePriority(), Handle()
+      SubH.I.Pub(new Message("Publish m1"));
+      // Pub with filter. Callbacks: HandlePriority(), Handle(), HandleFiltered()
+      SubH.I.Pub(filter:this, new Message("Publish filtered m2"));
+    }
 
-    // Args with Publish - for publishing IPoolable message
-    var m2 = SubH.I.Args<MessagePoolable>() // gets MessagePoolable from pool
-        .Init("Publish poolable message");
-    SubH.I.Publish(m2); // after handled puts MessagePoolable back into pool
+    { // Args with Publish - for publishing IPoolable message
+      var m2 = SubH.I.Args<MessagePoolable>() // gets MessagePoolable from pool
+          .Init("Publish poolable message");
+      SubH.I.Publish(m2); // after processing puts MessagePoolable back into pool
+    }
 
     // Unsubscribe
     SubH.I.Unsub(sub);
@@ -33,15 +35,14 @@ public class Example
   private void HandlePriority(ref Message message) { /*Some code here*/ }
 }
 
-// struct messages are passed by reference between subscriptions
+// struct messages are recommended for less Garbage Collection and no Pooling
 public struct Message : IMessage
 {
-	// Having a constructor is highly encouraged for compile time correctness
-	public Message(string value)
-	{
-		Value = value;
-	}
-	public string Value;
+  public Message(string value)
+  {
+    Value = value;
+  }
+  public string Value;
 }
 
 public class MessagePoolable : IMessage, IPoolable
@@ -49,10 +50,7 @@ public class MessagePoolable : IMessage, IPoolable
   public string Str;
 
   #region Implement IPoolable
-  // To ensure compile time correctness even after refactoring:
-  //   - always implement init-like method for IPoolable(especially when no arguments)
-  //   - always call it every time after poolable is rented
-  public MessagePoolable Init(string str)
+  public MessagePoolable Init(string str) // Helper method
   {
     Str = str;
     return this;
@@ -63,9 +61,8 @@ public class MessagePoolable : IMessage, IPoolable
   {
   }
 
-  // Free resources here
   public void BeforeRepool( )
-  {
+  { // Free resources here
     Str = null;
   }
   #endregion
