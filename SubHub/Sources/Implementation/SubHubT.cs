@@ -51,17 +51,17 @@ public partial class SubHub<T> : ISubHub<T>
 		_subscriptions.Remove( subscription );
 	}
 
-	public					void					Pub						( T message )
+	public					T						Pub						( T message )
 	{
 		if ( message == null )
 		{
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		PublishInternal( null, message );
+		return PublishInternal( null, message );
 	}
 
-	public					void					Pub						( Object filter, T message )
+	public					T						Pub						( Object filter, T message )
 	{
 		if (filter == null)
 		{
@@ -73,7 +73,7 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		PublishInternal( null, message );
+		return PublishInternal( null, message );
 	}
 
 	public					void					Publish<T2>				( T2 message )
@@ -117,7 +117,7 @@ public partial class SubHub<T> : ISubHub<T>
 		IoC.I.Repool( message );
 	}
 
-	private					void					PublishInternal			( Object filter, T message )
+	private					T						PublishInternal			( Object filter, T message )
 	{
 		++_publishActiveCount;
 		for ( var i = 0; i < _subscriptions.Keys.Count; i++ )
@@ -155,6 +155,8 @@ public partial class SubHub<T> : ISubHub<T>
 				}
 			}
 		}
+
+		return message;
 	}
 
 	public					void					UnsubAll				(  )

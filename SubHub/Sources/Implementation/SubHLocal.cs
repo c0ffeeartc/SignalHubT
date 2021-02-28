@@ -25,16 +25,16 @@ public partial class SubHLocal : ISubH
 		GetOrCreateSubHubT<T>(  ).Unsub( subscription );
 	}
 
-	public					void					Pub<T>					( T message )
+	public					T						Pub<T>					( T message )
 			where T : IMessage
 	{
-		GetOrCreateSubHubT<T>(  ).Pub( message );
+		return GetOrCreateSubHubT<T>(  ).Pub( message );
 	}
 
-	public					void					Pub<T>					( Object filter, T message )
+	public					T						Pub<T>					( Object filter, T message )
 			where T : IMessage
 	{
-		GetOrCreateSubHubT<T>(  ).Pub( filter, message );
+		return GetOrCreateSubHubT<T>(  ).Pub( filter, message );
 	}
 
 	public					void					Publish<T>				( T message )

@@ -31,7 +31,7 @@ public sealed class MessageNoPool : IMessage
 	public int Value;
 }
 
-public sealed class MessageStruct : IMessage
+public struct MessageStruct : IMessage
 {
 	public MessageStruct(string str)
 	{

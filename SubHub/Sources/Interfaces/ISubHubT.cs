@@ -11,8 +11,8 @@ public interface ISubHub<T>
 
 	void					Unsub					( ISubscription<T> subscription );
 
-	void					Pub						( T message );
-	void					Pub						( Object filter, T message );
+	T						Pub						( T message );
+	T						Pub						( Object filter, T message );
 
 	void					Publish<T2>				( T2 message ) where T2 : T, IPoolable, new();
 	void					Publish<T2>				( Object filter, T2 message ) where T2 : T, IPoolable, new();

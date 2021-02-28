@@ -25,16 +25,16 @@ public partial class SubH : ISubH
 		SubHub<T>.I.Unsub(subscription);
 	}
 
-	public					void					Pub<T2>					( T2 message )
-			where T2: IMessage
+	public					T						Pub<T>					( T message )
+			where T: IMessage
 	{
-		SubHub<T2>.I.Pub(message);
+		return SubHub<T>.I.Pub(message);
 	}
 
-	public					void					Pub<T>					( Object filter, T message )
+	public					T						Pub<T>					( Object filter, T message )
 			where T : IMessage
 	{
-		SubHub<T>.I.Pub(filter, message);
+		return SubHub<T>.I.Pub(filter, message);
 	}
 
 	public					void					Publish<T2>				( T2 message )

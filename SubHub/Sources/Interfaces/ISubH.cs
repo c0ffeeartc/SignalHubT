@@ -9,8 +9,8 @@ public interface ISubH
 
 	void					Unsub<T>				( ISubscription<T> subscription ) where T : IMessage;
 
-	void					Pub<T>					( T message ) where T : IMessage;
-	void					Pub<T>					( Object filter, T message ) where T : IMessage;
+	T						Pub<T>					( T message ) where T : IMessage;
+	T						Pub<T>					( Object filter, T message ) where T : IMessage;
 
 	void					Publish<T>				( T message ) where T : IMessage, IPoolable, new();
 	void					Publish<T>				( Object filter, T message ) where T : IMessage, IPoolable, new();
