@@ -2,6 +2,8 @@ using System;
 
 namespace SubHubT
 {
+public delegate void ActionRef<T> (ref T obj);
+
 public interface ISubscription<T>
 		: IComparable<ISubscription<T>>  // IComparable for Order
 		, IPoolable
@@ -12,11 +14,11 @@ public interface ISubscription<T>
 	Object 					Filter					{ get; }
 	Int32 					CreationIndex			{ get; set; }
 
-	void 					Invoke					( T message );
+	void 					Invoke					( ref T message );
 	ISubscription<T>		Init					(
 			Boolean hasFilter
 			, Object filter
-			, Action<T> action
+			, ActionRef<T> action
 			, Int32 order
 			);
 }

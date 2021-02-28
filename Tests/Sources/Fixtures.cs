@@ -30,4 +30,14 @@ public sealed class MessageNoPool : IMessage
 {
 	public int Value;
 }
+
+public sealed class MessageStruct : IMessage
+{
+	public MessageStruct(string str)
+	{
+		Str = str;
+	}
+
+	public string Str;
+}
 }

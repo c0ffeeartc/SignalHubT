@@ -6,8 +6,8 @@ namespace SubHubT
 public interface ISubHub<T>
 		where T : IMessage
 {
-	ISubscription<T>		Sub						( Action<T> action, int order = 0 );
-	ISubscription<T>		Sub						( Object filter, Action<T> action, int order = 0 );
+	ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 );
+	ISubscription<T>		Sub						( Object filter, ActionRef<T> action, int order = 0 );
 
 	void					Unsub					( ISubscription<T> subscription );
 

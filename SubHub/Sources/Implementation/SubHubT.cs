@@ -12,7 +12,7 @@ public partial class SubHub<T> : ISubHub<T>
 	private					Boolean					_isWaitingUnsub;
 	private readonly		SortedList<ISubscription<T>,ISubscription<T>> _subscriptions	= new SortedList<ISubscription<T>, ISubscription<T>>();
 
-	public					ISubscription<T>		Sub						( Action<T> action, int order = 0 )
+	public					ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 )
 	{
 		var subscription			= IoC.I.RentSubscription<T>(  )
 			.Init( false, null, action, order );
@@ -20,7 +20,7 @@ public partial class SubHub<T> : ISubHub<T>
 		return subscription;
 	}
 
-	public					ISubscription<T>		Sub						( Object filter, Action<T> action, int order = 0 )
+	public					ISubscription<T>		Sub						( Object filter, ActionRef<T> action, int order = 0 )
 	{
 		if ( filter == null )
 		{
@@ -134,7 +134,7 @@ public partial class SubHub<T> : ISubHub<T>
 				continue;
 			}
 
-			subscription.Invoke( message );
+			subscription.Invoke( ref message );
 			// Ensure continue from same subscription if collection was prepended before current index
 			while (_subscriptions.Keys[i] != subscription)
 			{

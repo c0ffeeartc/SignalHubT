@@ -12,7 +12,7 @@ Single-threaded EventAggregator/EventBroker C# solution
     - allows unsubscribing handle from middle of queue
   - Automatic pooling for Subscriptions
   - Manual pooling for Messages
-    - use `SubH.I.Pub( new Message() )` for not `IPoolable` messages
+    - use `SubH.I.Pub( new Message() )` for not `IPoolable` messages. Struct messages are passed by reference between subscriptions
     - use `SubH.I.Publish( SubH.I.Args<Message>().Init(value1) );` for `IPoolable` messages
   - Allows more than 1 EventAggregator through `SubHLocal` instances
   - `IoC` AbstractFactory/Facade class wraps concrete classes into virtual methods, allowing inheriting `IoC` to override them
@@ -53,12 +53,13 @@ public class Example
     SubH.I.Unsub(subPriority);
   }
 
-  private void Handle(Message message) { /*Some code here*/ }
-  private void HandleFiltered(Message message) { /*Some code here*/ }
-  private void HandlePriority(Message message) { /*Some code here*/ }
+  private void Handle(ref Message message) { /*Some code here*/ }
+  private void HandleFiltered(ref Message message) { /*Some code here*/ }
+  private void HandlePriority(ref Message message) { /*Some code here*/ }
 }
 
-public sealed class Message : IMessage
+// struct messages are passed by reference between subscriptions
+public struct Message : IMessage
 {
 	// Having a constructor is highly encouraged for compile time correctness
 	public Message(string value)
