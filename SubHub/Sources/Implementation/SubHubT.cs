@@ -73,7 +73,7 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		return PublishInternal( null, message );
+		return PublishInternal( filter, message );
 	}
 
 	public					void					Publish<T2>				( T2 message )
