@@ -24,6 +24,10 @@ internal class Program
 		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 10));
 		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 20));
 
+		R.Log("\nFIXME: SubH Pub with subs. Expected O(n)");
+		R.Run(()=>new TestSubH_PubMessageStruct(_1m, 1));
+		R.Run(()=>new TestSubH_PubMessageStruct(_1m, 1));
+
 		MemoryHelper.MemoryEnd();
 	}
 }
