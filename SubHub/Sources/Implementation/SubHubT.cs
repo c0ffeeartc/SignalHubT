@@ -9,7 +9,7 @@ public partial class SubHub<T> : ISubHub<T>
 {
 	public static			ISubHub<T>				I						= IoC.I.CreateSubHub<T>(  );
 	private					Int32					_publishActiveCount;
-	private					Boolean					_isWaitingUnsub;
+	private readonly		Queue<ISubscription<T>>	_unsubQue				= new Queue<ISubscription<T>>();
 	private readonly		SortedList<ISubscription<T>,ISubscription<T>> _subscriptions	= new SortedList<ISubscription<T>, ISubscription<T>>();
 
 	public					ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 )
@@ -42,11 +42,16 @@ public partial class SubHub<T> : ISubHub<T>
 	{
 		if ( _publishActiveCount > 0 )
 		{
-			_isWaitingUnsub				= true;
 			subscription.CreationIndex	= SubState.Inactive;
+			_unsubQue.Enqueue( subscription );
 			return;
 		}
 
+		UnsubInternal( subscription );
+	}
+
+	private					void					UnsubInternal			( ISubscription<T> subscription )
+	{
 		IoC.I.RepoolSubscription( subscription );
 		_subscriptions.Remove( subscription );
 	}
@@ -143,16 +148,11 @@ public partial class SubHub<T> : ISubHub<T>
 		}
 		--_publishActiveCount;
 
-		if ( _publishActiveCount == 0
-			&& _isWaitingUnsub )
-		{  // complexity N_Unsubs * M_ItemsInCollection :( . Any way to RemoveAll(predicate)?
-			_isWaitingUnsub			= false;
-			for ( var i = _subscriptions.Count - 1; i >= 0 ;--i )
+		if ( _publishActiveCount == 0 )
+		{  // SortedList.Remove complexity N_Unsubs * M_ItemsInCollection :( . Any way to RemoveAll(predicate)?
+			while ( _unsubQue.Count > 0 )
 			{
-				if ( _subscriptions.Keys[i].CreationIndex == SubState.Inactive )
-				{
-					_subscriptions.RemoveAt( i );
-				}
+				UnsubInternal( _unsubQue.Dequeue(  ) );
 			}
 		}
 
