@@ -40,6 +40,6 @@ public class TestSubHLocal_PubMessageStruct : IPerformanceTest, IToTestString
 		}
 	}
 
-	public String ToTestString( ) => $"{typeof(TestSubHLocal_PubMessageStruct)}:s_{_subCount}";
+	public String ToTestString( ) => $"{GetType().Name}:s_{_subCount}";
 }
 }
