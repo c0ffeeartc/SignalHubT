@@ -49,6 +49,11 @@ internal class Program
 		R.Run(()=>new TestSubHLocal_UnsubAll(1, _10k));
 		R.Run(()=>new TestSubHLocal_UnsubAll(1, _100k));
 
+		R.Log("\nSortedList. Remove all");
+		R.Run(()=>new TestSortedList_RemoveAll(1, _1k));
+		R.Run(()=>new TestSortedList_RemoveAll(1, _10k));
+		R.Run(()=>new TestSortedList_RemoveAll(1, _100k));
+
 		R.Log("\nFIXME: SubH Pub with subs. Expected O(n)");
 		R.Run(()=>new TestSubH_PubMessageStruct(_1m, 1));
 		R.Run(()=>new TestSubH_PubMessageStruct(_1m, 1));
