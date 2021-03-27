@@ -11,11 +11,11 @@ Single-threaded EventAggregator/EventBroker C# solution
   - Unsubscribe by object handle
     - allows unsubscribing handle from middle of queue
   - Automatic pooling for Subscriptions
-  - Manual pooling for Messages
-    - use `SubH.I.Pub( new Message() )` for not `IPoolable` messages
+  - Message types are short lived objects that are passed through invokation call stack
+    - use `SubH.I.Pub( new Message() )` for structs or not `IPoolable` message classes
         - struct messages are passed by reference between subscriptions
         - `Pub` returns modified struct message
-    - use `SubH.I.Publish( SubH.I.Args<Message>().Init(value1) );` for `IPoolable` messages
+    - use `SubH.I.Publish( SubH.I.Args<Message>().Init(value1) );` for `IPoolable` message classes
   - Allows more than 1 EventAggregator through `SubHLocal` instances
   - `IoC` AbstractFactory/Facade class wraps concrete classes into virtual methods, allowing inheriting `IoC` to override them
   - Subscribing to currently publishing Message behavior:
@@ -99,3 +99,4 @@ public class MessagePoolable : IMessage, IPoolable
 ## TODO
   - Cover with tests case when subscriptions collection gets rehashed and keeps order of elements in matching priority chains.
   - Add performance tests
+  - Compare ISubscription.Action and ISubscription.IListen<MessageType>
