@@ -7,7 +7,7 @@ Single-threaded EventAggregator/EventBroker C# solution
     - Filtered are triggered only on messages of matching Type and matching filter object
     - Global and Filtered subscriptions are ordered in same queue
   - Subscription PriorityOrder
-    - uses `C5.TreeSet` for performance
+    - uses [C5.TreeSet](https://github.com/sestoft/C5) for performance
   - Unsubscribe by object handle
     - allows unsubscribing handle from middle of queue
   - Automatic pooling for Subscriptions
