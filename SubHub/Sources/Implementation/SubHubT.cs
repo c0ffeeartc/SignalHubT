@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using C5;
 
 namespace SubHubT
 {
@@ -10,7 +11,7 @@ public partial class SubHub<T> : ISubHub<T>
 	public static			ISubHub<T>				I						= IoC.I.CreateSubHub<T>(  );
 	private					Int32					_publishActiveCount;
 	private readonly		Queue<ISubscription<T>>	_unsubQue				= new Queue<ISubscription<T>>();
-	private readonly		SortedList<ISubscription<T>,ISubscription<T>> _subscriptions	= new SortedList<ISubscription<T>, ISubscription<T>>();
+	private readonly		TreeSet<ISubscription<T>> _subscriptions		= new TreeSet<ISubscription<T>>();
 
 	public					ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 )
 	{
@@ -35,7 +36,7 @@ public partial class SubHub<T> : ISubHub<T>
 
 	private					void					AddSubscription			( ISubscription<T> subscription )
 	{
-		_subscriptions.Add( subscription, subscription );
+		_subscriptions.Add( subscription );
 	}
 
 	public					void					Unsub					( ISubscription<T> subscription )
@@ -125,9 +126,9 @@ public partial class SubHub<T> : ISubHub<T>
 	private					T						PublishInternal			( Object filter, T message )
 	{
 		++_publishActiveCount;
-		for ( var i = 0; i < _subscriptions.Keys.Count; i++ )
+		for ( var i = 0; i < _subscriptions.Count; i++ )
 		{
-			var subscription		= _subscriptions.Keys[i];
+			var subscription		= _subscriptions[i];
 			if ( subscription.HasFilter
 				&& subscription.Filter != filter )
 			{
@@ -141,7 +142,7 @@ public partial class SubHub<T> : ISubHub<T>
 
 			subscription.Invoke( ref message );
 			// Ensure continue from same subscription if collection was prepended before current index
-			while (_subscriptions.Keys[i] != subscription)
+			while (_subscriptions[i] != subscription)
 			{
 				i++;
 			}
@@ -161,9 +162,9 @@ public partial class SubHub<T> : ISubHub<T>
 
 	public					void					UnsubAll				(  )
 	{
-		for ( var i = _subscriptions.Keys.Count - 1; i >= 0; --i )
+		for ( var i = _subscriptions.Count - 1; i >= 0; --i )
 		{
-			IoC.I.RepoolSubscription( _subscriptions.Keys[i] );
+			IoC.I.RepoolSubscription( _subscriptions[i] );
 		}
 		_subscriptions.Clear(  );
 	}
@@ -175,7 +176,6 @@ public partial class SubHub<T> : ISubHubTests<T>
 	public			List<ISubscription<T>>			GetSubscriptions	(  )
 	{
 		return _subscriptions
-			.Select( kv => kv.Value )
 			.ToList(  );
 	}
 

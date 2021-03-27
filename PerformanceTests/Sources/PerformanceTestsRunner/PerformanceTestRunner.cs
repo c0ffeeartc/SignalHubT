@@ -42,7 +42,8 @@ public static class PerformanceTestRunner
 	public static void Run<T>(Func<T> testFactory)
 			where T : class, IPerformanceTest
 	{
-		Thread.Sleep(200);//(500);
+		// GC.Collect();
+		Thread.Sleep(500);
 
 		var test = testFactory.Invoke();
 		var testString = test is IToTestString t

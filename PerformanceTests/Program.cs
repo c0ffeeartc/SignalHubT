@@ -38,16 +38,19 @@ internal class Program
 		R.Run(()=>new TestSubHLocal_SubAll_UnsubAll(1, _1k));
 		R.Run(()=>new TestSubHLocal_SubAll_UnsubAll(1, _10k));
 		R.Run(()=>new TestSubHLocal_SubAll_UnsubAll(1, _100k));
+		R.Run(()=>new TestSubHLocal_SubAll(1, _1m));
 
 		R.Log("\nSub all");
 		R.Run(()=>new TestSubHLocal_SubAll(1, _1k));
 		R.Run(()=>new TestSubHLocal_SubAll(1, _10k));
 		R.Run(()=>new TestSubHLocal_SubAll(1, _100k));
+		R.Run(()=>new TestSubHLocal_SubAll(1, _1m));
 
 		R.Log("\nUnsub all");
 		R.Run(()=>new TestSubHLocal_UnsubAll(1, _1k));
 		R.Run(()=>new TestSubHLocal_UnsubAll(1, _10k));
 		R.Run(()=>new TestSubHLocal_UnsubAll(1, _100k));
+		R.Run(()=>new TestSubHLocal_UnsubAll(1, _1m));
 
 		R.Log("\nSortedList. Remove all");
 		R.Run(()=>new TestSortedList_RemoveAll(1, _1k));
