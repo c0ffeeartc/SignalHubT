@@ -49,6 +49,10 @@
         <Compile Include="Sources\TestPubMessageStruct_Cached_NoSub.cs" />
         <Compile Include="Sources\TestPubMessageStruct_New_NoSub.cs" />
         <Compile Include="Sources\TestPubMessageStruct_New_NoSub_Filter.cs" />
+        <Compile Include="Sources\TestSubHLocal_SubAll.cs" />
+        <Compile Include="Sources\TestSubHLocal_SubUnsub.cs" />
+        <Compile Include="Sources\TestSubHLocal_SubAll_UnsubAll.cs" />
+        <Compile Include="Sources\TestSubHLocal_UnsubAll.cs" />
         <Compile Include="Sources\TestSubH_PubMessageStruct.cs" />
     </ItemGroup>
     <ItemGroup>
