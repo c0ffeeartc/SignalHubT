@@ -1,6 +1,8 @@
 # SubHubT
 Single-threaded EventAggregator/EventBroker C# solution
 
+> WARNING: current Unsub implementation performance doesn't scale well after subscriber count gets above 1000 per 1 MessageType. Until it's fixed, it's highly recommended to use less than 1000 subscribers per 1 MessageType
+
 ## Features
   - Global and Filtered subscription
     - Global are triggered on all messages of matching Type
