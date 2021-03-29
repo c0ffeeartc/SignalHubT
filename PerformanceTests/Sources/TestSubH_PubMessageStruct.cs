@@ -5,6 +5,7 @@ using Tests;
 namespace PerformanceTests
 {
 public class TestSubH_PubMessageStruct : IPerformanceTest, IToTestString
+		, IListen<MessageStruct>
 {
 	public TestSubH_PubMessageStruct(Int32 iterations, Int32 subCount)
 	{
@@ -23,11 +24,11 @@ public class TestSubH_PubMessageStruct : IPerformanceTest, IToTestString
 
 		for ( int i = 0; i < _subCount; i++ )
 		{
-			SubH.I.Sub<MessageStruct>(HandleMessageStruct);
+			SubH.I.Sub<MessageStruct>(this);
 		}
 	}
 
-	private void HandleMessageStruct(ref MessageStruct message)
+	void IListen<MessageStruct>.Handle(Object filter, ref MessageStruct message)
 	{
 		_value = message.Value;
 	}

@@ -7,13 +7,13 @@ public partial class SubHLocal : ISubH
 {
 	private				Dictionary<Type, Object>	_subHubTs				= new Dictionary<Type, Object>();
 
-	public					ISubscription<T>		Sub<T>					( ActionRef<T> action, Int32 order = 0 )
+	public					ISubscription<T>		Sub<T>					( IListen<T> action, Int32 order = 0 )
 			where T : IMessage
 	{
 		return GetOrCreateSubHubT<T>(  ).Sub( action, order );
 	}
 
-	public					ISubscription<T>		Sub<T>					( Object filter, ActionRef<T> action, Int32 order = 0 )
+	public					ISubscription<T>		Sub<T>					( Object filter, IListen<T> action, Int32 order = 0 )
 			where T : IMessage
 	{
 		return GetOrCreateSubHubT<T>(  ).Sub( filter, action, order );

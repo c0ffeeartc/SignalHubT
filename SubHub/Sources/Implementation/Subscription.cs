@@ -7,7 +7,7 @@ public sealed class Subscription<T> : ISubscription<T>
 {
 	private static			Int32					sCreationIndex			= 1;
 
-	public					ISubscription<T>		Init					( Boolean hasFilter, Object filter, ActionRef<T> action, Int32 order )
+	public					ISubscription<T>		Init					( Boolean hasFilter, Object filter, IListen<T> action, Int32 order )
 	{
 		HasFilter					= hasFilter;
 		Filter						= filter;
@@ -16,16 +16,16 @@ public sealed class Subscription<T> : ISubscription<T>
 		return this;
 	}
 
-	private					ActionRef<T>			_action;
+	private					IListen<T>				_action;
 	public					Boolean					HasFilter				{ get; private set; }
 	public					Object					Filter					{ get; private set; }
 	public					Int32					Order					{ get; private set; }
 	public					Int32					CreationIndex			{ get; set; }
 	public					Boolean					IsInPool				{ get; set; }
 
-	public					void					Invoke					( ref T message )
+	public					void					Invoke					( Object filter, ref T message )
 	{
-		_action.Invoke( ref message );
+		_action.Handle( filter, ref message );
 	}
 
 	public int CompareTo(ISubscription<T> other)

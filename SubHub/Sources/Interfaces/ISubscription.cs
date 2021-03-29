@@ -2,7 +2,10 @@ using System;
 
 namespace SubHubT
 {
-public delegate void ActionRef<T> (ref T obj);
+public interface IListen<T>
+{
+	 void					Handle					( Object filter, ref T message );
+}
 
 public interface ISubscription<T>
 		: IComparable<ISubscription<T>>  // IComparable for Order
@@ -14,16 +17,18 @@ public interface ISubscription<T>
 	Object 					Filter					{ get; }
 	Int32 					CreationIndex			{ get; set; }
 
-	void 					Invoke					( ref T message );
+	void 					Invoke					( Object filter, ref T message );
 	ISubscription<T>		Init					(
 			Boolean hasFilter
 			, Object filter
-			, ActionRef<T> action
+			, IListen<T> action
 			, Int32 order
 			);
 }
+
 public static class SubState
 {
 	public const			Int32					Inactive				= -1;  // Consider distinguish inactive from waitForUnsub
+	public const			String					GlobalFilter			= "GlobalFilter";
 }
 }

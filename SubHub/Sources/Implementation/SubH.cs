@@ -7,13 +7,13 @@ public partial class SubH : ISubH
 {
 	public static			ISubH					I						= IoC.I.CreateSubH(  );
 
-	public					ISubscription<T>		Sub<T>					( ActionRef<T> action, Int32 order = 0 )
+	public					ISubscription<T>		Sub<T>					( IListen<T> action, Int32 order = 0 )
 			where T : IMessage
 	{
 		return SubHub<T>.I.Sub( action, order);
 	}
 
-	public					ISubscription<T>		Sub<T>					( Object filter, ActionRef<T> action, Int32 order=0 )
+	public					ISubscription<T>		Sub<T>					( Object filter, IListen<T> action, Int32 order=0 )
 			where T : IMessage
 	{
 		return SubHub<T>.I.Sub( filter, action, order);

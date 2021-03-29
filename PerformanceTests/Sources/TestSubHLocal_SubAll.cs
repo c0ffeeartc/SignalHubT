@@ -4,7 +4,9 @@ using Tests;
 
 namespace PerformanceTests
 {
-public class TestSubHLocal_SubAll: IPerformanceTest, IToTestString
+public class TestSubHLocal_SubAll: IPerformanceTest
+	, IToTestString
+	, IListen<MessageStruct>
 {
 	public TestSubHLocal_SubAll(Int32 iterations, Int32 subCount)
 	{
@@ -22,7 +24,7 @@ public class TestSubHLocal_SubAll: IPerformanceTest, IToTestString
 		SubH.I = IoC.I.CreateSubHLocal();
 	}
 
-	private void HandleMessageStruct(ref MessageStruct message)
+	void IListen<MessageStruct>.Handle(Object filter, ref MessageStruct message )
 	{
 		_value = message.Value;
 	}
@@ -31,7 +33,7 @@ public class TestSubHLocal_SubAll: IPerformanceTest, IToTestString
 	{
 		for ( int i = 0; i < _subCount; i++ )
 		{
-			SubH.I.Sub<MessageStruct>(HandleMessageStruct);
+			SubH.I.Sub<MessageStruct>(this);
 		}
 	}
 

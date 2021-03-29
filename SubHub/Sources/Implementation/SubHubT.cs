@@ -13,15 +13,15 @@ public partial class SubHub<T> : ISubHub<T>
 	private readonly		Queue<ISubscription<T>>	_unsubQue				= new Queue<ISubscription<T>>();
 	private readonly		TreeSet<ISubscription<T>> _subscriptions		= new TreeSet<ISubscription<T>>();
 
-	public					ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 )
+	public					ISubscription<T>		Sub						( IListen<T> action, int order = 0 )
 	{
 		var subscription			= IoC.I.RentSubscription<T>(  )
-			.Init( false, null, action, order );
+			.Init( false, SubState.GlobalFilter, action, order );
 		AddSubscription( subscription );
 		return subscription;
 	}
 
-	public					ISubscription<T>		Sub						( Object filter, ActionRef<T> action, int order = 0 )
+	public					ISubscription<T>		Sub						( Object filter, IListen<T> action, int order = 0 )
 	{
 		if ( filter == null )
 		{
@@ -64,7 +64,7 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		return PublishInternal( null, message );
+		return PublishInternal( SubState.GlobalFilter, message );
 	}
 
 	public					T						Pub						( Object filter, T message )
@@ -95,7 +95,7 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentException( "message.IsInPool" );
 		}
 
-		PublishInternal( null, message );
+		PublishInternal( SubState.GlobalFilter, message );
 
 		IoC.I.Repool( message );
 	}
@@ -140,7 +140,7 @@ public partial class SubHub<T> : ISubHub<T>
 				continue;
 			}
 
-			subscription.Invoke( ref message );
+			subscription.Invoke( filter, ref message );
 			// Ensure continue from same subscription if collection was prepended before current index
 			while (_subscriptions[i] != subscription)
 			{

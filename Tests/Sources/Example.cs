@@ -4,13 +4,14 @@ using SubHubT;
 namespace Tests
 {
 public class Example
+    : IListen<Message>
 {
   private void SubPublishUnsub()
   {
     // Subscribe
-    var sub = SubH.I.Sub<Message>( Handle );
-    var subFiltered = SubH.I.Sub<Message>( filter: this, HandleFiltered );
-    var subPriority = SubH.I.Sub<Message>( HandlePriority, order: -5 );
+    var sub = SubH.I.Sub<Message>( this );
+    var subFiltered = SubH.I.Sub<Message>( filter: this, this );
+    var subPriority = SubH.I.Sub<Message>( this, order: -5 );
 
     { // Pub - to publish message. Callbacks: HandlePriority(), Handle()
       SubH.I.Pub(new Message("Publish m1"));
@@ -30,9 +31,7 @@ public class Example
     SubH.I.Unsub(subPriority);
   }
 
-  private void Handle(ref Message message) { /*Some code here*/ }
-  private void HandleFiltered(ref Message message) { /*Some code here*/ }
-  private void HandlePriority(ref Message message) { /*Some code here*/ }
+  public void Handle(Object filter, ref Message message) { /*Some code here*/ }
 }
 
 // struct messages are recommended for less Garbage Collection and no Pooling

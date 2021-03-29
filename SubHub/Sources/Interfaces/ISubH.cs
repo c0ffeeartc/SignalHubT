@@ -4,8 +4,8 @@ namespace SubHubT
 {
 public interface ISubH
 {
-	ISubscription<T>		Sub<T>					( ActionRef<T> action, int order = 0 ) where T : IMessage;
-	ISubscription<T>		Sub<T>					( Object filter, ActionRef<T> action, int order = 0 ) where T : IMessage;
+	ISubscription<T>		Sub<T>					( IListen<T> action, int order = 0 ) where T : IMessage;
+	ISubscription<T>		Sub<T>					( Object filter, IListen<T> action, int order = 0 ) where T : IMessage;
 
 	void					Unsub<T>				( ISubscription<T> subscription ) where T : IMessage;
 
