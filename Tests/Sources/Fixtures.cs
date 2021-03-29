@@ -40,4 +40,20 @@ public struct MessageStruct : IMessage
 
 	public string Str;
 }
+
+public delegate void ActionRef2<T1,T2> (T1 obj, ref T2 refT);
+
+public class MessageActionHandler<T> : IListen<T> where T : IMessage
+{
+	public MessageActionHandler(ActionRef2<Object,T> actionHandle)
+	{
+		ActionHandle = actionHandle;
+	}
+	public ActionRef2<Object, T> ActionHandle;
+
+	public void Handle(Object filter, ref T message)
+	{
+		ActionHandle.Invoke(filter, ref message);
+	}
+}
 }

@@ -7,6 +7,7 @@ using SubHubT;
 namespace Tests
 {
 public sealed class describe_SubHub : nspec
+		, IListen<Message1>
 {
 	private					void					test_SubUnsub				(  )
 	{
@@ -19,8 +20,8 @@ public sealed class describe_SubHub : nspec
 		it["Sub twice count matches"] = ()=>
 		{
 			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 0 );
-			subHubM1.Sub( (ref Message1 m1) => {} );
-			subHubM1.Sub( (ref Message1 m1) => {Console.Write("");} );
+			subHubM1.Sub(this);
+			subHubM1.Sub(this);
 			subHubM1.Pub(new Message1());
 			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 2 );
 		};
@@ -28,8 +29,8 @@ public sealed class describe_SubHub : nspec
 		it["Unsub count matches"] = ()=>
 		{
 			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 0 );
-			var subscription1 = subHubM1.Sub( (ref Message1 m1) => {} );
-			var subscription2 = subHubM1.Sub( (ref Message1 m1) => {} );
+			var subscription1 = subHubM1.Sub(this);
+			var subscription2 = subHubM1.Sub(this);
 			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 2 );
 
 			subHubM1.Unsub( subscription1 );
@@ -41,9 +42,9 @@ public sealed class describe_SubHub : nspec
 		it["Unsubs correct subscription"] = ()=>
 		{
 			// given
-			var subscription1 = subHubM1.Sub( (ref Message1 m1) => {} );
-			var subscription2 = subHubM1.Sub( (ref Message1 m1) => {} );
-			var subscription3 = subHubM1.Sub( (ref Message1 m1) => {} );
+			var subscription1 = subHubM1.Sub(this);
+			var subscription2 = subHubM1.Sub(this);
+			var subscription3 = subHubM1.Sub(this);
 
 			// when
 			subHubM1.Unsub( subscription2 );
@@ -77,7 +78,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.Received( 1 )
-				.Invoke( ref message );
+				.Invoke( SubState.GlobalFilter, ref message );
 		};
 	}
 
@@ -91,13 +92,13 @@ public sealed class describe_SubHub : nspec
 
 		it["Sub default order == 0"] = ()=>
 		{
-			var subscription		= subHubM1.Sub( (ref Message1 m1) => {} );
+			var subscription		= subHubM1.Sub( this );
 			subscription.Order.ShouldBe( 0 );
 		};
 
 		it["Sub explicit order matches"] = ()=>
 		{
-			var subscription		= subHubM1.Sub( (ref Message1 m1) => {}, order: 123 );
+			var subscription		= subHubM1.Sub( this, order: 123 );
 			subscription.Order.ShouldBe( 123 );
 		};
 
@@ -112,7 +113,7 @@ public sealed class describe_SubHub : nspec
 			// when
 			foreach ( var givenOrder in given )
 			{
-				subHubM1.Sub( (ref Message1 m1) => {}, givenOrder );
+				subHubM1.Sub( this, givenOrder );
 			}
 
 			// then
@@ -127,13 +128,13 @@ public sealed class describe_SubHub : nspec
 		it["Sub inserts subscription after same order"] = ( )=>
 		{
 			// given
-			subHubM1.Sub( (ref Message1 m1) => {}, 0 );
-			subHubM1.Sub( (ref Message1 m1)=> {}, 1 );
-			subHubM1.Sub( (ref Message1 m1) => {}, 1 );
-			subHubM1.Sub( (ref Message1 m1) => {}, 2 );
+			subHubM1.Sub( this, 0 );
+			subHubM1.Sub( this, 1 );
+			subHubM1.Sub( this, 1 );
+			subHubM1.Sub( this, 2 );
 
 			// when
-			var subscripton = subHubM1.Sub( (ref Message1 m1) => {}, 1 );
+			var subscripton = subHubM1.Sub( this, 1 );
 
 			// then
 			subHubM1.GetSubscriptions(  )[1].ShouldNotBe( subscripton );
@@ -164,7 +165,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.Received( 1 )
-				.Invoke( ref message1 );
+				.Invoke( SubState.GlobalFilter, ref message1 );
 		};
 
 		it["Sub Global is invoked, when publish with filter"] = ()=>
@@ -176,13 +177,14 @@ public sealed class describe_SubHub : nspec
 			subscription.HasFilter.Returns( false );
 			subHubM1.Sub( subscription );
 
+			String filter = "filter";
 			// when
-			subHubM1.Publish( "filter", message1 );
+			subHubM1.Publish( filter, message1 );
 
 			// then
 			subscription
 				.Received( 1 )
-				.Invoke( ref message1 );
+				.Invoke( filter, ref message1 );
 		};
 
 		it["Sub Filtered is invoked, when publish with filter"] = ()=>
@@ -202,7 +204,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.Received( 1 )
-				.Invoke( ref message1 );
+				.Invoke( filter, ref message1 );
 		};
 
 		it["Sub Filtered is NOT invoked, when published WITHOUT filter"] = ()=>
@@ -222,7 +224,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.DidNotReceiveWithAnyArgs(  )
-				.Invoke( ref message1 );
+				.Invoke( filter, ref message1 );
 		};
 
 		it["Sub Filtered is NOT invoked, when published with DIFFERENT filter"] = ()=>
@@ -243,7 +245,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.DidNotReceiveWithAnyArgs(  )
-				.Invoke( ref message1 );
+				.Invoke( filter2, ref message1 );
 		};
 	}
 
@@ -264,15 +266,16 @@ public sealed class describe_SubHub : nspec
 
 			ISubscription<Message1> sub2;
 
-			var sub1				= subHubM1.Sub( (ref Message1 m1) =>
+			var sub1				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				( Object filter, ref Message1 m) =>
 				{
-					m1.Str = "m1sub1";
-					// subHubM1.Sub( subscrpition );
-					sub2 = subHubM1.Sub( (ref Message1 m2) =>
+					m.Str = "m1sub1";
+					sub2 = subHubM1.Sub( new MessageActionHandler<Message1>(
+						( Object filter2, ref Message1 m2) =>
 						{
 							m2.Str = "m1sub2";
-						} );
-				} );
+						}));
+				}));
 
 			// when
 			var message1			= IoC.I.Rent<Message1>().Init("m1");
@@ -285,7 +288,8 @@ public sealed class describe_SubHub : nspec
 		it["During Publish inside callback subscribe to same Message with LOWER priorityOrder.\nAdded subscription should NOT be invoked during this same publish"] = ()=>
 		{
 			// given
-			subHubM1.Sub( (ref Message1 m1) =>
+			subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter1, ref Message1 m1) =>
 				{
 					m1.Str += "sub1";
 					if (m1.Str.Length > 18) // Protection against endless loop
@@ -293,16 +297,20 @@ public sealed class describe_SubHub : nspec
 						return;
 					}
 
-					var sub2 = subHubM1.Sub( (ref Message1 m2) =>
-						{
-							m2.Str += "sub2";
-						}, order: -5 );
+					var sub2 = subHubM1.Sub( new MessageActionHandler<Message1>(
+						(Object filter2, ref Message1 m2) =>
+							{
+								m2.Str += "sub2";
+							})
+						, order: -5 );
 
-					var sub3 = subHubM1.Sub( (ref Message1 m2) =>
-						{
-							m2.Str += "sub3";
-						}, order: -1 );
-				} );
+					var sub3 = subHubM1.Sub(new MessageActionHandler<Message1>(
+						(Object filter3, ref Message1 m3) =>
+							{
+								m3.Str += "sub3";
+							})
+						, order: -1 );
+				} ));
 
 			// when
 			var message1			= IoC.I.Rent<Message1>(  )
@@ -325,21 +333,24 @@ public sealed class describe_SubHub : nspec
 		it["During Publish inside callback Unsub to current or previous subscription HAS NO effect on current invoke chain."] = ()=>
 		{
 			// given
-			var sub1				= subHubM1.Sub( (ref Message1 m1) =>
+			var sub1				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter1, ref Message1 m1) =>
 				{
 					m1.Str			+= "sub1";
-				} );
+				} ));
 
-			var sub2				= subHubM1.Sub( (ref Message1 m2) =>
-			{
-				m2.Str				+= "sub2";
-				subHubM1.Unsub(sub1);
-			} );
+			var sub2				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter2, ref Message1 m2) =>
+				{
+					m2.Str				+= "sub2";
+					subHubM1.Unsub(sub1);
+				} ));
 
-			var sub3				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub3				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter2, ref Message1 m2) =>
 				{
 					m2.Str			+= "sub3";
-				} );
+				} ));
 
 			// when
 			var message1			= IoC.I.Rent<Message1>(  )
@@ -353,26 +364,30 @@ public sealed class describe_SubHub : nspec
 		it["During Publish inside callback Unsub to some next subscription."] = ()=>
 		{
 			// given
-			var sub1				= subHubM1.Sub( (ref Message1 m1) =>
+			var sub1				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter, ref Message1 m1) =>
 				{
 					m1.Str			+= "sub1";
-				} );
+				} ));
 
-			var sub3				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub3				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter, ref Message1 m2) =>
 				{
 					m2.Str			+= "sub3";
-				}, order: 10 );
+				}), order: 10 );
 
-			var sub4				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub4				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter, ref Message1 m2) =>
 				{
 					m2.Str			+= "sub4";
-				}, order: 11 );
+				}), order: 11 );
 
-			var sub2				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub2				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter, ref Message1 m2) =>
 				{
 					m2.Str			+= "sub2";
 					subHubM1.Unsub(sub3);
-				} );
+				} ));
 
 			// when
 			var message1			= IoC.I.Rent<Message1>()
@@ -396,13 +411,15 @@ public sealed class describe_SubHub : nspec
 		{
 			// given
 			var counter				= 0;
-			var sub1				= subHubM1.Sub( (ref Message1 m1) =>
+			var sub1				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter, ref Message1 m1) =>
 				{
 					m1.Str			+= "sub1";
-				} );
+				} ));
 
 			Message1 message2		= null;
-			var sub2				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub2				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter, ref Message1 m2) =>
 				{
 					m2.Str			+= "sub2";
 					if ( counter < 1 )
@@ -412,12 +429,13 @@ public sealed class describe_SubHub : nspec
 							.Init( "m2" );
 						subHubM1.Publish( message2 );
 					}
-				} );
+				} ));
 
-			var sub3				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub3				= subHubM1.Sub( new MessageActionHandler<Message1>(
+				(Object filter, ref Message1 m2) =>
 				{
 					m2.Str			+= "sub3";
-				});
+				}));
 
 			// when
 			var message1			= IoC.I.Rent<Message1>()
@@ -475,18 +493,20 @@ public sealed class describe_SubHub : nspec
 		it["Pub passes same message struct by reference"] = ()=>
 		{
 			// given
-			var sub1				= hubT.Sub( (ref MessageStruct m1) =>
+			var sub1				= hubT.Sub( new MessageActionHandler<MessageStruct>(
+				(Object filter, ref MessageStruct m1) =>
 				{
 					m1.Str			+= "sub1";
-				} );
+				} ));
 
-			var sub2				= hubT.Sub( (ref MessageStruct m2) =>
+			var sub2				= hubT.Sub( new MessageActionHandler<MessageStruct>(
+				(Object filter, ref MessageStruct m2) =>
 				{
 					m2.Str			+= "sub2";
 
 					// then
 					m2.Str.ShouldBe("m1sub1sub2");
-				} );
+				} ));
 
 			// when
 			hubT.Pub( new MessageStruct( "m1" ) );
@@ -495,10 +515,11 @@ public sealed class describe_SubHub : nspec
 		it["Pub returns modified message struct"] = ()=>
 		{
 			// given
-			var sub1				= hubT.Sub( (ref MessageStruct m1) =>
+			var sub1				= hubT.Sub( new MessageActionHandler<MessageStruct>(
+				(Object filter, ref MessageStruct m1) =>
 				{
 					m1.Str			+= "sub1";
-				} );
+				} ));
 
 			// when
 			var messageStruct		= new MessageStruct( "m1" );
@@ -509,6 +530,10 @@ public sealed class describe_SubHub : nspec
 			messageResult.Str.ShouldBe( "m1sub1" );
 			messageStruct.Str.ShouldBe( "m1" ); // this check is only to detect behaviour change. Remove when necessary
 		};
+	}
+
+	public void Handle(Object filter, ref Message1 message )
+	{
 	}
 }
 }
