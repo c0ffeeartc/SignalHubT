@@ -29,7 +29,7 @@ public class TestSubHLocal_UnsubAll : IPerformanceTest, IToTestString
 		}
 	}
 
-	void IListen<MessageStruct>.Handle(Object filter, ref MessageStruct message)
+	void IListen<MessageStruct>.Handle( ISubscription<MessageStruct> subscription, ref MessageStruct message )
 	{
 		_value = message.Value;
 	}

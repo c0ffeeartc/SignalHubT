@@ -25,7 +25,7 @@ public class TestSubHLocal_SubAll_UnsubAll : IPerformanceTest, IToTestString
 		_subs = new ISubscription<MessageStruct>[_subCount];
 	}
 
-	void IListen<MessageStruct>.Handle(Object filter, ref MessageStruct message)
+	void IListen<MessageStruct>.Handle( ISubscription<MessageStruct> subscription, ref MessageStruct message )
 	{
 		_value = message.Value;
 	}

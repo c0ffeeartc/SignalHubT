@@ -31,7 +31,7 @@ public class Example
     SubH.I.Unsub(subPriority);
   }
 
-  public void Handle(Object filter, ref Message message) { /*Some code here*/ }
+  public void Handle( ISubscription<Message> subscription, ref Message message ) { /*Some code here*/ }
 }
 
 // struct messages are recommended for less Garbage Collection and no Pooling

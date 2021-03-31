@@ -51,9 +51,9 @@ public class MessageActionHandler<T> : IListen<T> where T : IMessage
 	}
 	public ActionRef2<Object, T> ActionHandle;
 
-	public void Handle(Object filter, ref T message)
+	public void Handle( ISubscription<T> subscription, ref T message )
 	{
-		ActionHandle.Invoke(filter, ref message);
+		ActionHandle.Invoke(subscription, ref message);
 	}
 }
 }

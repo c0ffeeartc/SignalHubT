@@ -24,7 +24,7 @@ public class TestSubHLocal_SubAll: IPerformanceTest
 		SubH.I = IoC.I.CreateSubHLocal();
 	}
 
-	void IListen<MessageStruct>.Handle(Object filter, ref MessageStruct message )
+	void IListen<MessageStruct>.Handle( ISubscription<MessageStruct> subscription, ref MessageStruct message )
 	{
 		_value = message.Value;
 	}

@@ -78,7 +78,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.Received( 1 )
-				.Invoke( SubState.GlobalFilter, ref message );
+				.Invoke( subscription, ref message );
 		};
 	}
 
@@ -165,7 +165,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.Received( 1 )
-				.Invoke( SubState.GlobalFilter, ref message1 );
+				.Invoke( subscription, ref message1 );
 		};
 
 		it["Sub Global is invoked, when publish with filter"] = ()=>
@@ -184,7 +184,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.Received( 1 )
-				.Invoke( filter, ref message1 );
+				.Invoke( subscription, ref message1 );
 		};
 
 		it["Sub Filtered is invoked, when publish with filter"] = ()=>
@@ -204,7 +204,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.Received( 1 )
-				.Invoke( filter, ref message1 );
+				.Invoke( subscription, ref message1 );
 		};
 
 		it["Sub Filtered is NOT invoked, when published WITHOUT filter"] = ()=>
@@ -224,7 +224,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.DidNotReceiveWithAnyArgs(  )
-				.Invoke( filter, ref message1 );
+				.Invoke( subscription, ref message1 );
 		};
 
 		it["Sub Filtered is NOT invoked, when published with DIFFERENT filter"] = ()=>
@@ -245,7 +245,7 @@ public sealed class describe_SubHub : nspec
 			// then
 			subscription
 				.DidNotReceiveWithAnyArgs(  )
-				.Invoke( filter2, ref message1 );
+				.Invoke( subscription, ref message1 );
 		};
 	}
 
@@ -532,7 +532,7 @@ public sealed class describe_SubHub : nspec
 		};
 	}
 
-	public void Handle(Object filter, ref Message1 message )
+	public void Handle( ISubscription<Message1> subscription, ref Message1 message )
 	{
 	}
 }

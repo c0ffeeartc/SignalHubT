@@ -2,9 +2,9 @@ using System;
 
 namespace SubHubT
 {
-public interface IListen<T>
+public interface IListen<T> where T : IMessage
 {
-	 void					Handle					( Object filter, ref T message );
+	 void					Handle					( ISubscription<T> subscription, ref T message );
 }
 
 public interface ISubscription<T>
@@ -17,7 +17,7 @@ public interface ISubscription<T>
 	Object 					Filter					{ get; }
 	Int32 					CreationIndex			{ get; set; }
 
-	void 					Invoke					( Object filter, ref T message );
+	void 					Invoke					( ISubscription<T> subscription, ref T message );
 	ISubscription<T>		Init					(
 			Boolean hasFilter
 			, Object filter

@@ -23,9 +23,9 @@ public sealed class Subscription<T> : ISubscription<T>
 	public					Int32					CreationIndex			{ get; set; }
 	public					Boolean					IsInPool				{ get; set; }
 
-	public					void					Invoke					( Object filter, ref T message )
+	public					void					Invoke					( ISubscription<T> subscription, ref T message )
 	{
-		_action.Handle( filter, ref message );
+		_action.Handle( subscription, ref message );
 	}
 
 	public int CompareTo(ISubscription<T> other)

@@ -140,7 +140,7 @@ public partial class SubHub<T> : ISubHub<T>
 				continue;
 			}
 
-			subscription.Invoke( filter, ref message );
+			subscription.Invoke( subscription, ref message );
 			// Ensure continue from same subscription if collection was prepended before current index
 			while (_subscriptions[i] != subscription)
 			{
