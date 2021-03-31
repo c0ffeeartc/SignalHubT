@@ -98,6 +98,4 @@ public class MessagePoolable : IMessage, IPoolable
 
 ## TODO
   - Cover with tests case when subscriptions collection gets rehashed and keeps order of elements in matching priority chains.
-  - Add performance tests
-  - Compare ISubscription.Action and ISubscription.IListen<MessageType>
   - a way to Reset everything within 1 SubHubT and across all SubHubT
