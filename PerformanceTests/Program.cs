@@ -18,7 +18,8 @@ internal class Program
 
 		R.Run(()=>new TestPubMessageStruct_Cached_NoSub(_1m));
 		R.Run(()=>new TestPubMessageStruct_New_NoSub(_1m));
-		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter(_1m));
+		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_String(_1m));
+		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_OverrideHashCode(_1m));
 
 		R.Log("\nPub with subs. Expected O(n)");
 		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 1));

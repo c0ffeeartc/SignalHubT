@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using C5;
 
 namespace SubHubT
@@ -8,16 +9,16 @@ namespace SubHubT
 public partial class SubHub<T> : ISubHub<T>
 		where T : IMessage
 {
-	// TODO:
-	// - move all filter subs into Dictionary<filter, List<subscriptions>>
-	// - move unfiltered subs into separate list, or if there is a good reason to Dictionary<staticFilter, List<subscriptions>>
-	// - when pub unfiltered go through 1 unfiltered list
-	// - when pub filtered go through 2 lists(filtered, unfiltered) by peeking next element and compare lower orderPriority
-	//		- if orderPriority matches run Unfiltered first, then filtered subscriptions (should be decided which is better to be first)
+	public					SubHub					(  )
+	{
+		_subscriptionsGlobal		= GetOrAddSubscriptions( GlobalFilter.I );
+	}
+
 	public static			ISubHub<T>				I						= IoC.I.CreateSubHub<T>(  );
 	private					Int32					_publishActiveCount;
 	private readonly		Queue<ISubscription<T>>	_unsubQue				= new Queue<ISubscription<T>>();
 	private readonly	Dictionary<Object,TreeSet<ISubscription<T>>> _filterToSubscriptions	= new Dictionary<Object,TreeSet<ISubscription<T>>>();
+	private readonly		TreeSet<ISubscription<T>>_subscriptionsGlobal;
 
 	public					ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 )
 	{
@@ -81,7 +82,11 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		return PublishInternal( GlobalFilter.I, message );
+		BeforePublish();
+		IterateGlobalMessage(ref message);
+		AfterPublish();
+
+		return message;
 	}
 
 	public					T						Pub						( Object filter, T message )
@@ -96,7 +101,11 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		return PublishInternal( filter, message );
+		BeforePublish();
+		IterateFilteredMessage(filter, ref message);
+		AfterPublish();
+
+		return message;
 	}
 
 	public					void					Publish<T2>				( T2 message )
@@ -112,7 +121,10 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentException( "message.IsInPool" );
 		}
 
-		PublishInternal( GlobalFilter.I, message );
+		T m = message;
+		BeforePublish();
+		IterateGlobalMessage( ref m );
+		AfterPublish();
 
 		IoC.I.Repool( message );
 	}
@@ -135,22 +147,23 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentException( "message.IsInPool" );
 		}
 
-		PublishInternal( filter, message );
+		T m = message;
+		BeforePublish();
+		IterateFilteredMessage( filter, ref m );
+		AfterPublish();
 
 		IoC.I.Repool( message );
 	}
 
-	private					T						PublishInternal			( Object filter, T message )
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private					void					BeforePublish			(  )
 	{
 		++_publishActiveCount;
-		if (filter == GlobalFilter.I)
-		{
-			IterateGlobalMessage( ref message );
-		}
-		else
-		{
-			IterateFilteredMessage( filter, ref message );
-		}
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private					void					AfterPublish			(  )
+	{
 		--_publishActiveCount;
 
 		if ( _publishActiveCount == 0 )
@@ -160,13 +173,12 @@ public partial class SubHub<T> : ISubHub<T>
 				UnsubInternal( _unsubQue.Dequeue(  ) );
 			}
 		}
-
-		return message;
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private					void					IterateGlobalMessage	( ref T message )
 	{
-		TreeSet<ISubscription<T>> subs = GetOrAddSubscriptions(GlobalFilter.I);
+		TreeSet<ISubscription<T>> subs = _subscriptionsGlobal;
 
 		for ( var i = 0; i < subs.Count; i++ )
 		{
@@ -187,9 +199,10 @@ public partial class SubHub<T> : ISubHub<T>
 		}
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private					void					IterateFilteredMessage	( Object filter, ref T message )
 	{
-		TreeSet<ISubscription<T>> subsGlobal = GetOrAddSubscriptions( GlobalFilter.I );
+		TreeSet<ISubscription<T>> subsGlobal = _subscriptionsGlobal;
 		TreeSet<ISubscription<T>> subsFilter = GetOrAddSubscriptions( filter ); 
 
 		var subsGlobalI				= 0;
