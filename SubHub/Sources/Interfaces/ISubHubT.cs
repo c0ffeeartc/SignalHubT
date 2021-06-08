@@ -23,7 +23,7 @@ public interface ISubHub<T>
 public interface ISubHubTests<T> : ISubHub<T>
 		where T : IMessage
 {
-	List<ISubscription<T>>	GetSubscriptions		(  );
+	List<ISubscription<T>>	GetSubscriptions		( Object filter );
 	void					Sub						( ISubscription<T> subscription);
 }
 }

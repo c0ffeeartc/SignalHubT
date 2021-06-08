@@ -8,16 +8,22 @@ namespace SubHubT
 public partial class SubHub<T> : ISubHub<T>
 		where T : IMessage
 {
+	// TODO:
+	// - move all filter subs into Dictionary<filter, List<subscriptions>>
+	// - move unfiltered subs into separate list, or if there is a good reason to Dictionary<staticFilter, List<subscriptions>>
+	// - when pub unfiltered go through 1 unfiltered list
+	// - when pub filtered go through 2 lists(filtered, unfiltered) by peeking next element and compare lower orderPriority
+	//		- if orderPriority matches run Unfiltered first, then filtered subscriptions (should be decided which is better to be first)
 	public static			ISubHub<T>				I						= IoC.I.CreateSubHub<T>(  );
 	private					Int32					_publishActiveCount;
 	private readonly		Queue<ISubscription<T>>	_unsubQue				= new Queue<ISubscription<T>>();
-	private readonly		TreeSet<ISubscription<T>> _subscriptions		= new TreeSet<ISubscription<T>>();
+	private readonly	Dictionary<Object,TreeSet<ISubscription<T>>> _filterToSubscriptions	= new Dictionary<Object,TreeSet<ISubscription<T>>>();
 
 	public					ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 )
 	{
 		var subscription			= IoC.I.RentSubscription<T>(  )
-			.Init( false, null, action, order );
-		AddSubscription( subscription );
+			.Init( false, GlobalFilter.I, action, order );
+		AddSubscription( GlobalFilter.I, subscription );
 		return subscription;
 	}
 
@@ -30,13 +36,24 @@ public partial class SubHub<T> : ISubHub<T>
 
 		var subscription			= IoC.I.RentSubscription<T>(  )
 			.Init( true, filter, action, order );
-		AddSubscription( subscription );
+		AddSubscription( filter, subscription );
 		return subscription;
 	}
 
-	private					void					AddSubscription			( ISubscription<T> subscription )
+	private					void					AddSubscription			( Object filter, ISubscription<T> subscription )
 	{
-		_subscriptions.Add( subscription );
+		var subscriptions			= GetOrAddSubscriptions( subscription.Filter );
+		subscriptions.Add( subscription );
+	}
+
+	private				TreeSet<ISubscription<T>>	GetOrAddSubscriptions	( Object filter )
+	{
+		if ( !_filterToSubscriptions.TryGetValue( filter, out var subscriptions ) )
+		{
+			subscriptions			= new TreeSet<ISubscription<T>>(  );
+			_filterToSubscriptions[filter] = subscriptions;
+		}
+		return subscriptions;
 	}
 
 	public					void					Unsub					( ISubscription<T> subscription )
@@ -53,8 +70,8 @@ public partial class SubHub<T> : ISubHub<T>
 
 	private					void					UnsubInternal			( ISubscription<T> subscription )
 	{
+		_filterToSubscriptions[subscription.Filter].Remove( subscription );
 		IoC.I.RepoolSubscription( subscription );
-		_subscriptions.Remove( subscription );
 	}
 
 	public					T						Pub						( T message )
@@ -64,7 +81,7 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentNullException( "message == null" );
 		}
 
-		return PublishInternal( null, message );
+		return PublishInternal( GlobalFilter.I, message );
 	}
 
 	public					T						Pub						( Object filter, T message )
@@ -95,7 +112,7 @@ public partial class SubHub<T> : ISubHub<T>
 			throw new ArgumentException( "message.IsInPool" );
 		}
 
-		PublishInternal( null, message );
+		PublishInternal( GlobalFilter.I, message );
 
 		IoC.I.Repool( message );
 	}
@@ -126,26 +143,13 @@ public partial class SubHub<T> : ISubHub<T>
 	private					T						PublishInternal			( Object filter, T message )
 	{
 		++_publishActiveCount;
-		for ( var i = 0; i < _subscriptions.Count; i++ )
+		if (filter == GlobalFilter.I)
 		{
-			var subscription		= _subscriptions[i];
-			if ( subscription.HasFilter
-				&& subscription.Filter != filter )
-			{
-				continue;
-			}
-
-			if ( subscription.CreationIndex == SubState.Inactive )
-			{
-				continue;
-			}
-
-			subscription.Invoke( ref message );
-			// Ensure continue from same subscription if collection was prepended before current index
-			while (_subscriptions[i] != subscription)
-			{
-				i++;
-			}
+			IterateGlobalMessage( ref message );
+		}
+		else
+		{
+			IterateFilteredMessage( filter, ref message );
 		}
 		--_publishActiveCount;
 
@@ -160,28 +164,122 @@ public partial class SubHub<T> : ISubHub<T>
 		return message;
 	}
 
+	private					void					IterateGlobalMessage	( ref T message )
+	{
+		TreeSet<ISubscription<T>> subs = GetOrAddSubscriptions(GlobalFilter.I);
+
+		for ( var i = 0; i < subs.Count; i++ )
+		{
+			var subscription		= subs[i];
+
+			if ( subscription.CreationIndex == SubState.Inactive )
+			{
+				continue;
+			}
+
+			subscription.Invoke( ref message );
+
+			// Ensure continue from same subscription if collection was prepended before current index
+			while (subs[i] != subscription)
+			{
+				i++;
+			}
+		}
+	}
+
+	private					void					IterateFilteredMessage	( Object filter, ref T message )
+	{
+		TreeSet<ISubscription<T>> subsGlobal = GetOrAddSubscriptions( GlobalFilter.I );
+		TreeSet<ISubscription<T>> subsFilter = GetOrAddSubscriptions( filter ); 
+
+		var subsGlobalI				= 0;
+		var subsFilterI				= 0;
+
+		ref int subsI				= ref subsGlobalI;
+		ref var subs				= ref subsGlobal;
+
+		while ( subsGlobalI < subsGlobal.Count
+			|| subsFilterI < subsFilter.Count )
+		{
+			Boolean curIsGlobal		= CalcCurSubIsGlobal( subsGlobal, subsGlobalI, subsFilter, subsFilterI );
+			if ( curIsGlobal )
+			{
+				subs				= ref subsGlobal;
+				subsI				= ref subsGlobalI;
+			}
+			else
+			{
+				subs				= ref subsFilter;
+				subsI				= ref subsFilterI;
+			}
+
+			var subscription		= subs[subsI];
+
+			if ( subscription.CreationIndex == SubState.Inactive )
+			{
+				continue;
+			}
+
+			subscription.Invoke( ref message );
+
+			// Ensure continue from same subscription if collection was prepended before current index
+			while (subs[subsI] != subscription)
+			{
+				subsI++;
+			}
+
+			subsI++;
+		}
+	}
+
+	private					Boolean					CalcCurSubIsGlobal		(
+			TreeSet<ISubscription<T>> treeGlobal
+			, Int32 treeGlobalI
+			, TreeSet<ISubscription<T>> treeFilter
+			, Int32 treeFilterI
+			)
+	{
+		if ( treeGlobalI >= treeGlobal.Count )
+		{
+			return false;
+		}
+
+		if ( treeFilterI >= treeFilter.Count )
+		{
+			return true;
+		}
+
+		var subGlobal = treeGlobal[treeGlobalI];
+		var subFilter = treeFilter[treeFilterI];
+		return subGlobal.Order <= subFilter.Order;
+	}
+
 	public					void					UnsubAll				(  )
 	{
-		for ( var i = _subscriptions.Count - 1; i >= 0; --i )
+		foreach ( var kv_Filter_Subscriptions in _filterToSubscriptions )
 		{
-			IoC.I.RepoolSubscription( _subscriptions[i] );
+			TreeSet<ISubscription<T>> subscriptions = kv_Filter_Subscriptions.Value;
+			for ( var i = _filterToSubscriptions.Count - 1; i >= 0; --i )
+			{
+				IoC.I.RepoolSubscription( subscriptions[i] );
+			}
+			subscriptions.Clear(  );
 		}
-		_subscriptions.Clear(  );
 	}
 }
 
 public partial class SubHub<T> : ISubHubTests<T>
 		where T : IMessage
 {
-	public			List<ISubscription<T>>			GetSubscriptions	(  )
+	public			List<ISubscription<T>>			GetSubscriptions	( Object filter )
 	{
-		return _subscriptions
+		return GetOrAddSubscriptions( filter ?? GlobalFilter.I )
 			.ToList(  );
 	}
 
 	public					void					Sub					( ISubscription<T> subscription )
 	{
-		AddSubscription( subscription );
+		AddSubscription( subscription.Filter, subscription );
 	}
 }
 }

@@ -18,24 +18,24 @@ public sealed class describe_SubHub : nspec
 
 		it["Sub twice count matches"] = ()=>
 		{
-			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 0 );
+			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 0 );
 			subHubM1.Sub( (ref Message1 m1) => {} );
 			subHubM1.Sub( (ref Message1 m1) => {Console.Write("");} );
 			subHubM1.Pub(new Message1());
-			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 2 );
+			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 2 );
 		};
 
 		it["Unsub count matches"] = ()=>
 		{
-			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 0 );
+			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 0 );
 			var subscription1 = subHubM1.Sub( (ref Message1 m1) => {} );
 			var subscription2 = subHubM1.Sub( (ref Message1 m1) => {} );
-			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 2 );
+			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 2 );
 
 			subHubM1.Unsub( subscription1 );
-			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 1 );
+			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 1 );
 			subHubM1.Unsub( subscription2 );
-			subHubM1.GetSubscriptions(  ).Count.ShouldBe( 0 );
+			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 0 );
 		};
 
 		it["Unsubs correct subscription"] = ()=>
@@ -49,9 +49,9 @@ public sealed class describe_SubHub : nspec
 			subHubM1.Unsub( subscription2 );
 
 			// then
-			subHubM1.GetSubscriptions(  ).Contains( subscription1 ).ShouldBe( true );
-			subHubM1.GetSubscriptions(  ).Contains( subscription2 ).ShouldBe( false );
-			subHubM1.GetSubscriptions(  ).Contains( subscription3 ).ShouldBe( true );
+			subHubM1.GetSubscriptions( null ).Contains( subscription1 ).ShouldBe( true );
+			subHubM1.GetSubscriptions( null ).Contains( subscription2 ).ShouldBe( false );
+			subHubM1.GetSubscriptions( null ).Contains( subscription3 ).ShouldBe( true );
 		};
 	}
 
@@ -67,6 +67,8 @@ public sealed class describe_SubHub : nspec
 		{
 			// given
 			var subscription		= Substitute.For<ISubscription<MessageNoPool>>(  );
+			subscription.Filter.Returns(GlobalFilter.I);
+			subscription.HasFilter.Returns( false );
 			subHubT.Sub( subscription );
 
 			// when
@@ -116,7 +118,7 @@ public sealed class describe_SubHub : nspec
 			}
 
 			// then
-			var subscriptions			= subHubM1.GetSubscriptions(  );
+			var subscriptions			= subHubM1.GetSubscriptions( null );
 			for ( var i = 0; i < subscriptions.Count; i++ )
 			{
 				var sub = subscriptions[i];
@@ -136,8 +138,8 @@ public sealed class describe_SubHub : nspec
 			var subscripton = subHubM1.Sub( (ref Message1 m1) => {}, 1 );
 
 			// then
-			subHubM1.GetSubscriptions(  )[1].ShouldNotBe( subscripton );
-			subHubM1.GetSubscriptions(  )[3].ShouldBe( subscripton );
+			subHubM1.GetSubscriptions( null )[1].ShouldNotBe( subscripton );
+			subHubM1.GetSubscriptions( null )[3].ShouldBe( subscripton );
 		};
 	}
 
@@ -154,7 +156,7 @@ public sealed class describe_SubHub : nspec
 			// given
 			var message1			= new Message1(  );
 			var subscription		= Substitute.For<ISubscription<Message1>>(  );
-			subscription.Filter.Returns( null );
+			subscription.Filter.Returns(GlobalFilter.I);
 			subscription.HasFilter.Returns( false );
 			subHubM1.Sub(subscription);
 
@@ -172,7 +174,7 @@ public sealed class describe_SubHub : nspec
 			// given
 			var message1			= new Message1(  );
 			var subscription		= Substitute.For<ISubscription<Message1>>(  );
-			subscription.Filter.Returns( null );
+			subscription.Filter.Returns(GlobalFilter.I);
 			subscription.HasFilter.Returns( false );
 			subHubM1.Sub( subscription );
 
