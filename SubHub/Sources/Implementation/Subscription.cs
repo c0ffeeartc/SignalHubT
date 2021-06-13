@@ -40,10 +40,15 @@ public sealed class Subscription<T> : ISubscription<T>
 			return 1;
 		}
 
-		var order = Order.CompareTo( other.Order );
-		if ( order != 0 )
+		return CompareToInternal( other );
+	}
+
+	public					int						CompareToInternal		( ISubscription<T> other )
+	{
+		Int32 result				= Order.CompareTo( other.Order );
+		if ( result != 0 )
 		{
-			return order;
+			return result;
 		}
 
 		return CreationIndex.CompareTo( other.CreationIndex );

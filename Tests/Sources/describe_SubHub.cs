@@ -525,6 +525,12 @@ public sealed class describe_SubHub : nspec
 				}
 				, order:5 );
 
+			var subA5				= hubT.Sub( (ref MessageStruct m1) =>
+				{
+					m1.Str			+= "subA5";
+				}
+				, order:5 );
+
 			var subFa5				= hubT.Sub( filter: filterA
 				, (ref MessageStruct m1) =>
 				{
@@ -545,9 +551,9 @@ public sealed class describe_SubHub : nspec
 				}
 				, order: 1 );
 
-			var sub5				= hubT.Sub( (ref MessageStruct m1) =>
+			var subB5				= hubT.Sub( (ref MessageStruct m1) =>
 				{
-					m1.Str			+= "sub5";
+					m1.Str			+= "subB5";
 				}
 				, order:5 );
 
@@ -557,9 +563,9 @@ public sealed class describe_SubHub : nspec
 			var messageResult		= hubT.Pub( new MessageStruct( "m1" ) );
 
 			// then
-			messageResultA.Str.ShouldBe( "m1sub1subFa2sub5subFa5" );
-			messageResultB.Str.ShouldBe( "m1sub1sub5subFb5" );
-			messageResult.Str.ShouldBe( "m1sub1sub5" );
+			messageResultA.Str.ShouldBe( "m1sub1subFa2subA5subFa5subB5" );
+			messageResultB.Str.ShouldBe( "m1sub1subFb5subA5subB5" );
+			messageResult.Str.ShouldBe( "m1sub1subA5subB5" );
 		};
 	}
 }

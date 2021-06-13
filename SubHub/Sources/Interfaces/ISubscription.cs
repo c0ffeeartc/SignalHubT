@@ -21,6 +21,8 @@ public interface ISubscription<T>
 			, ActionRef<T> action
 			, Int32 order
 			);
+
+	Int32 					CompareToInternal		( ISubscription<T> other );
 }
 public static class SubState
 {

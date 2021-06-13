@@ -262,9 +262,9 @@ public partial class SubHub<T> : ISubHub<T>
 			return true;
 		}
 
-		var subGlobal = treeGlobal[treeGlobalI];
-		var subFilter = treeFilter[treeFilterI];
-		return subGlobal.Order <= subFilter.Order;
+		ISubscription<T> subGlobal = treeGlobal[treeGlobalI];
+		ISubscription<T> subFilter = treeFilter[treeFilterI];
+		return subGlobal.CompareToInternal(subFilter) < 0;
 	}
 
 	public					void					UnsubAll				(  )
