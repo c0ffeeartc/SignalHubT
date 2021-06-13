@@ -511,6 +511,56 @@ public sealed class describe_SubHub : nspec
 			messageResult.Str.ShouldBe( "m1sub1" );
 			messageStruct.Str.ShouldBe( "m1" ); // this check is only to detect behaviour change. Remove when necessary
 		};
+
+		it["Pub message correct order. Lower order first, same order - first unfiltered, then filtered"] = ()=>
+		{
+			// given
+			var filterA				= new Object();
+			var filterB				= new Object();
+
+			var subFb5				= hubT.Sub( filter: filterB
+				, (ref MessageStruct m1) =>
+				{
+					m1.Str			+= "subFb5";
+				}
+				, order:5 );
+
+			var subFa5				= hubT.Sub( filter: filterA
+				, (ref MessageStruct m1) =>
+				{
+					m1.Str			+= "subFa5";
+				}
+				, order:5 );
+
+			var subFa2				= hubT.Sub( filter: filterA
+				, (ref MessageStruct m1) =>
+				{
+					m1.Str			+= "subFa2";
+				}
+				, order:2 );
+
+			var sub1				= hubT.Sub( (ref MessageStruct m1) =>
+				{
+					m1.Str			+= "sub1";
+				}
+				, order: 1 );
+
+			var sub5				= hubT.Sub( (ref MessageStruct m1) =>
+				{
+					m1.Str			+= "sub5";
+				}
+				, order:5 );
+
+			// when
+			var messageResultA		= hubT.Pub( filterA, new MessageStruct( "m1" ) );
+			var messageResultB		= hubT.Pub( filterB, new MessageStruct( "m1" ) );
+			var messageResult		= hubT.Pub( new MessageStruct( "m1" ) );
+
+			// then
+			messageResultA.Str.ShouldBe( "m1sub1subFa2sub5subFa5" );
+			messageResultB.Str.ShouldBe( "m1sub1sub5subFb5" );
+			messageResult.Str.ShouldBe( "m1sub1sub5" );
+		};
 	}
 }
 }
