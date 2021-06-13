@@ -3,9 +3,9 @@ using SubHubT;
 
 namespace PerformanceTests
 {
-public class TestPubMessageStruct_New_NoSub_Filter : IPerformanceTest
+public class TestPubMessageStruct_New_NoSub_Filter_String : IPerformanceTest
 {
-	public TestPubMessageStruct_New_NoSub_Filter(Int32 iterations)
+	public TestPubMessageStruct_New_NoSub_Filter_String(Int32 iterations)
 	{
 		_iterations = iterations;
 	}

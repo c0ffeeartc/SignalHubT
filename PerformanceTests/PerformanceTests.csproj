@@ -45,6 +45,7 @@
         <Compile Include="Sources\PerformanceTestsRunner\IToTestString.cs" />
         <Compile Include="Sources\PerformanceTestsRunner\MemoryHelper.cs" />
         <Compile Include="Sources\PerformanceTestsRunner\PerformanceTestRunner.cs" />
+        <Compile Include="Sources\TestPubMessageStruct_New_NoSub_Filter_OverrideHashCode.cs" />
         <Compile Include="Sources\TestSortedList_RemoveAll.cs" />
         <Compile Include="Sources\TestSubHLocal_PubMessageStruct.cs" />
         <Compile Include="Sources\TestPubMessageStruct_Cached_NoSub.cs" />
