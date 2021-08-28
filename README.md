@@ -1,5 +1,10 @@
-# SignalBusT
+# SignalHubT
 Single-threaded EventAggregator/EventBroker C# solution
+
+## How it works
+`SignalBus<T>` stores collection of `ISubscriptions` to specific `ISignalData` type.
+
+`SignalHub` stores collection of `SignalBus<T>` and provides interface to send `ISignalData` through list of `ISubscriptions`.
 
 ## Features
   - Global and Filtered subscription
@@ -98,4 +103,3 @@ public class MessagePoolable : ISignalData, IPoolable
 
 ## TODO
   - Cover with tests case when subscriptions collection gets rehashed and keeps order of elements in matching priority chains.
-  - a way to Reset everything within 1 SignalHub and across all SignalHubs
