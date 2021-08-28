@@ -9,10 +9,10 @@ public class IoC : IIoC
 	public virtual			ISubH					CreateSubH				(  ) => new SubH(  );
 	public virtual			ISubH					CreateSubHLocal			(  ) => new SubHLocal(  );
 
-	public virtual			ISubHub<T>				CreateSubHub<T>			(  )
+	public virtual			ISignalBus<T>			CreateSignalBus<T>			(  )
 			where T : IMessage
 	{
-		return new SubHub<T>(  );
+		return new SignalBus<T>(  );
 	}
 
 	public virtual			IPool<T>				CreatePool<T>			( Func<T> factory )

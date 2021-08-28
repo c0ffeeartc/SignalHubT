@@ -20,6 +20,6 @@ public interface ISubH
 
 public interface ISubHTests : ISubH
 {
-	ISubHub<T>				GetSubHubT<T>			(  ) where T : IMessage;
+	ISignalBus<T>			GetSignalBus<T>			(  ) where T : IMessage;
 }
 }

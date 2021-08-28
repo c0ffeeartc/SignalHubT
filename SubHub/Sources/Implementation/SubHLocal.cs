@@ -10,43 +10,43 @@ public partial class SubHLocal : ISubH
 	public					ISubscription<T>		Sub<T>					( ActionRef<T> action, Int32 order = 0 )
 			where T : IMessage
 	{
-		return GetOrCreateSubHubT<T>(  ).Sub( action, order );
+		return GetOrCreateSignalBus<T>(  ).Sub( action, order );
 	}
 
 	public					ISubscription<T>		Sub<T>					( Object filter, ActionRef<T> action, Int32 order = 0 )
 			where T : IMessage
 	{
-		return GetOrCreateSubHubT<T>(  ).Sub( filter, action, order );
+		return GetOrCreateSignalBus<T>(  ).Sub( filter, action, order );
 	}
 
 	public					void					Unsub<T>				( ISubscription<T> subscription )
 			where T : IMessage
 	{
-		GetOrCreateSubHubT<T>(  ).Unsub( subscription );
+		GetOrCreateSignalBus<T>(  ).Unsub( subscription );
 	}
 
 	public					T						Pub<T>					( T message )
 			where T : IMessage
 	{
-		return GetOrCreateSubHubT<T>(  ).Pub( message );
+		return GetOrCreateSignalBus<T>(  ).Pub( message );
 	}
 
 	public					T						Pub<T>					( Object filter, T message )
 			where T : IMessage
 	{
-		return GetOrCreateSubHubT<T>(  ).Pub( filter, message );
+		return GetOrCreateSignalBus<T>(  ).Pub( filter, message );
 	}
 
 	public					void					Publish<T>				( T message )
 			where T : IMessage, IPoolable, new()
 	{
-		GetOrCreateSubHubT<T>(  ).Publish( message );
+		GetOrCreateSignalBus<T>(  ).Publish( message );
 	}
 
 	public					void					Publish<T>				( Object filter, T message )
 			where T : IMessage, IPoolable, new()
 	{
-		GetOrCreateSubHubT<T>(  ).Publish( filter, message );
+		GetOrCreateSignalBus<T>(  ).Publish( filter, message );
 	}
 
 	public					T						Args<T>					(  )
@@ -55,28 +55,27 @@ public partial class SubHLocal : ISubH
 		return IoC.I.Rent<T>(  );
 	}
 
-	private					ISubHub<T>				GetOrCreateSubHubT<T>	(  )
+	private					ISignalBus<T>			GetOrCreateSignalBus<T>	(  )
 			where T : IMessage
 	{
 		var messageType				= typeof(T);
-		ISubHub<T> subHubT;
 		if ( _subHubTs.TryGetValue( messageType, out Object obj ) )
 		{
-			return (ISubHub<T>)obj;
+			return (ISignalBus<T>)obj;
 		}
 
-		subHubT						= IoC.I.CreateSubHub<T>(  );
-		_subHubTs[messageType]		= subHubT;
-		return subHubT;
+		ISignalBus<T> signalBus		= IoC.I.CreateSignalBus<T>(  );
+		_subHubTs[messageType]		= signalBus;
+		return signalBus;
 	}
 }
 
 public partial class SubHLocal : ISubHTests
 {
-	public					ISubHub<T>				GetSubHubT<T>			(  )
+	public					ISignalBus<T>			GetSignalBus<T>			(  )
 			where T : IMessage
 	{
-		return GetOrCreateSubHubT<T>(  );
+		return GetOrCreateSignalBus<T>(  );
 	}
 }
 }

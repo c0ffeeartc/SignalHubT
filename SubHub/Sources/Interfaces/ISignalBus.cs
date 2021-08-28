@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SubHubT
 {
-public interface ISubHub<T>
+public interface ISignalBus<T>
 		where T : IMessage
 {
 	ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 );
@@ -20,7 +20,7 @@ public interface ISubHub<T>
 	void					UnsubAll				(  );
 }
 
-public interface ISubHubTests<T> : ISubHub<T>
+public interface ISignalBusTests<T> : ISignalBus<T>
 		where T : IMessage
 {
 	List<ISubscription<T>>	GetSubscriptions		( Object filter );

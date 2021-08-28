@@ -6,15 +6,15 @@ using C5;
 
 namespace SubHubT
 {
-public partial class SubHub<T> : ISubHub<T>
+public partial class SignalBus<T> : ISignalBus<T>
 		where T : IMessage
 {
-	public					SubHub					(  )
+	public					SignalBus					(  )
 	{
 		_subscriptionsGlobal		= GetOrAddSubscriptions( GlobalFilter.I );
 	}
 
-	public static			ISubHub<T>				I						= IoC.I.CreateSubHub<T>(  );
+	public static			ISignalBus<T>				I						= IoC.I.CreateSignalBus<T>(  );
 	private					Int32					_publishActiveCount;
 	private readonly		Queue<ISubscription<T>>	_unsubQue				= new Queue<ISubscription<T>>();
 	private readonly	Dictionary<Object,TreeSet<ISubscription<T>>> _filterToSubscriptions	= new Dictionary<Object,TreeSet<ISubscription<T>>>();
@@ -281,7 +281,7 @@ public partial class SubHub<T> : ISubHub<T>
 	}
 }
 
-public partial class SubHub<T> : ISubHubTests<T>
+public partial class SignalBus<T> : ISignalBusTests<T>
 		where T : IMessage
 {
 	public			List<ISubscription<T>>			GetSubscriptions	( Object filter )
