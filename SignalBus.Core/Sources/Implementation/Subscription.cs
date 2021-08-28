@@ -1,6 +1,6 @@
 using System;
 
-namespace SubHubT
+namespace SignalBusT
 {
 public sealed class Subscription<T> : ISubscription<T>
 		where T : ISignalData

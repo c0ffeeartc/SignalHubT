@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SubHubT;
+using SignalBusT;
 using Tests;
 
 namespace PerformanceTests

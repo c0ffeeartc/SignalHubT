@@ -1,11 +1,11 @@
 using System;
 
-namespace SubHubT
+namespace SignalBusT
 {
 // Facade for an arguably better API
-public partial class SubH : ISubH
+public partial class SignalHub : ISignalHub
 {
-	public static			ISubH					I						= IoC.I.CreateSubH(  );
+	public static			ISignalHub				I						= IoCExtra.I.CreateSignalHub(  );
 
 	public					ISubscription<T>		Sub<T>					( ActionRef<T> action, Int32 order = 0 )
 			where T : ISignalData
@@ -56,7 +56,7 @@ public partial class SubH : ISubH
 	}
 }
 
-public partial class SubH : ISubHTests
+public partial class SignalHub : ISignalHubTests
 {
 	public					ISignalBus<T>				GetSignalBus<T>			(  )
 			where T : ISignalData

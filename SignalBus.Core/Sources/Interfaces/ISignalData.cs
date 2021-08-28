@@ -1,4 +1,4 @@
-namespace SubHubT
+namespace SignalBusT
 {
 public interface ISignalData
 {

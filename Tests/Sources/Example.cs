@@ -1,5 +1,5 @@
 using System;
-using SubHubT;
+using SignalBusT;
 
 namespace Tests
 {
@@ -8,26 +8,26 @@ public class Example
   private void SubPublishUnsub()
   {
     // Subscribe
-    var sub = SubH.I.Sub<Message>( Handle );
-    var subFiltered = SubH.I.Sub<Message>( filter: this, HandleFiltered );
-    var subPriority = SubH.I.Sub<Message>( HandlePriority, order: -5 );
+    var sub = SignalHub.I.Sub<Message>( Handle );
+    var subFiltered = SignalHub.I.Sub<Message>( filter: this, HandleFiltered );
+    var subPriority = SignalHub.I.Sub<Message>( HandlePriority, order: -5 );
 
     { // Pub - to publish message. Callbacks: HandlePriority(), Handle()
-      SubH.I.Pub(new Message("Publish m1"));
+      SignalHub.I.Pub(new Message("Publish m1"));
       // Pub with filter. Callbacks: HandlePriority(), Handle(), HandleFiltered()
-      SubH.I.Pub(filter:this, new Message("Publish filtered m2"));
+      SignalHub.I.Pub(filter:this, new Message("Publish filtered m2"));
     }
 
     { // Args with Publish - for publishing IPoolable message
-      var m2 = SubH.I.Args<MessagePoolable>() // gets MessagePoolable from pool
+      var m2 = SignalHub.I.Args<MessagePoolable>() // gets MessagePoolable from pool
           .Init("Publish poolable message");
-      SubH.I.Publish(m2); // after processing puts MessagePoolable back into pool
+      SignalHub.I.Publish(m2); // after processing puts MessagePoolable back into pool
     }
 
     // Unsubscribe
-    SubH.I.Unsub(sub);
-    SubH.I.Unsub(subFiltered);
-    SubH.I.Unsub(subPriority);
+    SignalHub.I.Unsub(sub);
+    SignalHub.I.Unsub(subFiltered);
+    SignalHub.I.Unsub(subPriority);
   }
 
   private void Handle(ref Message message) { /*Some code here*/ }

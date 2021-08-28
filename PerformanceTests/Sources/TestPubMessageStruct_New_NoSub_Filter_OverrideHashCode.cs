@@ -1,5 +1,5 @@
 using System;
-using SubHubT;
+using SignalBusT;
 
 namespace PerformanceTests
 {
@@ -16,14 +16,14 @@ public class TestPubMessageStruct_New_NoSub_Filter_OverrideHashCode : IPerforman
 
 	public void Before( )
 	{
-		SubH.I = IoC.I.CreateSubH();
+		SignalHub.I = IoCExtra.I.CreateSignalHub();
 	}
 
 	public void Run( )
 	{
 		for ( int i = 0; i < _iterations; i++ )
 		{
-			SubH.I.Pub(_filter, new MessageStruct(i));
+			SignalHub.I.Pub(_filter, new MessageStruct(i));
 		}
 	}
 

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace SubHubT
+namespace SignalBusT
 {
-public partial class SubHLocal : ISubH
+public partial class SignalHubLocal : ISignalHub
 {
 	private				Dictionary<Type, Object>	_subHubTs				= new Dictionary<Type, Object>();
 
@@ -70,7 +70,7 @@ public partial class SubHLocal : ISubH
 	}
 }
 
-public partial class SubHLocal : ISubHTests
+public partial class SignalHubLocal : ISignalHubTests
 {
 	public					ISignalBus<T>			GetSignalBus<T>			(  )
 			where T : ISignalData

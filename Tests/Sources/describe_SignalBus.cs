@@ -2,11 +2,11 @@ using System;
 using NSpec;
 using NSubstitute;
 using Shouldly;
-using SubHubT;
+using SignalBusT;
 
 namespace Tests
 {
-public sealed class describe_SubHub : nspec
+public sealed class describe_SignalBus : nspec
 {
 	private					void					test_SubUnsub				(  )
 	{
@@ -443,26 +443,26 @@ public sealed class describe_SubHub : nspec
 		it["Two SubHubLocal have different inner subHubT instances."] = ()=>
 		{
 			// given
-			ISubHTests subHLocal = IoC.I.CreateSubHLocal(  ) as ISubHTests;
-			ISubHTests subHLocal2 = IoC.I.CreateSubHLocal(  ) as ISubHTests;
+			ISignalHubTests signalHubLocal = IoCExtra.I.CreateSignalHubLocal(  ) as ISignalHubTests;
+			ISignalHubTests signalHubLocal2 = IoCExtra.I.CreateSignalHubLocal(  ) as ISignalHubTests;
 
 			// then
-			subHLocal.GetSignalBus<Message1>().ShouldNotBeNull(  );
-			subHLocal2.GetSignalBus<Message1>().ShouldNotBeNull(  );
-			subHLocal.GetSignalBus<Message1>().ShouldNotBe( subHLocal2.GetSignalBus<Message1>() );
+			signalHubLocal.GetSignalBus<Message1>().ShouldNotBeNull(  );
+			signalHubLocal2.GetSignalBus<Message1>().ShouldNotBeNull(  );
+			signalHubLocal.GetSignalBus<Message1>().ShouldNotBe( signalHubLocal2.GetSignalBus<Message1>() );
 		};
 
 		it["SubHubLocal has different inner subHubT instances compared to SubH static instances."] = ()=>
 		{
 			// given
-			ISubHTests subHLocal = IoC.I.CreateSubHLocal(  ) as ISubHTests;
+			ISignalHubTests signalHubLocal = IoCExtra.I.CreateSignalHubLocal(  ) as ISignalHubTests;
 
 			// then
-			subHLocal.GetSignalBus<Message1>().ShouldNotBeNull(  );
-			(SubH.I as ISubHTests).GetSignalBus<Message1>().ShouldNotBeNull(  );
-			subHLocal.GetSignalBus<Message1>().ShouldBe( subHLocal.GetSignalBus<Message1>() );
-			(SubH.I as ISubHTests).GetSignalBus<Message1>().ShouldBe( (SubH.I as ISubHTests).GetSignalBus<Message1>() );
-			subHLocal.GetSignalBus<Message1>().ShouldNotBe( (SubH.I as ISubHTests).GetSignalBus<Message1>() );
+			signalHubLocal.GetSignalBus<Message1>().ShouldNotBeNull(  );
+			(SignalHub.I as ISignalHubTests).GetSignalBus<Message1>().ShouldNotBeNull(  );
+			signalHubLocal.GetSignalBus<Message1>().ShouldBe( signalHubLocal.GetSignalBus<Message1>() );
+			(SignalHub.I as ISignalHubTests).GetSignalBus<Message1>().ShouldBe( (SignalHub.I as ISignalHubTests).GetSignalBus<Message1>() );
+			signalHubLocal.GetSignalBus<Message1>().ShouldNotBe( (SignalHub.I as ISignalHubTests).GetSignalBus<Message1>() );
 		};
 	}
 

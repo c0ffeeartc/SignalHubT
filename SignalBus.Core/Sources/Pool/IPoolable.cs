@@ -1,6 +1,6 @@
 using System;
 
-namespace SubHubT
+namespace SignalBusT
 {
 public interface IPoolable
 {

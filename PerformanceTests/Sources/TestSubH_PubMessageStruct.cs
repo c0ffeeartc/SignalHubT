@@ -1,5 +1,5 @@
 using System;
-using SubHubT;
+using SignalBusT;
 using Tests;
 
 namespace PerformanceTests
@@ -19,11 +19,11 @@ public class TestSubH_PubMessageStruct : IPerformanceTest, IToTestString
 
 	public void Before( )
 	{
-		SubH.I = IoC.I.CreateSubH();
+		SignalHub.I = IoCExtra.I.CreateSignalHub();
 
 		for ( int i = 0; i < _subCount; i++ )
 		{
-			SubH.I.Sub<MessageStruct>(HandleMessageStruct);
+			SignalHub.I.Sub<MessageStruct>(HandleMessageStruct);
 		}
 	}
 
@@ -36,7 +36,7 @@ public class TestSubH_PubMessageStruct : IPerformanceTest, IToTestString
 	{
 		for ( int i = 0; i < _iterations; i++ )
 		{
-			SubH.I.Pub(new MessageStruct(i));
+			SignalHub.I.Pub(new MessageStruct(i));
 		}
 	}
 

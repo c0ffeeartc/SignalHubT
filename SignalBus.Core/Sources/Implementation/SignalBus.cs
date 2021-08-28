@@ -4,17 +4,17 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using C5;
 
-namespace SubHubT
+namespace SignalBusT
 {
 public partial class SignalBus<T> : ISignalBus<T>
 		where T : ISignalData
 {
-	public					SignalBus					(  )
+	public					SignalBus				(  )
 	{
 		_subscriptionsGlobal		= GetOrAddSubscriptions( GlobalFilter.I );
 	}
 
-	public static			ISignalBus<T>				I						= IoC.I.CreateSignalBus<T>(  );
+	public static			ISignalBus<T>			I						= IoC.I.CreateSignalBus<T>(  );
 	private					Int32					_publishActiveCount;
 	private readonly		Queue<ISubscription<T>>	_unsubQue				= new Queue<ISubscription<T>>();
 	private readonly	Dictionary<Object,TreeSet<ISubscription<T>>> _filterToSubscriptions	= new Dictionary<Object,TreeSet<ISubscription<T>>>();

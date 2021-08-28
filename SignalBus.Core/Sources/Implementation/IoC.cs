@@ -1,15 +1,12 @@
 using System;
 
-namespace SubHubT
+namespace SignalBusT
 {
 public class IoC : IIoC
 {
 	public static			IIoC					I						= new IoC(  );
 
-	public virtual			ISubH					CreateSubH				(  ) => new SubH(  );
-	public virtual			ISubH					CreateSubHLocal			(  ) => new SubHLocal(  );
-
-	public virtual			ISignalBus<T>			CreateSignalBus<T>			(  )
+	public virtual			ISignalBus<T>			CreateSignalBus<T>		(  )
 			where T : ISignalData
 	{
 		return new SignalBus<T>(  );

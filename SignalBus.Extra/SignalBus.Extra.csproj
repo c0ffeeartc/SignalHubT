@@ -4,11 +4,11 @@
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{E0EC6C5B-5D42-40BE-84D4-14C49A470105}</ProjectGuid>
-        <OutputType>Exe</OutputType>
+        <ProjectGuid>{923E232C-FF9F-45CA-8C7A-3BC83AB6EDCA}</ProjectGuid>
+        <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>PerformanceTests</RootNamespace>
-        <AssemblyName>PerformanceTests</AssemblyName>
+        <RootNamespace>SignalBus.Extra</RootNamespace>
+        <AssemblyName>SignalBus.Extra</AssemblyName>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>
@@ -38,33 +38,17 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Sources\Fixtures\Fixtures.cs" />
-        <Compile Include="Sources\PerformanceTestsRunner\IPerformanceTest.cs" />
-        <Compile Include="Sources\PerformanceTestsRunner\IToTestString.cs" />
-        <Compile Include="Sources\PerformanceTestsRunner\MemoryHelper.cs" />
-        <Compile Include="Sources\PerformanceTestsRunner\PerformanceTestRunner.cs" />
-        <Compile Include="Sources\TestPubMessageStruct_New_NoSub_Filter_OverrideHashCode.cs" />
-        <Compile Include="Sources\TestSortedList_RemoveAll.cs" />
-        <Compile Include="Sources\TestSubHLocal_PubMessageStruct.cs" />
-        <Compile Include="Sources\TestPubMessageStruct_Cached_NoSub.cs" />
-        <Compile Include="Sources\TestPubMessageStruct_New_NoSub.cs" />
-        <Compile Include="Sources\TestPubMessageStruct_New_NoSub_Filter.cs" />
-        <Compile Include="Sources\TestSubHLocal_SubAll.cs" />
-        <Compile Include="Sources\TestSubHLocal_SubUnsub.cs" />
-        <Compile Include="Sources\TestSubHLocal_SubAll_UnsubAll.cs" />
-        <Compile Include="Sources\TestSubHLocal_UnsubAll.cs" />
-        <Compile Include="Sources\TestSubH_PubMessageStruct.cs" />
+        <Compile Include="Sources\Implementation\IoCExtra.cs" />
+        <Compile Include="Sources\Implementation\SignalHub.cs" />
+        <Compile Include="Sources\Implementation\SignalHubLocal.cs" />
+        <Compile Include="Sources\Interfaces\IIoCExtra.cs" />
+        <Compile Include="Sources\Interfaces\ISignalHub.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\SignalBus.Core\SignalBus.Core.csproj">
         <Project>{32ae6d2f-b1df-4f8b-b962-a7fddda3507b}</Project>
         <Name>SignalBus.Core</Name>
-      </ProjectReference>
-      <ProjectReference Include="..\SignalBus.Extra\SignalBus.Extra.csproj">
-        <Project>{923e232c-ff9f-45ca-8c7a-3bc83ab6edca}</Project>
-        <Name>SignalBus.Extra</Name>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

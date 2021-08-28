@@ -1,8 +1,8 @@
 using System;
 
-namespace SubHubT
+namespace SignalBusT
 {
-public interface ISubH
+public interface ISignalHub
 {
 	ISubscription<T>		Sub<T>					( ActionRef<T> action, int order = 0 ) where T : ISignalData;
 	ISubscription<T>		Sub<T>					( Object filter, ActionRef<T> action, int order = 0 ) where T : ISignalData;
@@ -18,7 +18,7 @@ public interface ISubH
 	T						Args<T>					(  ) where T : ISignalData, IPoolable, new();
 }
 
-public interface ISubHTests : ISubH
+public interface ISignalHubTests : ISignalHub
 {
 	ISignalBus<T>			GetSignalBus<T>			(  ) where T : ISignalData;
 }

@@ -1,5 +1,5 @@
 using System;
-using SubHubT;
+using SignalBusT;
 
 namespace PerformanceTests
 {
@@ -15,7 +15,7 @@ public class TestPubMessageStruct_Cached_NoSub : IPerformanceTest
 
 	public void Before( )
 	{
-		SubH.I = IoC.I.CreateSubH();
+		SignalHub.I = IoCExtra.I.CreateSignalHub();
 	}
 
 	public void Run( )
@@ -23,7 +23,7 @@ public class TestPubMessageStruct_Cached_NoSub : IPerformanceTest
 		var message = new MessageStruct(5);
 		for ( int i = 0; i < _iterations; i++ )
 		{
-			SubH.I.Pub(message);
+			SignalHub.I.Pub(message);
 		}
 	}
 }

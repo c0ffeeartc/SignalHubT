@@ -23,7 +23,7 @@ internal class Program
 
 		R.Log("\nPub with subs. Expected O(n)");
 		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 1));
-		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 1)); // to confirm correct setup (didn't work with SubH.I)
+		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 1)); // to confirm correct setup (didn't work with SignalHub.I)
 		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 2));
 		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 10));
 		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 20));

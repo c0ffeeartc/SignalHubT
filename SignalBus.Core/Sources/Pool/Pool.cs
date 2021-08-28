@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SubHubT
+namespace SignalBusT
 {
 public class Pool<T> : IPool<T>
 		where T : IPoolable, new(  )

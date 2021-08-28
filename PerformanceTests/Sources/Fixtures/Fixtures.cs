@@ -1,5 +1,5 @@
 using System;
-using SubHubT;
+using SignalBusT;
 
 namespace PerformanceTests
 {

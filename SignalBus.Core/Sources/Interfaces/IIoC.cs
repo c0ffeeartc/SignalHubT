@@ -1,11 +1,9 @@
 using System;
 
-namespace SubHubT
+namespace SignalBusT
 {
 public interface IIoC
 {
-	ISubH					CreateSubH				(  );
-	ISubH					CreateSubHLocal			(  );
 	ISignalBus<T>			CreateSignalBus<T>		(  ) where T : ISignalData;
 	IPool<T>				CreatePool<T>			( Func<T> factory ) where T : IPoolable, new();
 	T						Rent<T>					(  ) where T : IPoolable, new();
