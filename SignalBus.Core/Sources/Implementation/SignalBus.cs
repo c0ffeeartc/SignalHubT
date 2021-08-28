@@ -4,17 +4,17 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using C5;
 
-namespace SubHubT
+namespace SignalHubT
 {
-public partial class SubHub<T> : ISubHub<T>
-		where T : IMessage
+public partial class SignalBus<T> : ISignalBus<T>
+		where T : ISignalData
 {
-	public					SubHub					(  )
+	public					SignalBus				(  )
 	{
 		_subscriptionsGlobal		= GetOrAddSubscriptions( GlobalFilter.I );
 	}
 
-	public static			ISubHub<T>				I						= IoC.I.CreateSubHub<T>(  );
+	public static			ISignalBus<T>			I						= IoC.I.CreateSignalBus<T>(  );
 	private					Int32					_publishActiveCount;
 	private readonly		Queue<ISubscription<T>>	_unsubQue				= new Queue<ISubscription<T>>();
 	private readonly	Dictionary<Object,TreeSet<ISubscription<T>>> _filterToSubscriptions	= new Dictionary<Object,TreeSet<ISubscription<T>>>();
@@ -272,7 +272,7 @@ public partial class SubHub<T> : ISubHub<T>
 		foreach ( var kv_Filter_Subscriptions in _filterToSubscriptions )
 		{
 			TreeSet<ISubscription<T>> subscriptions = kv_Filter_Subscriptions.Value;
-			for ( var i = _filterToSubscriptions.Count - 1; i >= 0; --i )
+			for ( var i = subscriptions.Count - 1; i >= 0; --i )
 			{
 				IoC.I.RepoolSubscription( subscriptions[i] );
 			}
@@ -281,8 +281,8 @@ public partial class SubHub<T> : ISubHub<T>
 	}
 }
 
-public partial class SubHub<T> : ISubHubTests<T>
-		where T : IMessage
+public partial class SignalBus<T> : ISignalBusTests<T>
+		where T : ISignalData
 {
 	public			List<ISubscription<T>>			GetSubscriptions	( Object filter )
 	{

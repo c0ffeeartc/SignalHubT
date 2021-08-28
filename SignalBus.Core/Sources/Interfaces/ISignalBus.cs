@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace SubHubT
+namespace SignalHubT
 {
-public interface ISubHub<T>
-		where T : IMessage
+public interface ISignalBus<T>
+		: ISignalBus
+		where T : ISignalData
 {
 	ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 );
 	ISubscription<T>		Sub						( Object filter, ActionRef<T> action, int order = 0 );
@@ -16,12 +17,15 @@ public interface ISubHub<T>
 
 	void					Publish<T2>				( T2 message ) where T2 : T, IPoolable, new();
 	void					Publish<T2>				( Object filter, T2 message ) where T2 : T, IPoolable, new();
+}
 
+public interface ISignalBus
+{
 	void					UnsubAll				(  );
 }
 
-public interface ISubHubTests<T> : ISubHub<T>
-		where T : IMessage
+public interface ISignalBusTests<T> : ISignalBus<T>
+		where T : ISignalData
 {
 	List<ISubscription<T>>	GetSubscriptions		( Object filter );
 	void					Sub						( ISubscription<T> subscription);

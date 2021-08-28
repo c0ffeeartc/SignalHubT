@@ -2,65 +2,65 @@ using System;
 using NSpec;
 using NSubstitute;
 using Shouldly;
-using SubHubT;
+using SignalHubT;
 
 namespace Tests
 {
-public sealed class describe_SubHub : nspec
+public sealed class describe_SignalBus : nspec
 {
 	private					void					test_SubUnsub				(  )
 	{
-		ISubHubTests<Message1> subHubM1	= null;
+		ISignalBusTests<Message1> signalBusM1	= null;
 		before = ()=>
 		{
-			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
+			signalBusM1				= IoC.I.CreateSignalBus<Message1>(  ) as ISignalBusTests<Message1>;
 		};
 
 		it["Sub twice count matches"] = ()=>
 		{
-			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 0 );
-			subHubM1.Sub( (ref Message1 m1) => {} );
-			subHubM1.Sub( (ref Message1 m1) => {Console.Write("");} );
-			subHubM1.Pub(new Message1());
-			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 2 );
+			signalBusM1.GetSubscriptions( null ).Count.ShouldBe( 0 );
+			signalBusM1.Sub( (ref Message1 m1) => {} );
+			signalBusM1.Sub( (ref Message1 m1) => {Console.Write("");} );
+			signalBusM1.Pub(new Message1());
+			signalBusM1.GetSubscriptions( null ).Count.ShouldBe( 2 );
 		};
 
 		it["Unsub count matches"] = ()=>
 		{
-			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 0 );
-			var subscription1 = subHubM1.Sub( (ref Message1 m1) => {} );
-			var subscription2 = subHubM1.Sub( (ref Message1 m1) => {} );
-			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 2 );
+			signalBusM1.GetSubscriptions( null ).Count.ShouldBe( 0 );
+			var subscription1 = signalBusM1.Sub( (ref Message1 m1) => {} );
+			var subscription2 = signalBusM1.Sub( (ref Message1 m1) => {} );
+			signalBusM1.GetSubscriptions( null ).Count.ShouldBe( 2 );
 
-			subHubM1.Unsub( subscription1 );
-			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 1 );
-			subHubM1.Unsub( subscription2 );
-			subHubM1.GetSubscriptions( null ).Count.ShouldBe( 0 );
+			signalBusM1.Unsub( subscription1 );
+			signalBusM1.GetSubscriptions( null ).Count.ShouldBe( 1 );
+			signalBusM1.Unsub( subscription2 );
+			signalBusM1.GetSubscriptions( null ).Count.ShouldBe( 0 );
 		};
 
 		it["Unsubs correct subscription"] = ()=>
 		{
 			// given
-			var subscription1 = subHubM1.Sub( (ref Message1 m1) => {} );
-			var subscription2 = subHubM1.Sub( (ref Message1 m1) => {} );
-			var subscription3 = subHubM1.Sub( (ref Message1 m1) => {} );
+			var subscription1 = signalBusM1.Sub( (ref Message1 m1) => {} );
+			var subscription2 = signalBusM1.Sub( (ref Message1 m1) => {} );
+			var subscription3 = signalBusM1.Sub( (ref Message1 m1) => {} );
 
 			// when
-			subHubM1.Unsub( subscription2 );
+			signalBusM1.Unsub( subscription2 );
 
 			// then
-			subHubM1.GetSubscriptions( null ).Contains( subscription1 ).ShouldBe( true );
-			subHubM1.GetSubscriptions( null ).Contains( subscription2 ).ShouldBe( false );
-			subHubM1.GetSubscriptions( null ).Contains( subscription3 ).ShouldBe( true );
+			signalBusM1.GetSubscriptions( null ).Contains( subscription1 ).ShouldBe( true );
+			signalBusM1.GetSubscriptions( null ).Contains( subscription2 ).ShouldBe( false );
+			signalBusM1.GetSubscriptions( null ).Contains( subscription3 ).ShouldBe( true );
 		};
 	}
 
 	private					void					test_SubUnsub_Pub			(  )
 	{
-		ISubHubTests<MessageNoPool> subHubT = null;
+		ISignalBusTests<MessageNoPool> signalBus = null;
 		before = ()=>
 		{
-			subHubT				= IoC.I.CreateSubHub<MessageNoPool>(  ) as ISubHubTests<MessageNoPool>;
+			signalBus				= IoC.I.CreateSignalBus<MessageNoPool>(  ) as ISignalBusTests<MessageNoPool>;
 		};
 
 		it["Pub can publish non-poolable message"] = ()=>
@@ -69,11 +69,11 @@ public sealed class describe_SubHub : nspec
 			var subscription		= Substitute.For<ISubscription<MessageNoPool>>(  );
 			subscription.Filter.Returns(GlobalFilter.I);
 			subscription.HasFilter.Returns( false );
-			subHubT.Sub( subscription );
+			signalBus.Sub( subscription );
 
 			// when
 			MessageNoPool message = new MessageNoPool(  );
-			subHubT.Pub( message );
+			signalBus.Pub( message );
 			// subHubT.Publish( message ); // compile time error
 
 			// then
@@ -85,21 +85,21 @@ public sealed class describe_SubHub : nspec
 
 	private					void					test_SubHub_SortOrder	(  )
 	{
-		ISubHubTests<Message1> subHubM1	= null;
+		ISignalBusTests<Message1> signalBusM1	= null;
 		before = ()=>
 		{
-			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
+			signalBusM1				= IoC.I.CreateSignalBus<Message1>(  ) as ISignalBusTests<Message1>;
 		};
 
 		it["Sub default order == 0"] = ()=>
 		{
-			var subscription		= subHubM1.Sub( (ref Message1 m1) => {} );
+			var subscription		= signalBusM1.Sub( (ref Message1 m1) => {} );
 			subscription.Order.ShouldBe( 0 );
 		};
 
 		it["Sub explicit order matches"] = ()=>
 		{
-			var subscription		= subHubM1.Sub( (ref Message1 m1) => {}, order: 123 );
+			var subscription		= signalBusM1.Sub( (ref Message1 m1) => {}, order: 123 );
 			subscription.Order.ShouldBe( 123 );
 		};
 
@@ -114,11 +114,11 @@ public sealed class describe_SubHub : nspec
 			// when
 			foreach ( var givenOrder in given )
 			{
-				subHubM1.Sub( (ref Message1 m1) => {}, givenOrder );
+				signalBusM1.Sub( (ref Message1 m1) => {}, givenOrder );
 			}
 
 			// then
-			var subscriptions			= subHubM1.GetSubscriptions( null );
+			var subscriptions			= signalBusM1.GetSubscriptions( null );
 			for ( var i = 0; i < subscriptions.Count; i++ )
 			{
 				var sub = subscriptions[i];
@@ -129,26 +129,26 @@ public sealed class describe_SubHub : nspec
 		it["Sub inserts subscription after same order"] = ( )=>
 		{
 			// given
-			subHubM1.Sub( (ref Message1 m1) => {}, 0 );
-			subHubM1.Sub( (ref Message1 m1)=> {}, 1 );
-			subHubM1.Sub( (ref Message1 m1) => {}, 1 );
-			subHubM1.Sub( (ref Message1 m1) => {}, 2 );
+			signalBusM1.Sub( (ref Message1 m1) => {}, 0 );
+			signalBusM1.Sub( (ref Message1 m1)=> {}, 1 );
+			signalBusM1.Sub( (ref Message1 m1) => {}, 1 );
+			signalBusM1.Sub( (ref Message1 m1) => {}, 2 );
 
 			// when
-			var subscripton = subHubM1.Sub( (ref Message1 m1) => {}, 1 );
+			var subscripton = signalBusM1.Sub( (ref Message1 m1) => {}, 1 );
 
 			// then
-			subHubM1.GetSubscriptions( null )[1].ShouldNotBe( subscripton );
-			subHubM1.GetSubscriptions( null )[3].ShouldBe( subscripton );
+			signalBusM1.GetSubscriptions( null )[1].ShouldNotBe( subscripton );
+			signalBusM1.GetSubscriptions( null )[3].ShouldBe( subscripton );
 		};
 	}
 
 	private					void					test_SubHub_Filter		(  )
 	{
-		ISubHubTests<Message1> subHubM1	= null;
+		ISignalBusTests<Message1> signalBusM1	= null;
 		before = ()=>
 		{
-			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
+			signalBusM1				= IoC.I.CreateSignalBus<Message1>(  ) as ISignalBusTests<Message1>;
 		};
 
 		it["Sub Global is invoked"] = ()=>
@@ -158,10 +158,10 @@ public sealed class describe_SubHub : nspec
 			var subscription		= Substitute.For<ISubscription<Message1>>(  );
 			subscription.Filter.Returns(GlobalFilter.I);
 			subscription.HasFilter.Returns( false );
-			subHubM1.Sub(subscription);
+			signalBusM1.Sub(subscription);
 
 			// when
-			subHubM1.Publish( message1 );
+			signalBusM1.Publish( message1 );
 
 			// then
 			subscription
@@ -176,10 +176,10 @@ public sealed class describe_SubHub : nspec
 			var subscription		= Substitute.For<ISubscription<Message1>>(  );
 			subscription.Filter.Returns(GlobalFilter.I);
 			subscription.HasFilter.Returns( false );
-			subHubM1.Sub( subscription );
+			signalBusM1.Sub( subscription );
 
 			// when
-			subHubM1.Publish( "filter", message1 );
+			signalBusM1.Publish( "filter", message1 );
 
 			// then
 			subscription
@@ -196,10 +196,10 @@ public sealed class describe_SubHub : nspec
 			var subscription		= Substitute.For<ISubscription<Message1>>(  );
 			subscription.Filter.Returns( filter );
 			subscription.HasFilter.Returns( true );
-			subHubM1.Sub( subscription );
+			signalBusM1.Sub( subscription );
 
 			// when
-			subHubM1.Publish( filter, message1 );
+			signalBusM1.Publish( filter, message1 );
 
 			// then
 			subscription
@@ -216,10 +216,10 @@ public sealed class describe_SubHub : nspec
 			var subscription		= Substitute.For<ISubscription<Message1>>(  );
 			subscription.Filter.Returns( filter );
 			subscription.HasFilter.Returns( true );
-			subHubM1.Sub( subscription );
+			signalBusM1.Sub( subscription );
 
 			// when
-			subHubM1.Publish( message1 );
+			signalBusM1.Publish( message1 );
 
 			// then
 			subscription
@@ -237,10 +237,10 @@ public sealed class describe_SubHub : nspec
 			var subscription		= Substitute.For<ISubscription<Message1>>(  );
 			subscription.Filter.Returns( filter );
 			subscription.HasFilter.Returns( true );
-			subHubM1.Sub( subscription );
+			signalBusM1.Sub( subscription );
 
 			// when
-			subHubM1.Publish( filter2, message1 );
+			signalBusM1.Publish( filter2, message1 );
 
 			// then
 			subscription
@@ -251,10 +251,10 @@ public sealed class describe_SubHub : nspec
 
 	private					void					test_SubHub_NestedSubToSameMessage(  )
 	{
-		ISubHubTests<Message1> subHubM1	= null;
+		ISignalBusTests<Message1> signalBusM1	= null;
 		before = ()=>
 		{
-			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
+			signalBusM1				= IoC.I.CreateSignalBus<Message1>(  ) as ISignalBusTests<Message1>;
 		};
 
 		it["During Publish inside callback subscribe to same Message with SAME or HIGHER priorityOrder.\nAdded subscription should be invoked during this same publish"] = ()=>
@@ -266,11 +266,11 @@ public sealed class describe_SubHub : nspec
 
 			ISubscription<Message1> sub2;
 
-			var sub1				= subHubM1.Sub( (ref Message1 m1) =>
+			var sub1				= signalBusM1.Sub( (ref Message1 m1) =>
 				{
 					m1.Str = "m1sub1";
 					// subHubM1.Sub( subscrpition );
-					sub2 = subHubM1.Sub( (ref Message1 m2) =>
+					sub2 = signalBusM1.Sub( (ref Message1 m2) =>
 						{
 							m2.Str = "m1sub2";
 						} );
@@ -278,7 +278,7 @@ public sealed class describe_SubHub : nspec
 
 			// when
 			var message1			= IoC.I.Rent<Message1>().Init("m1");
-			subHubM1.Publish( message1 );
+			signalBusM1.Publish( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub2" );
@@ -287,7 +287,7 @@ public sealed class describe_SubHub : nspec
 		it["During Publish inside callback subscribe to same Message with LOWER priorityOrder.\nAdded subscription should NOT be invoked during this same publish"] = ()=>
 		{
 			// given
-			subHubM1.Sub( (ref Message1 m1) =>
+			signalBusM1.Sub( (ref Message1 m1) =>
 				{
 					m1.Str += "sub1";
 					if (m1.Str.Length > 18) // Protection against endless loop
@@ -295,12 +295,12 @@ public sealed class describe_SubHub : nspec
 						return;
 					}
 
-					var sub2 = subHubM1.Sub( (ref Message1 m2) =>
+					var sub2 = signalBusM1.Sub( (ref Message1 m2) =>
 						{
 							m2.Str += "sub2";
 						}, order: -5 );
 
-					var sub3 = subHubM1.Sub( (ref Message1 m2) =>
+					var sub3 = signalBusM1.Sub( (ref Message1 m2) =>
 						{
 							m2.Str += "sub3";
 						}, order: -1 );
@@ -309,7 +309,7 @@ public sealed class describe_SubHub : nspec
 			// when
 			var message1			= IoC.I.Rent<Message1>(  )
 				.Init("m1");
-			subHubM1.Publish( message1 );
+			signalBusM1.Publish( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub1" );
@@ -318,27 +318,27 @@ public sealed class describe_SubHub : nspec
 
 	private					void					test_SubHub_NestedUnsubToSameMessage(  )
 	{
-		ISubHubTests<Message1> subHubM1	= null;
+		ISignalBusTests<Message1> signalBusM1	= null;
 		before = ()=>
 		{
-			subHubM1				= IoC.I.CreateSubHub<Message1>(  ) as ISubHubTests<Message1>;
+			signalBusM1				= IoC.I.CreateSignalBus<Message1>(  ) as ISignalBusTests<Message1>;
 		};
 
 		it["During Publish inside callback Unsub to current or previous subscription HAS NO effect on current invoke chain."] = ()=>
 		{
 			// given
-			var sub1				= subHubM1.Sub( (ref Message1 m1) =>
+			var sub1				= signalBusM1.Sub( (ref Message1 m1) =>
 				{
 					m1.Str			+= "sub1";
 				} );
 
-			var sub2				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub2				= signalBusM1.Sub( (ref Message1 m2) =>
 			{
 				m2.Str				+= "sub2";
-				subHubM1.Unsub(sub1);
+				signalBusM1.Unsub(sub1);
 			} );
 
-			var sub3				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub3				= signalBusM1.Sub( (ref Message1 m2) =>
 				{
 					m2.Str			+= "sub3";
 				} );
@@ -346,7 +346,7 @@ public sealed class describe_SubHub : nspec
 			// when
 			var message1			= IoC.I.Rent<Message1>(  )
 				.Init( "m1" );
-			subHubM1.Publish( message1 );
+			signalBusM1.Publish( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub1sub2sub3" );
@@ -355,31 +355,31 @@ public sealed class describe_SubHub : nspec
 		it["During Publish inside callback Unsub to some next subscription."] = ()=>
 		{
 			// given
-			var sub1				= subHubM1.Sub( (ref Message1 m1) =>
+			var sub1				= signalBusM1.Sub( (ref Message1 m1) =>
 				{
 					m1.Str			+= "sub1";
 				} );
 
-			var sub3				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub3				= signalBusM1.Sub( (ref Message1 m2) =>
 				{
 					m2.Str			+= "sub3";
 				}, order: 10 );
 
-			var sub4				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub4				= signalBusM1.Sub( (ref Message1 m2) =>
 				{
 					m2.Str			+= "sub4";
 				}, order: 11 );
 
-			var sub2				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub2				= signalBusM1.Sub( (ref Message1 m2) =>
 				{
 					m2.Str			+= "sub2";
-					subHubM1.Unsub(sub3);
+					signalBusM1.Unsub(sub3);
 				} );
 
 			// when
 			var message1			= IoC.I.Rent<Message1>()
 				.Init( "m1" );
-			subHubM1.Publish( message1 );
+			signalBusM1.Publish( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub1sub2sub4" );
@@ -388,23 +388,23 @@ public sealed class describe_SubHub : nspec
 
 	private					void					test_SubHub_PublishInsideCallback(  )
 	{
-		ISubHubTests<Message1> subHubM1	= null;
+		ISignalBusTests<Message1> signalBusM1	= null;
 		before = ()=>
 		{
-			subHubM1				= (ISubHubTests<Message1>) IoC.I.CreateSubHub<Message1>(  );
+			signalBusM1				= (ISignalBusTests<Message1>) IoC.I.CreateSignalBus<Message1>(  );
 		};
 
 		it["Publish inside callback to message with same type works as a regular call stack."] = ()=>
 		{
 			// given
 			var counter				= 0;
-			var sub1				= subHubM1.Sub( (ref Message1 m1) =>
+			var sub1				= signalBusM1.Sub( (ref Message1 m1) =>
 				{
 					m1.Str			+= "sub1";
 				} );
 
 			Message1 message2		= null;
-			var sub2				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub2				= signalBusM1.Sub( (ref Message1 m2) =>
 				{
 					m2.Str			+= "sub2";
 					if ( counter < 1 )
@@ -412,11 +412,11 @@ public sealed class describe_SubHub : nspec
 						++counter;
 						message2	= IoC.I.Rent<Message1>()
 							.Init( "m2" );
-						subHubM1.Publish( message2 );
+						signalBusM1.Publish( message2 );
 					}
 				} );
 
-			var sub3				= subHubM1.Sub( (ref Message1 m2) =>
+			var sub3				= signalBusM1.Sub( (ref Message1 m2) =>
 				{
 					m2.Str			+= "sub3";
 				});
@@ -424,7 +424,7 @@ public sealed class describe_SubHub : nspec
 			// when
 			var message1			= IoC.I.Rent<Message1>()
 				.Init( "m1" );
-			subHubM1.Publish( message1 );
+			signalBusM1.Publish( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub1sub2sub3" );
@@ -434,55 +434,55 @@ public sealed class describe_SubHub : nspec
 
 	private					void					test_SubHubLocal(  )
 	{
-		ISubHubTests<Message1> subHubM1	= null;
+		ISignalBusTests<Message1> signalBusM1	= null;
 		before = ()=>
 		{
-			subHubM1				= (ISubHubTests<Message1>) IoC.I.CreateSubHub<Message1>(  );
+			signalBusM1				= (ISignalBusTests<Message1>) IoC.I.CreateSignalBus<Message1>(  );
 		};
 
 		it["Two SubHubLocal have different inner subHubT instances."] = ()=>
 		{
 			// given
-			ISubHTests subHLocal = IoC.I.CreateSubHLocal(  ) as ISubHTests;
-			ISubHTests subHLocal2 = IoC.I.CreateSubHLocal(  ) as ISubHTests;
+			ISignalHubTests signalHubLocal = IoCExtra.I.CreateSignalHubLocal(  ) as ISignalHubTests;
+			ISignalHubTests signalHubLocal2 = IoCExtra.I.CreateSignalHubLocal(  ) as ISignalHubTests;
 
 			// then
-			subHLocal.GetSubHubT<Message1>().ShouldNotBeNull(  );
-			subHLocal2.GetSubHubT<Message1>().ShouldNotBeNull(  );
-			subHLocal.GetSubHubT<Message1>().ShouldNotBe( subHLocal2.GetSubHubT<Message1>() );
+			signalHubLocal.GetSignalBus<Message1>().ShouldNotBeNull(  );
+			signalHubLocal2.GetSignalBus<Message1>().ShouldNotBeNull(  );
+			signalHubLocal.GetSignalBus<Message1>().ShouldNotBe( signalHubLocal2.GetSignalBus<Message1>() );
 		};
 
 		it["SubHubLocal has different inner subHubT instances compared to SubH static instances."] = ()=>
 		{
 			// given
-			ISubHTests subHLocal = IoC.I.CreateSubHLocal(  ) as ISubHTests;
+			ISignalHubTests signalHubLocal = IoCExtra.I.CreateSignalHubLocal(  ) as ISignalHubTests;
 
 			// then
-			subHLocal.GetSubHubT<Message1>().ShouldNotBeNull(  );
-			(SubH.I as ISubHTests).GetSubHubT<Message1>().ShouldNotBeNull(  );
-			subHLocal.GetSubHubT<Message1>().ShouldBe( subHLocal.GetSubHubT<Message1>() );
-			(SubH.I as ISubHTests).GetSubHubT<Message1>().ShouldBe( (SubH.I as ISubHTests).GetSubHubT<Message1>() );
-			subHLocal.GetSubHubT<Message1>().ShouldNotBe( (SubH.I as ISubHTests).GetSubHubT<Message1>() );
+			signalHubLocal.GetSignalBus<Message1>().ShouldNotBeNull(  );
+			(SignalHub.I as ISignalHubTests).GetSignalBus<Message1>().ShouldNotBeNull(  );
+			signalHubLocal.GetSignalBus<Message1>().ShouldBe( signalHubLocal.GetSignalBus<Message1>() );
+			(SignalHub.I as ISignalHubTests).GetSignalBus<Message1>().ShouldBe( (SignalHub.I as ISignalHubTests).GetSignalBus<Message1>() );
+			signalHubLocal.GetSignalBus<Message1>().ShouldNotBe( (SignalHub.I as ISignalHubTests).GetSignalBus<Message1>() );
 		};
 	}
 
 	private					void					test_MessageStruct(  )
 	{
-		ISubHubTests<MessageStruct> hubT = null;
+		ISignalBusTests<MessageStruct> hub = null;
 		before = ()=>
 		{
-			hubT					= (ISubHubTests<MessageStruct>) IoC.I.CreateSubHub<MessageStruct>(  );
+			hub					= (ISignalBusTests<MessageStruct>) IoC.I.CreateSignalBus<MessageStruct>(  );
 		};
 
 		it["Pub passes same message struct by reference"] = ()=>
 		{
 			// given
-			var sub1				= hubT.Sub( (ref MessageStruct m1) =>
+			var sub1				= hub.Sub( (ref MessageStruct m1) =>
 				{
 					m1.Str			+= "sub1";
 				} );
 
-			var sub2				= hubT.Sub( (ref MessageStruct m2) =>
+			var sub2				= hub.Sub( (ref MessageStruct m2) =>
 				{
 					m2.Str			+= "sub2";
 
@@ -491,21 +491,21 @@ public sealed class describe_SubHub : nspec
 				} );
 
 			// when
-			hubT.Pub( new MessageStruct( "m1" ) );
+			hub.Pub( new MessageStruct( "m1" ) );
 		};
 
 		it["Pub returns modified message struct"] = ()=>
 		{
 			// given
-			var sub1				= hubT.Sub( (ref MessageStruct m1) =>
+			var sub1				= hub.Sub( (ref MessageStruct m1) =>
 				{
 					m1.Str			+= "sub1";
 				} );
 
 			// when
 			var messageStruct		= new MessageStruct( "m1" );
-			var messageResult		= hubT.Pub( messageStruct );
-			hubT.Pub( new MessageStruct("2") );
+			var messageResult		= hub.Pub( messageStruct );
+			hub.Pub( new MessageStruct("2") );
 
 			// then
 			messageResult.Str.ShouldBe( "m1sub1" );
@@ -518,49 +518,49 @@ public sealed class describe_SubHub : nspec
 			var filterA				= new Object();
 			var filterB				= new Object();
 
-			var subFb5				= hubT.Sub( filter: filterB
+			var subFb5				= hub.Sub( filter: filterB
 				, (ref MessageStruct m1) =>
 				{
 					m1.Str			+= "subFb5";
 				}
 				, order:5 );
 
-			var subA5				= hubT.Sub( (ref MessageStruct m1) =>
+			var subA5				= hub.Sub( (ref MessageStruct m1) =>
 				{
 					m1.Str			+= "subA5";
 				}
 				, order:5 );
 
-			var subFa5				= hubT.Sub( filter: filterA
+			var subFa5				= hub.Sub( filter: filterA
 				, (ref MessageStruct m1) =>
 				{
 					m1.Str			+= "subFa5";
 				}
 				, order:5 );
 
-			var subFa2				= hubT.Sub( filter: filterA
+			var subFa2				= hub.Sub( filter: filterA
 				, (ref MessageStruct m1) =>
 				{
 					m1.Str			+= "subFa2";
 				}
 				, order:2 );
 
-			var sub1				= hubT.Sub( (ref MessageStruct m1) =>
+			var sub1				= hub.Sub( (ref MessageStruct m1) =>
 				{
 					m1.Str			+= "sub1";
 				}
 				, order: 1 );
 
-			var subB5				= hubT.Sub( (ref MessageStruct m1) =>
+			var subB5				= hub.Sub( (ref MessageStruct m1) =>
 				{
 					m1.Str			+= "subB5";
 				}
 				, order:5 );
 
 			// when
-			var messageResultA		= hubT.Pub( filterA, new MessageStruct( "m1" ) );
-			var messageResultB		= hubT.Pub( filterB, new MessageStruct( "m1" ) );
-			var messageResult		= hubT.Pub( new MessageStruct( "m1" ) );
+			var messageResultA		= hub.Pub( filterA, new MessageStruct( "m1" ) );
+			var messageResultB		= hub.Pub( filterB, new MessageStruct( "m1" ) );
+			var messageResult		= hub.Pub( new MessageStruct( "m1" ) );
 
 			// then
 			messageResultA.Str.ShouldBe( "m1sub1subFa2subA5subFa5subB5" );

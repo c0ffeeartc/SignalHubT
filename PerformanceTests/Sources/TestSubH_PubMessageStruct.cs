@@ -1,13 +1,14 @@
 using System;
-using SubHubT;
+using SignalHubT;
 using Tests;
 
 namespace PerformanceTests
 {
 public class TestSubH_PubMessageStruct : IPerformanceTest, IToTestString
 {
-	public TestSubH_PubMessageStruct(Int32 iterations, Int32 subCount)
+	public TestSubH_PubMessageStruct(ISignalHub signalHub, Int32 iterations, Int32 subCount)
 	{
+		_signalHub = signalHub;
 		_iterations = iterations;
 		_subCount = subCount;
 	}
@@ -15,15 +16,16 @@ public class TestSubH_PubMessageStruct : IPerformanceTest, IToTestString
 	private Int32 _iterations;
 	private Int32 _value;
 	private readonly Int32 _subCount;
+	private ISignalHub _signalHub;
 	public Int32 Iterations => _iterations;
 
 	public void Before( )
 	{
-		SubH.I = IoC.I.CreateSubH();
+		_signalHub.UnsubAll();
 
 		for ( int i = 0; i < _subCount; i++ )
 		{
-			SubH.I.Sub<MessageStruct>(HandleMessageStruct);
+			_signalHub.Sub<MessageStruct>(HandleMessageStruct);
 		}
 	}
 
@@ -36,7 +38,7 @@ public class TestSubH_PubMessageStruct : IPerformanceTest, IToTestString
 	{
 		for ( int i = 0; i < _iterations; i++ )
 		{
-			SubH.I.Pub(new MessageStruct(i));
+			_signalHub.Pub(new MessageStruct(i));
 		}
 	}
 

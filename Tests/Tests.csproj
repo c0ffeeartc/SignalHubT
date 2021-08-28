@@ -87,8 +87,8 @@
     <ItemGroup>
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Sources\descirbe_Pool.cs" />
-        <Compile Include="Sources\describe_SubHub.cs" />
+        <Compile Include="Sources\describe_Pool.cs" />
+        <Compile Include="Sources\describe_SignalBus.cs" />
         <Compile Include="Sources\Example.cs" />
         <Compile Include="Sources\Fixtures.cs" />
     </ItemGroup>
@@ -96,9 +96,13 @@
       <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\SubHub\SubHub.csproj">
+      <ProjectReference Include="..\SignalBus.Core\SignalBus.Core.csproj">
         <Project>{32ae6d2f-b1df-4f8b-b962-a7fddda3507b}</Project>
-        <Name>SubHub</Name>
+        <Name>SignalBus.Core</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\SignalBus.Extra\SignalBus.Extra.csproj">
+        <Project>{923e232c-ff9f-45ca-8c7a-3bc83ab6edca}</Project>
+        <Name>SignalBus.Extra</Name>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

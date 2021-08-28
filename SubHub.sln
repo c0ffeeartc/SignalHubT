@@ -1,10 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubHub", "SubHub\SubHub.csproj", "{32AE6D2F-B1DF-4F8B-B962-A7FDDDA3507B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalBus.Core", "SignalBus.Core\SignalBus.Core.csproj", "{32AE6D2F-B1DF-4F8B-B962-A7FDDDA3507B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{0985B32E-34D9-46EB-9D2E-9CE81DFB584E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTests", "PerformanceTests\PerformanceTests.csproj", "{E0EC6C5B-5D42-40BE-84D4-14C49A470105}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalBus.Extra", "SignalBus.Extra\SignalBus.Extra.csproj", "{923E232C-FF9F-45CA-8C7A-3BC83AB6EDCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +26,9 @@ Global
 		{E0EC6C5B-5D42-40BE-84D4-14C49A470105}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0EC6C5B-5D42-40BE-84D4-14C49A470105}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0EC6C5B-5D42-40BE-84D4-14C49A470105}.Release|Any CPU.Build.0 = Release|Any CPU
+		{923E232C-FF9F-45CA-8C7A-3BC83AB6EDCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{923E232C-FF9F-45CA-8C7A-3BC83AB6EDCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{923E232C-FF9F-45CA-8C7A-3BC83AB6EDCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{923E232C-FF9F-45CA-8C7A-3BC83AB6EDCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

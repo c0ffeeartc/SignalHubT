@@ -1,9 +1,9 @@
 using System;
-using SubHubT;
+using SignalHubT;
 
 namespace Tests
 {
-public sealed class Message1 : IMessage, IPoolable
+public sealed class Message1 : ISignalData, IPoolable
 {
 	public string Str;
 
@@ -26,12 +26,12 @@ public sealed class Message1 : IMessage, IPoolable
 	}
 }
 
-public sealed class MessageNoPool : IMessage
+public sealed class MessageNoPool : ISignalData
 {
 	public int Value;
 }
 
-public struct MessageStruct : IMessage
+public struct MessageStruct : ISignalData
 {
 	public MessageStruct(string str)
 	{

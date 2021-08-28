@@ -1,18 +1,15 @@
 using System;
 
-namespace SubHubT
+namespace SignalHubT
 {
 public class IoC : IIoC
 {
 	public static			IIoC					I						= new IoC(  );
 
-	public virtual			ISubH					CreateSubH				(  ) => new SubH(  );
-	public virtual			ISubH					CreateSubHLocal			(  ) => new SubHLocal(  );
-
-	public virtual			ISubHub<T>				CreateSubHub<T>			(  )
-			where T : IMessage
+	public virtual			ISignalBus<T>			CreateSignalBus<T>		(  )
+			where T : ISignalData
 	{
-		return new SubHub<T>(  );
+		return new SignalBus<T>(  );
 	}
 
 	public virtual			IPool<T>				CreatePool<T>			( Func<T> factory )
@@ -34,13 +31,13 @@ public class IoC : IIoC
 	}
 
 	public virtual			ISubscription<T>		RentSubscription<T>		(  )
-			where T : IMessage
+			where T : ISignalData
 	{
 		return Pool<Subscription<T>>.I.Rent();
 	}
 
 	public virtual			void					RepoolSubscription<T>	( ISubscription<T> subscription )
-			where T : IMessage
+			where T : ISignalData
 	{
 		Pool<Subscription<T>>.I.Repool( subscription as Subscription<T> );
 	}

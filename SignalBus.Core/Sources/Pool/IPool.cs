@@ -1,4 +1,4 @@
-namespace SubHubT
+namespace SignalHubT
 {
 public interface IPool<T> where T : IPoolable
 {

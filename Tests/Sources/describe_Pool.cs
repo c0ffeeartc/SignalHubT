@@ -1,10 +1,10 @@
 using NSpec;
 using Shouldly;
-using SubHubT;
+using SignalHubT;
 
 namespace Tests
 {
-public class descirbe_Pool : nspec
+public class describe_Pool : nspec
 {
 	private					void					test_Pool_Message		(  )
 	{

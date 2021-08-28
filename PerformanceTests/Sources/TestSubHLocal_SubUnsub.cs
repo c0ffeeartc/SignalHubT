@@ -1,5 +1,5 @@
 using System;
-using SubHubT;
+using SignalHubT;
 using Tests;
 
 namespace PerformanceTests
@@ -19,7 +19,7 @@ public class TestSubHLocal_SubUnsub : IPerformanceTest, IToTestString
 
 	public void Before( )
 	{
-		SubH.I = IoC.I.CreateSubHLocal();
+		SignalHub.I = IoCExtra.I.CreateSignalHubLocal();
 	}
 
 	private void HandleMessageStruct(ref MessageStruct message)
@@ -31,8 +31,8 @@ public class TestSubHLocal_SubUnsub : IPerformanceTest, IToTestString
 	{
 		for ( int i = 0; i < _subCount; i++ )
 		{
-			var subscription = SubH.I.Sub<MessageStruct>(HandleMessageStruct);
-			SubH.I.Unsub(subscription);
+			var subscription = SignalHub.I.Sub<MessageStruct>(HandleMessageStruct);
+			SignalHub.I.Unsub(subscription);
 		}
 	}
 
