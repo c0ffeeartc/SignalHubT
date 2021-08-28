@@ -96,9 +96,9 @@
       <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\SubHub\SubHub.csproj">
+      <ProjectReference Include="..\SignalBus.Core\SignalBus.Core.csproj">
         <Project>{32ae6d2f-b1df-4f8b-b962-a7fddda3507b}</Project>
-        <Name>SubHub</Name>
+        <Name>SignalBus.Core</Name>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
