@@ -36,7 +36,7 @@ public class Example
 }
 
 // struct messages are recommended for less Garbage Collection and no Pooling
-public struct Message : IMessage
+public struct Message : ISignalData
 {
   public Message(string value)
   {
@@ -45,7 +45,7 @@ public struct Message : IMessage
   public string Value;
 }
 
-public class MessagePoolable : IMessage, IPoolable
+public class MessagePoolable : ISignalData, IPoolable
 {
   public string Str;
 

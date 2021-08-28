@@ -3,7 +3,7 @@ using SubHubT;
 
 namespace PerformanceTests
 {
-public struct MessageStruct : IMessage
+public struct MessageStruct : ISignalData
 {
 	public MessageStruct(Int32 value )
 	{

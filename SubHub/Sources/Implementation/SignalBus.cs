@@ -7,7 +7,7 @@ using C5;
 namespace SubHubT
 {
 public partial class SignalBus<T> : ISignalBus<T>
-		where T : IMessage
+		where T : ISignalData
 {
 	public					SignalBus					(  )
 	{
@@ -282,7 +282,7 @@ public partial class SignalBus<T> : ISignalBus<T>
 }
 
 public partial class SignalBus<T> : ISignalBusTests<T>
-		where T : IMessage
+		where T : ISignalData
 {
 	public			List<ISubscription<T>>			GetSubscriptions	( Object filter )
 	{

@@ -4,22 +4,22 @@ namespace SubHubT
 {
 public interface ISubH
 {
-	ISubscription<T>		Sub<T>					( ActionRef<T> action, int order = 0 ) where T : IMessage;
-	ISubscription<T>		Sub<T>					( Object filter, ActionRef<T> action, int order = 0 ) where T : IMessage;
+	ISubscription<T>		Sub<T>					( ActionRef<T> action, int order = 0 ) where T : ISignalData;
+	ISubscription<T>		Sub<T>					( Object filter, ActionRef<T> action, int order = 0 ) where T : ISignalData;
 
-	void					Unsub<T>				( ISubscription<T> subscription ) where T : IMessage;
+	void					Unsub<T>				( ISubscription<T> subscription ) where T : ISignalData;
 
-	T						Pub<T>					( T message ) where T : IMessage;
-	T						Pub<T>					( Object filter, T message ) where T : IMessage;
+	T						Pub<T>					( T message ) where T : ISignalData;
+	T						Pub<T>					( Object filter, T message ) where T : ISignalData;
 
-	void					Publish<T>				( T message ) where T : IMessage, IPoolable, new();
-	void					Publish<T>				( Object filter, T message ) where T : IMessage, IPoolable, new();
+	void					Publish<T>				( T message ) where T : ISignalData, IPoolable, new();
+	void					Publish<T>				( Object filter, T message ) where T : ISignalData, IPoolable, new();
 
-	T						Args<T>					(  ) where T : IMessage, IPoolable, new();
+	T						Args<T>					(  ) where T : ISignalData, IPoolable, new();
 }
 
 public interface ISubHTests : ISubH
 {
-	ISignalBus<T>			GetSignalBus<T>			(  ) where T : IMessage;
+	ISignalBus<T>			GetSignalBus<T>			(  ) where T : ISignalData;
 }
 }

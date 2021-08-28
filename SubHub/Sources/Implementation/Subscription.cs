@@ -3,7 +3,7 @@ using System;
 namespace SubHubT
 {
 public sealed class Subscription<T> : ISubscription<T>
-		where T : IMessage
+		where T : ISignalData
 {
 	private static			Int32					sCreationIndex			= 1;
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SubHubT
 {
 public interface ISignalBus<T>
-		where T : IMessage
+		where T : ISignalData
 {
 	ISubscription<T>		Sub						( ActionRef<T> action, int order = 0 );
 	ISubscription<T>		Sub						( Object filter, ActionRef<T> action, int order = 0 );
@@ -21,7 +21,7 @@ public interface ISignalBus<T>
 }
 
 public interface ISignalBusTests<T> : ISignalBus<T>
-		where T : IMessage
+		where T : ISignalData
 {
 	List<ISubscription<T>>	GetSubscriptions		( Object filter );
 	void					Sub						( ISubscription<T> subscription);

@@ -10,7 +10,7 @@ public class IoC : IIoC
 	public virtual			ISubH					CreateSubHLocal			(  ) => new SubHLocal(  );
 
 	public virtual			ISignalBus<T>			CreateSignalBus<T>			(  )
-			where T : IMessage
+			where T : ISignalData
 	{
 		return new SignalBus<T>(  );
 	}
@@ -34,13 +34,13 @@ public class IoC : IIoC
 	}
 
 	public virtual			ISubscription<T>		RentSubscription<T>		(  )
-			where T : IMessage
+			where T : ISignalData
 	{
 		return Pool<Subscription<T>>.I.Rent();
 	}
 
 	public virtual			void					RepoolSubscription<T>	( ISubscription<T> subscription )
-			where T : IMessage
+			where T : ISignalData
 	{
 		Pool<Subscription<T>>.I.Repool( subscription as Subscription<T> );
 	}

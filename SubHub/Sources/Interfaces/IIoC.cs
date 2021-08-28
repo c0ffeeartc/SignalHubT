@@ -6,11 +6,11 @@ public interface IIoC
 {
 	ISubH					CreateSubH				(  );
 	ISubH					CreateSubHLocal			(  );
-	ISignalBus<T>			CreateSignalBus<T>			(  ) where T : IMessage;
+	ISignalBus<T>			CreateSignalBus<T>		(  ) where T : ISignalData;
 	IPool<T>				CreatePool<T>			( Func<T> factory ) where T : IPoolable, new();
 	T						Rent<T>					(  ) where T : IPoolable, new();
 	void					Repool<T>				( T poolable ) where T : IPoolable, new();
-	ISubscription<T>		RentSubscription<T>		(  ) where T : IMessage;
-	void					RepoolSubscription<T>	( ISubscription<T> subscription ) where T : IMessage;
+	ISubscription<T>		RentSubscription<T>		(  ) where T : ISignalData;
+	void					RepoolSubscription<T>	( ISubscription<T> subscription ) where T : ISignalData;
 }
 }

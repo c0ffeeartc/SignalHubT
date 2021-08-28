@@ -7,7 +7,7 @@ public delegate void ActionRef<T> (ref T obj);
 public interface ISubscription<T>
 		: IComparable<ISubscription<T>>  // IComparable for Order
 		, IPoolable
-		where T : IMessage
+		where T : ISignalData
 {
 	Int32					Order					{ get; }  // lower values get invoked before higher values
 	Boolean					HasFilter				{ get; }
