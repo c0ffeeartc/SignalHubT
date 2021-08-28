@@ -4,7 +4,7 @@ Single-threaded EventAggregator/EventBroker C# solution
 ## How it works
 `SignalBus<T>` stores collection of `ISubscriptions` to specific `ISignalData` type.
 
-`SignalHub` stores collection of `SignalBus<T>` and provides interface to send `ISignalData` through list of `ISubscriptions`.
+`SignalHub` stores collection of `SignalBus<T>` and provides interface to send `ISignalData` through sequence of `ISubscriptions`.
 
 ## Features
   - Global and Filtered subscription
