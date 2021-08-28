@@ -25,6 +25,13 @@ public partial class SignalHub : ISignalHub
 		SignalBus<T>.I.Unsub(subscription);
 	}
 
+	public					void					UnsubAll				(  )
+	{
+		throw new NotImplementedException();
+		// possible to unsub all if Track(signalBus) at beginning of every signalBus method.
+		// Store each instance inside one HashSet etc
+	}
+
 	public					T						Pub<T>					( T message )
 			where T: ISignalData
 	{

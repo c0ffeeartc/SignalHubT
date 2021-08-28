@@ -25,6 +25,14 @@ public partial class SignalHubLocal : ISignalHub
 		GetOrCreateSignalBus<T>(  ).Unsub( subscription );
 	}
 
+	public					void					UnsubAll				(  )
+	{
+		foreach ( var kv in _subHubTs)
+		{
+			(kv.Value as ISignalBus).UnsubAll();
+		}
+	}
+
 	public					T						Pub<T>					( T message )
 			where T : ISignalData
 	{

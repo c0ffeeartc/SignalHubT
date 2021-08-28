@@ -8,6 +8,7 @@ public interface ISignalHub
 	ISubscription<T>		Sub<T>					( Object filter, ActionRef<T> action, int order = 0 ) where T : ISignalData;
 
 	void					Unsub<T>				( ISubscription<T> subscription ) where T : ISignalData;
+	void					UnsubAll				(  );
 
 	T						Pub<T>					( T message ) where T : ISignalData;
 	T						Pub<T>					( Object filter, T message ) where T : ISignalData;
