@@ -1,4 +1,5 @@
 ﻿using System;
+using SignalBusT;
 using R = PerformanceTests.PerformanceTestRunner;
 
 namespace PerformanceTests
@@ -13,13 +14,18 @@ internal class Program
 	public static void Main(string[] args)
 	{
 		MemoryHelper.MemoryBegin();
+		ISignalHub signalHubStatic = IoCExtra.I.GetSignalHubStatic(  );
 
 		R.Log("Main Tests");
 
-		R.Run(()=>new TestPubMessageStruct_Cached_NoSub(_1m));
-		R.Run(()=>new TestPubMessageStruct_New_NoSub(_1m));
-		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_String(_1m));
-		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_OverrideHashCode(_1m));
+		R.Run(()=>new TestPubMessageStruct_Cached_NoSub(signalHubStatic, _1m));
+		R.Run(()=>new TestPubMessageStruct_New_NoSub(signalHubStatic, _1m));
+		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_String(signalHubStatic, _1m));
+		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_OverrideHashCode(signalHubStatic, _1m));
+
+		R.Log("\nSignalHubStatic Pub with subs. Expected O(n)");
+		R.Run(()=>new TestSubH_PubMessageStruct(signalHubStatic, _1m, 1));
+		R.Run(()=>new TestSubH_PubMessageStruct(signalHubStatic, _1m, 1));
 
 		R.Log("\nPub with subs. Expected O(n)");
 		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 1));
@@ -57,10 +63,6 @@ internal class Program
 		R.Run(()=>new TestSortedList_RemoveAll(1, _1k));
 		R.Run(()=>new TestSortedList_RemoveAll(1, _10k));
 		R.Run(()=>new TestSortedList_RemoveAll(1, _100k));
-
-		R.Log("\nFIXME: SubH Pub with subs. Expected O(n)");
-		R.Run(()=>new TestSubH_PubMessageStruct(_1m, 1));
-		R.Run(()=>new TestSubH_PubMessageStruct(_1m, 1));
 
 		MemoryHelper.MemoryEnd();
 	}

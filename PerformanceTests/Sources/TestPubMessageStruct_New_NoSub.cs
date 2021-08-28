@@ -5,24 +5,27 @@ namespace PerformanceTests
 {
 public class TestPubMessageStruct_New_NoSub : IPerformanceTest
 {
-	public TestPubMessageStruct_New_NoSub(Int32 iterations)
+	public TestPubMessageStruct_New_NoSub(ISignalHub signalHub, Int32 iterations)
 	{
+		_signalHub = signalHub;
 		_iterations = iterations;
 	}
 
 	private Int32 _iterations;
+	private ISignalHub _signalHub;
+
 	public Int32 Iterations => _iterations;
 
 	public void Before( )
 	{
-		SignalHub.I = IoCExtra.I.CreateSignalHub();
+		_signalHub.UnsubAll();
 	}
 
 	public void Run( )
 	{
 		for ( int i = 0; i < _iterations; i++ )
 		{
-			SignalHub.I.Pub(new MessageStruct(i));
+			_signalHub.Pub(new MessageStruct(i));
 		}
 	}
 }

@@ -272,7 +272,7 @@ public partial class SignalBus<T> : ISignalBus<T>
 		foreach ( var kv_Filter_Subscriptions in _filterToSubscriptions )
 		{
 			TreeSet<ISubscription<T>> subscriptions = kv_Filter_Subscriptions.Value;
-			for ( var i = _filterToSubscriptions.Count - 1; i >= 0; --i )
+			for ( var i = subscriptions.Count - 1; i >= 0; --i )
 			{
 				IoC.I.RepoolSubscription( subscriptions[i] );
 			}

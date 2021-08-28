@@ -2,7 +2,7 @@ namespace SignalBusT
 {
 public interface IIoCExtra
 {
-	ISignalHub				CreateSignalHub				(  );
-	ISignalHub				CreateSignalHubLocal		(  );
+	ISignalHub				GetSignalHubStatic		(  );
+	ISignalHub				CreateSignalHubLocal	(  );
 }
 }

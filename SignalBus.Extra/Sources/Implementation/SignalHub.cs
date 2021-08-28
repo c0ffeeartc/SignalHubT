@@ -1,22 +1,28 @@
 using System;
+using System.Collections.Generic;
 
 namespace SignalBusT
 {
 // Facade for an arguably better API
 public partial class SignalHub : ISignalHub
 {
-	public static			ISignalHub				I						= IoCExtra.I.CreateSignalHub(  );
+	public static			ISignalHub				I						= IoCExtra.I.GetSignalHubStatic(  );
+	private				HashSet<ISignalBus>			_tracked				= new HashSet<ISignalBus>();
 
 	public					ISubscription<T>		Sub<T>					( ActionRef<T> action, Int32 order = 0 )
 			where T : ISignalData
 	{
-		return SignalBus<T>.I.Sub( action, order);
+		var signalBus = SignalBus<T>.I;
+		Track(signalBus);
+		return signalBus.Sub( action, order );
 	}
 
 	public					ISubscription<T>		Sub<T>					( Object filter, ActionRef<T> action, Int32 order=0 )
 			where T : ISignalData
 	{
-		return SignalBus<T>.I.Sub( filter, action, order);
+		var signalBus = SignalBus<T>.I;
+		Track(signalBus);
+		return signalBus.Sub( filter, action, order );
 	}
 
 	public					void					Unsub<T>				( ISubscription<T> subscription )
@@ -27,9 +33,10 @@ public partial class SignalHub : ISignalHub
 
 	public					void					UnsubAll				(  )
 	{
-		throw new NotImplementedException();
-		// possible to unsub all if Track(signalBus) at beginning of every signalBus method.
-		// Store each instance inside one HashSet etc
+		foreach ( ISignalBus signalBus in _tracked )
+		{
+			signalBus.UnsubAll(  );
+		}
 	}
 
 	public					T						Pub<T>					( T message )
@@ -61,11 +68,16 @@ public partial class SignalHub : ISignalHub
 	{
 		return IoC.I.Rent<T>();
 	}
+
+	private					void					Track					( ISignalBus signalBus )
+	{
+		_tracked.Add(signalBus);
+	}
 }
 
 public partial class SignalHub : ISignalHubTests
 {
-	public					ISignalBus<T>				GetSignalBus<T>			(  )
+	public					ISignalBus<T>			GetSignalBus<T>			(  )
 			where T : ISignalData
 	{
 		return SignalBus<T>.I;
