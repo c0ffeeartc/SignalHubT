@@ -1,5 +1,5 @@
 ﻿using System;
-using SignalBusT;
+using SignalHubT;
 using R = PerformanceTests.PerformanceTestRunner;
 
 namespace PerformanceTests

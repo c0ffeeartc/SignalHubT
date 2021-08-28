@@ -7,7 +7,7 @@
         <ProjectGuid>{32AE6D2F-B1DF-4F8B-B962-A7FDDDA3507B}</ProjectGuid>
         <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>SubHub</RootNamespace>
+        <RootNamespace>SignalHubT</RootNamespace>
         <AssemblyName>SignalBus.Core</AssemblyName>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>

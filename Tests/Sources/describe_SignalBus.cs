@@ -2,7 +2,7 @@ using System;
 using NSpec;
 using NSubstitute;
 using Shouldly;
-using SignalBusT;
+using SignalHubT;
 
 namespace Tests
 {

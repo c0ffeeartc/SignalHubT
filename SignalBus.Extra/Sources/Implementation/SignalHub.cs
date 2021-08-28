@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SignalBusT
+namespace SignalHubT
 {
 // Facade for an arguably better API
 public partial class SignalHub : ISignalHub

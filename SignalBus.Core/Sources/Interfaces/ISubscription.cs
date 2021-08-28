@@ -1,6 +1,6 @@
 using System;
 
-namespace SignalBusT
+namespace SignalHubT
 {
 public delegate void ActionRef<T> (ref T obj);
 

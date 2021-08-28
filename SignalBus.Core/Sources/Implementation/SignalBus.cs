@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using C5;
 
-namespace SignalBusT
+namespace SignalHubT
 {
 public partial class SignalBus<T> : ISignalBus<T>
 		where T : ISignalData

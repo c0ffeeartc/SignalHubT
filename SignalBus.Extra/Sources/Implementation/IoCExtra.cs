@@ -1,4 +1,4 @@
-namespace SignalBusT
+namespace SignalHubT
 {
 public class IoCExtra : IIoCExtra
 {

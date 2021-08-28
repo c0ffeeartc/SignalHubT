@@ -1,5 +1,5 @@
 using System;
-using SignalBusT;
+using SignalHubT;
 
 namespace PerformanceTests
 {

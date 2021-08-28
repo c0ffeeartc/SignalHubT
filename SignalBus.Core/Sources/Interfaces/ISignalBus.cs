@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SignalBusT
+namespace SignalHubT
 {
 public interface ISignalBus<T>
 		: ISignalBus

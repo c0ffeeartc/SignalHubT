@@ -1,6 +1,6 @@
 using NSpec;
 using Shouldly;
-using SignalBusT;
+using SignalHubT;
 
 namespace Tests
 {

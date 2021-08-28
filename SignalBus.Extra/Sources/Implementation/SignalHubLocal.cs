@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace SignalBusT
+namespace SignalHubT
 {
 public partial class SignalHubLocal : ISignalHub
 {
-	private				Dictionary<Type, ISignalBus>_subHubTs				= new Dictionary<Type, ISignalBus>();
+	private				Dictionary<Type, ISignalBus>_signalBuses			= new Dictionary<Type, ISignalBus>();
 
 	public					ISubscription<T>		Sub<T>					( ActionRef<T> action, Int32 order = 0 )
 			where T : ISignalData
@@ -28,7 +28,7 @@ public partial class SignalHubLocal : ISignalHub
 
 	public					void					UnsubAll				(  )
 	{
-		foreach ( var kv in _subHubTs )
+		foreach ( var kv in _signalBuses )
 		{
 			kv.Value.UnsubAll();
 		}
@@ -68,13 +68,13 @@ public partial class SignalHubLocal : ISignalHub
 			where T : ISignalData
 	{
 		var messageType				= typeof(T);
-		if ( _subHubTs.TryGetValue( messageType, out ISignalBus obj ) )
+		if ( _signalBuses.TryGetValue( messageType, out ISignalBus obj ) )
 		{
 			return Unsafe.As<ISignalBus<T>>(obj);
 		}
 
 		ISignalBus<T> signalBus		= IoC.I.CreateSignalBus<T>(  );
-		_subHubTs[messageType]		= signalBus;
+		_signalBuses[messageType]		= signalBus;
 		return signalBus;
 	}
 }
