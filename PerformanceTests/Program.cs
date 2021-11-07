@@ -23,6 +23,13 @@ internal class Program
 		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_String(signalHubStatic, _1m));
 		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_OverrideHashCode(signalHubStatic, _1m));
 
+		R.Log("\nAction Invoke. Expected O(n)");
+		R.Run(()=>new TestAction_PubRefMessageStruct(_1m, 1));
+		R.Run(()=>new TestAction_PubRefMessageStruct(_1m, 1));
+		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 2));
+		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 10));
+		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 20));
+
 		R.Log("\nSignalHubStatic Pub with subs. Expected O(n)");
 		R.Run(()=>new TestSubH_PubMessageStruct(signalHubStatic, _1m, 1));
 		R.Run(()=>new TestSubH_PubMessageStruct(signalHubStatic, _1m, 1));
