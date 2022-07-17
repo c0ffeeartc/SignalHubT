@@ -5,24 +5,16 @@ namespace Tests
 {
 public class Example
 {
-  private void SubPublishUnsub()
+  private void SubPubUnsub()
   {
     // Subscribe
-    var sub = SignalHub.I.Sub<Message>( Handle );
-    var subFiltered = SignalHub.I.Sub<Message>( filter: this, HandleFiltered );
-    var subPriority = SignalHub.I.Sub<Message>( HandlePriority, order: -5 );
+    var subFiltered = SignalHub.I.Sub<Message>( filter: this, OnMessageFiltered );
+    var sub = SignalHub.I.Sub<Message>( OnMessage );
+    var subPriority = SignalHub.I.Sub<Message>( OnMessagePriority, order: -5 );
 
-    { // Pub - to publish message. Callbacks: HandlePriority(), Handle()
-      SignalHub.I.Pub(new Message("Publish m1"));
-      // Pub with filter. Callbacks: HandlePriority(), Handle(), HandleFiltered()
-      SignalHub.I.Pub(filter:this, new Message("Publish filtered m2"));
-    }
-
-    { // Args with Publish - for publishing IPoolable message
-      var m2 = SignalHub.I.Args<MessagePoolable>() // gets MessagePoolable from pool
-          .Init("Publish poolable message");
-      SignalHub.I.Publish(m2); // after processing puts MessagePoolable back into pool
-    }
+    // Publish
+    SignalHub.I.Pub(new Message("no filter")); // Callbacks: HandlePriority(), Handle()
+    SignalHub.I.Pub(filter: this, new Message("with filter")); // Callbacks: HandlePriority(), HandleFiltered(), Handle()
 
     // Unsubscribe
     SignalHub.I.Unsub(sub);
@@ -30,41 +22,19 @@ public class Example
     SignalHub.I.Unsub(subPriority);
   }
 
-  private void Handle(ref Message message) { /*Some code here*/ }
-  private void HandleFiltered(ref Message message) { /*Some code here*/ }
-  private void HandlePriority(ref Message message) { /*Some code here*/ }
+  private void OnMessage(ref Message message) {  }
+  private void OnMessageFiltered(ref Message message) {  }
+  private void OnMessagePriority(ref Message message) {  }
 }
 
-// struct messages are recommended for less Garbage Collection and no Pooling
+// struct messages are recommended for less Garbage Collection
 public struct Message : ISignalData
 {
   public Message(string value)
   {
     Value = value;
   }
+
   public string Value;
-}
-
-public class MessagePoolable : ISignalData, IPoolable
-{
-  public string Str;
-
-  #region Implement IPoolable
-  public MessagePoolable Init(string str) // Helper method
-  {
-    Str = str;
-    return this;
-  }
-
-  public Boolean IsInPool { get; set; }
-  public void BeforeRent( )
-  {
-  }
-
-  public void BeforeRepool( )
-  { // Free resources here
-    Str = null;
-  }
-  #endregion
 }
 }

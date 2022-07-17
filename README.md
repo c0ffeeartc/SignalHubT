@@ -9,20 +9,35 @@ Single-threaded EventAggregator/EventBroker C# solution
 ## Features
   - Global and Filtered subscription
     - Global are triggered on all messages of matching Type
+      - publish triggers only Global subscriptions
     - Filtered are triggered only on messages of matching Type and matching filter object
-    - Global and Filtered subscriptions are ordered in same queue
+      - publish triggers Global and Filtered subscriptions
+      - Global and Filtered subscriptions are ordered in same queue
+
+
   - Subscription PriorityOrder
     - uses [C5.TreeSet](https://github.com/sestoft/C5) for performance
+
+
   - Unsubscribe by object handle
     - allows unsubscribing handle from middle of queue
+
+
   - Automatic pooling for Subscriptions
-  - ISignalData types are short lived objects that are passed through invokation call stack
-    - use `SignalHub.I.Pub( new SignalData() )` for structs or not `IPoolable` signalData classes
+
+
+  - ISignalData types are short lived objects that are passed through invoke call stack
+    - use `SignalHub.I.Pub( new SignalData() )` for publishing message
         - struct signalDatas are passed by reference between subscriptions
         - `Pub` returns modified struct signalData
-    - use `SignalHub.I.Publish( SignalHub.I.Args<SignalData>().Init(value1) );` for `IPoolable` signalData classes
+
+
   - Allows more than 1 EventAggregator through `SignalHubLocal` instances
+
+
   - `IoC` AbstractFactory/Facade class wraps concrete classes into virtual methods, allowing inheriting `IoC` to override them
+
+
   - Subscribing to currently publishing ISignalData behavior:
     - will run new subscriptions with SAME or HIGHER priorityOrder compared to priorityOrder of currently invoked subscription
     - will NOT run new subscriptions with LOWER priorityOrder compared to priorityOrder of currently invoked subscription
@@ -37,24 +52,16 @@ Single-threaded EventAggregator/EventBroker C# solution
 ```csharp
 public class Example
 {
-  private void SubPublishUnsub()
+  private void SubPubUnsub()
   {
     // Subscribe
-    var sub = SignalHub.I.Sub<Message>( Handle );
-    var subFiltered = SignalHub.I.Sub<Message>( filter: this, HandleFiltered );
-    var subPriority = SignalHub.I.Sub<Message>( HandlePriority, order: -5 );
+    var subFiltered = SignalHub.I.Sub<Message>( filter: this, OnMessageFiltered );
+    var sub = SignalHub.I.Sub<Message>( OnMessage );
+    var subPriority = SignalHub.I.Sub<Message>( OnMessagePriority, order: -5 );
 
-    { // Pub - to publish message. Callbacks: HandlePriority(), Handle()
-      SignalHub.I.Pub(new Message("Publish m1"));
-      // Pub with filter. Callbacks: HandlePriority(), Handle(), HandleFiltered()
-      SignalHub.I.Pub(filter:this, new Message("Publish filtered m2"));
-    }
-
-    { // Args with Publish - for publishing IPoolable message
-      var m2 = SignalHub.I.Args<MessagePoolable>() // gets MessagePoolable from pool
-          .Init("Publish poolable message");
-      SignalHub.I.Publish(m2); // after processing puts MessagePoolable back into pool
-    }
+    // Publish
+    SignalHub.I.Pub(new Message("no filter")); // Callbacks: HandlePriority(), Handle()
+    SignalHub.I.Pub(filter: this, new Message("with filter")); // Callbacks: HandlePriority(), HandleFiltered(), Handle()
 
     // Unsubscribe
     SignalHub.I.Unsub(sub);
@@ -62,42 +69,20 @@ public class Example
     SignalHub.I.Unsub(subPriority);
   }
 
-  private void Handle(ref Message message) { /*Some code here*/ }
-  private void HandleFiltered(ref Message message) { /*Some code here*/ }
-  private void HandlePriority(ref Message message) { /*Some code here*/ }
+  private void OnMessage(ref Message message) {  }
+  private void OnMessageFiltered(ref Message message) {  }
+  private void OnMessagePriority(ref Message message) {  }
 }
 
-// struct messages are recommended for less Garbage Collection and no Pooling
+// struct messages are recommended for less Garbage Collection
 public struct Message : ISignalData
 {
   public Message(string value)
   {
     Value = value;
   }
+
   public string Value;
-}
-
-public class MessagePoolable : ISignalData, IPoolable
-{
-  public string Str;
-
-  #region Implement IPoolable
-  public MessagePoolable Init(string str) // Helper method
-  {
-    Str = str;
-    return this;
-  }
-
-  public Boolean IsInPool { get; set; }
-  public void BeforeRent( )
-  {
-  }
-
-  public void BeforeRepool( )
-  { // Free resources here
-    Str = null;
-  }
-  #endregion
 }
 ```
 

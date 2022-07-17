@@ -14,9 +14,6 @@ public interface ISignalBus<T>
 
 	T						Pub						( T message );
 	T						Pub						( Object filter, T message );
-
-	void					Publish<T2>				( T2 message ) where T2 : T, IPoolable, new();
-	void					Publish<T2>				( Object filter, T2 message ) where T2 : T, IPoolable, new();
 }
 
 public interface ISignalBus

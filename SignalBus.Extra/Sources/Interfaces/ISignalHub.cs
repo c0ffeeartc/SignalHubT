@@ -13,10 +13,8 @@ public interface ISignalHub
 	T						Pub<T>					( T message ) where T : ISignalData;
 	T						Pub<T>					( Object filter, T message ) where T : ISignalData;
 
-	void					Publish<T>				( T message ) where T : ISignalData, IPoolable, new();
-	void					Publish<T>				( Object filter, T message ) where T : ISignalData, IPoolable, new();
-
-	T						GetPoolable<T>			(  ) where T : ISignalData, IPoolable, new();
+	T						GetPoolable<T>			(  ) where T : IPoolable, new();
+	void					ReturnPoolable<T>		( T poolable ) where T : IPoolable, new();
 }
 
 public interface ISignalHubTests : ISignalHub

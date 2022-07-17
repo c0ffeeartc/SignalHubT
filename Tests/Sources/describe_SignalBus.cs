@@ -161,7 +161,7 @@ public sealed class describe_SignalBus : nspec
 			signalBusM1.Sub(subscription);
 
 			// when
-			signalBusM1.Publish( message1 );
+			signalBusM1.Pub( message1 );
 
 			// then
 			subscription
@@ -179,7 +179,7 @@ public sealed class describe_SignalBus : nspec
 			signalBusM1.Sub( subscription );
 
 			// when
-			signalBusM1.Publish( "filter", message1 );
+			signalBusM1.Pub( "filter", message1 );
 
 			// then
 			subscription
@@ -199,7 +199,7 @@ public sealed class describe_SignalBus : nspec
 			signalBusM1.Sub( subscription );
 
 			// when
-			signalBusM1.Publish( filter, message1 );
+			signalBusM1.Pub( filter, message1 );
 
 			// then
 			subscription
@@ -219,7 +219,7 @@ public sealed class describe_SignalBus : nspec
 			signalBusM1.Sub( subscription );
 
 			// when
-			signalBusM1.Publish( message1 );
+			signalBusM1.Pub( message1 );
 
 			// then
 			subscription
@@ -240,7 +240,7 @@ public sealed class describe_SignalBus : nspec
 			signalBusM1.Sub( subscription );
 
 			// when
-			signalBusM1.Publish( filter2, message1 );
+			signalBusM1.Pub( filter2, message1 );
 
 			// then
 			subscription
@@ -278,7 +278,7 @@ public sealed class describe_SignalBus : nspec
 
 			// when
 			var message1			= IoC.I.Rent<Message1>().Init("m1");
-			signalBusM1.Publish( message1 );
+			signalBusM1.Pub( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub2" );
@@ -309,7 +309,7 @@ public sealed class describe_SignalBus : nspec
 			// when
 			var message1			= IoC.I.Rent<Message1>(  )
 				.Init("m1");
-			signalBusM1.Publish( message1 );
+			signalBusM1.Pub( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub1" );
@@ -346,7 +346,7 @@ public sealed class describe_SignalBus : nspec
 			// when
 			var message1			= IoC.I.Rent<Message1>(  )
 				.Init( "m1" );
-			signalBusM1.Publish( message1 );
+			signalBusM1.Pub( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub1sub2sub3" );
@@ -379,7 +379,7 @@ public sealed class describe_SignalBus : nspec
 			// when
 			var message1			= IoC.I.Rent<Message1>()
 				.Init( "m1" );
-			signalBusM1.Publish( message1 );
+			signalBusM1.Pub( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub1sub2sub4" );
@@ -412,7 +412,7 @@ public sealed class describe_SignalBus : nspec
 						++counter;
 						message2	= IoC.I.Rent<Message1>()
 							.Init( "m2" );
-						signalBusM1.Publish( message2 );
+						signalBusM1.Pub( message2 );
 					}
 				} );
 
@@ -424,7 +424,7 @@ public sealed class describe_SignalBus : nspec
 			// when
 			var message1			= IoC.I.Rent<Message1>()
 				.Init( "m1" );
-			signalBusM1.Publish( message1 );
+			signalBusM1.Pub( message1 );
 
 			// then
 			message1.Str.ShouldBe( "m1sub1sub2sub3" );

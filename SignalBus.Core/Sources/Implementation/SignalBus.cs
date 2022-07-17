@@ -108,53 +108,6 @@ public partial class SignalBus<T> : ISignalBus<T>
 		return message;
 	}
 
-	public					void					Publish<T2>				( T2 message )
-			where T2 : T, IPoolable, new()
-	{
-		if ( message == null )
-		{
-			throw new ArgumentNullException( "message == null" );
-		}
-
-		if ( message.IsInPool )
-		{
-			throw new ArgumentException( "message.IsInPool" );
-		}
-
-		T m = message;
-		BeforePublish();
-		IterateGlobalMessage( ref m );
-		AfterPublish();
-
-		IoC.I.Repool( message );
-	}
-
-	public					void					Publish<T2>					( Object filter, T2 message )
-			where T2 : T, IPoolable, new()
-	{
-		if (filter == null)
-		{
-			throw new ArgumentNullException( "filter == null" );
-		}
-
-		if ( message == null )
-		{
-			throw new ArgumentNullException( "message == null" );
-		}
-
-		if ( message.IsInPool )
-		{
-			throw new ArgumentException( "message.IsInPool" );
-		}
-
-		T m = message;
-		BeforePublish();
-		IterateFilteredMessage( filter, ref m );
-		AfterPublish();
-
-		IoC.I.Repool( message );
-	}
-
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private					void					BeforePublish			(  )
 	{
