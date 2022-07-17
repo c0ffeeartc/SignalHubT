@@ -8,10 +8,8 @@ Single-threaded EventAggregator/EventBroker C# solution
 
 ## Features
   - Global and Filtered subscription
-    - Global are triggered on all messages of matching Type
-      - publish triggers only Global subscriptions
-    - Filtered are triggered only on messages of matching Type and matching filter object
-      - publish triggers Global and Filtered subscriptions
+    - Publish message without filter triggers only Global subscriptions
+    - Publish message with Filter triggers Global and Filtered subscriptions
       - Global and Filtered subscriptions are ordered in same queue
 
 
