@@ -15,6 +15,7 @@ internal class Program
 	{
 		MemoryHelper.MemoryBegin();
 		ISignalHub signalHubStatic = IoCExtra.I.GetSignalHubStatic(  );
+		Func<ISignalHub> createHubLocal = IoCExtra.I.CreateSignalHubLocal;
 
 		R.Log("Main Tests");
 
@@ -23,23 +24,29 @@ internal class Program
 		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_String(signalHubStatic, _1m));
 		R.Run(()=>new TestPubMessageStruct_New_NoSub_Filter_OverrideHashCode(signalHubStatic, _1m));
 
-		R.Log("\nAction Invoke. Expected O(n)");
+		R.Log("\nAction Invoke");
 		R.Run(()=>new TestAction_PubRefMessageStruct(_1m, 1));
 		R.Run(()=>new TestAction_PubRefMessageStruct(_1m, 1));
-		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 2));
-		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 10));
-		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 20));
+		R.Run(()=>new TestAction_PubRefMessageStruct(_1m, 2));
+		R.Run(()=>new TestAction_PubRefMessageStruct(_1m, 10));
+		R.Run(()=>new TestAction_PubRefMessageStruct(_1m, 20));
+		R.Run(()=>new TestAction_PubRefMessageStruct(_1m, 40));
 
-		R.Log("\nSignalHubStatic Pub with subs. Expected O(n)");
-		R.Run(()=>new TestSubH_PubMessageStruct(signalHubStatic, _1m, 1));
-		R.Run(()=>new TestSubH_PubMessageStruct(signalHubStatic, _1m, 1));
+		R.Log("\nCompare to Action Invoke. Expected O(n). (Local)");
+		R.Run(()=>new TestHub_PubMessageStruct(createHubLocal(), _1m, 1));
+		R.Run(()=>new TestHub_PubMessageStruct(createHubLocal(), _1m, 1));
+		R.Run(()=>new TestHub_PubMessageStruct(createHubLocal(), _1m, 2));
+		R.Run(()=>new TestHub_PubMessageStruct(createHubLocal(), _1m, 10));
+		R.Run(()=>new TestHub_PubMessageStruct(createHubLocal(), _1m, 20));
+		R.Run(()=>new TestHub_PubMessageStruct(createHubLocal(), _1m, 40));
 
-		R.Log("\nPub with subs. Expected O(n)");
-		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 1));
-		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 1)); // to confirm correct setup (didn't work with SignalHub.I)
-		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 2));
-		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 10));
-		R.Run(()=>new TestSubHLocal_PubMessageStruct(_1m, 20));
+		R.Log("\nCompare to Action Invoke. Expected O(n). (Static)");
+		R.Run(()=>new TestHub_PubMessageStruct(signalHubStatic, _1m, 1));
+		R.Run(()=>new TestHub_PubMessageStruct(signalHubStatic, _1m, 1)); // to confirm correct setup (didn't work with signalHubStatic)
+		R.Run(()=>new TestHub_PubMessageStruct(signalHubStatic, _1m, 2));
+		R.Run(()=>new TestHub_PubMessageStruct(signalHubStatic, _1m, 10));
+		R.Run(()=>new TestHub_PubMessageStruct(signalHubStatic, _1m, 20));
+		R.Run(()=>new TestHub_PubMessageStruct(signalHubStatic, _1m, 40));
 
 		R.Log("\nSubUnsub");
 		R.Run(()=>new TestSubHLocal_SubUnsub(_1m, 1));
@@ -48,11 +55,17 @@ internal class Program
 		R.Run(()=>new TestSubHLocal_SubUnsub(10, _100k));
 		R.Run(()=>new TestSubHLocal_SubUnsub(1, _1m));
 
-		R.Log("\nSub all, Unsub all");
-		R.Run(()=>new TestSubHLocal_SubAll_UnsubAll(1, _1k));
-		R.Run(()=>new TestSubHLocal_SubAll_UnsubAll(1, _10k));
-		R.Run(()=>new TestSubHLocal_SubAll_UnsubAll(1, _100k));
-		R.Run(()=>new TestSubHLocal_SubAll_UnsubAll(1, _1m));
+		R.Log("\nSub all, Unsub all. (Local)");
+		R.Run(()=>new TestHub_SubAll_UnsubAll(createHubLocal(), 1, _1k));
+		R.Run(()=>new TestHub_SubAll_UnsubAll(createHubLocal(), 1, _10k));
+		R.Run(()=>new TestHub_SubAll_UnsubAll(createHubLocal(), 1, _100k));
+		R.Run(()=>new TestHub_SubAll_UnsubAll(createHubLocal(), 1, _1m));
+
+		R.Log("\nSub all, Unsub all. (Static)");
+		R.Run(()=>new TestHub_SubAll_UnsubAll(signalHubStatic, 1, _1k));
+		R.Run(()=>new TestHub_SubAll_UnsubAll(signalHubStatic, 1, _10k));
+		R.Run(()=>new TestHub_SubAll_UnsubAll(signalHubStatic, 1, _100k));
+		R.Run(()=>new TestHub_SubAll_UnsubAll(signalHubStatic, 1, _1m));
 
 		R.Log("\nSub all");
 		R.Run(()=>new TestSubHLocal_SubAll(1, _1k));

@@ -48,15 +48,14 @@
         <Compile Include="Sources\TestAction_PubRefMessageStruct.cs" />
         <Compile Include="Sources\TestPubMessageStruct_New_NoSub_Filter_OverrideHashCode.cs" />
         <Compile Include="Sources\TestSortedList_RemoveAll.cs" />
-        <Compile Include="Sources\TestSubHLocal_PubMessageStruct.cs" />
+        <Compile Include="Sources\TestHub_PubMessageStruct.cs" />
         <Compile Include="Sources\TestPubMessageStruct_Cached_NoSub.cs" />
         <Compile Include="Sources\TestPubMessageStruct_New_NoSub.cs" />
         <Compile Include="Sources\TestPubMessageStruct_New_NoSub_Filter.cs" />
         <Compile Include="Sources\TestSubHLocal_SubAll.cs" />
         <Compile Include="Sources\TestSubHLocal_SubUnsub.cs" />
-        <Compile Include="Sources\TestSubHLocal_SubAll_UnsubAll.cs" />
+        <Compile Include="Sources\TestHub_SubAll_UnsubAll.cs" />
         <Compile Include="Sources\TestSubHLocal_UnsubAll.cs" />
-        <Compile Include="Sources\TestSubH_PubMessageStruct.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\SignalBus.Core\SignalBus.Core.csproj">

@@ -4,23 +4,24 @@ using Tests;
 
 namespace PerformanceTests
 {
-public class TestSubHLocal_SubAll_UnsubAll : IPerformanceTest, IToTestString
+public class TestHub_SubAll_UnsubAll : IPerformanceTest, IToTestString
 {
-	public TestSubHLocal_SubAll_UnsubAll(Int32 iterations, Int32 subCount)
+	public TestHub_SubAll_UnsubAll(ISignalHub hub, Int32 iterations, Int32 subCount)
 	{
 		_iterations = iterations;
 		_subCount = subCount;
+		_hub = hub;
 	}
 
 	private Int32 _iterations;
 	private Int32 _value;
 	private readonly Int32 _subCount;
 	private ISubscription<MessageStruct>[] _subs;
+	private ISignalHub _hub;
 	public Int32 Iterations => _iterations;
 
 	public void Before( )
 	{
-		SignalHub.I = IoCExtra.I.CreateSignalHubLocal();
 		_subs = new ISubscription<MessageStruct>[_subCount];
 	}
 
@@ -33,15 +34,15 @@ public class TestSubHLocal_SubAll_UnsubAll : IPerformanceTest, IToTestString
 	{
 		for ( int i = 0; i < _subCount; i++ )
 		{
-			_subs[i] = SignalHub.I.Sub<MessageStruct>(HandleMessageStruct);
+			_subs[i] = _hub.Sub<MessageStruct>(HandleMessageStruct);
 		}
 
 		for ( int i = 0; i < _subCount; i++ )
 		{
-			SignalHub.I.Unsub(_subs[i]);
+			_hub.Unsub(_subs[i]);
 		}
 	}
 
-	public String ToTestString( ) => $"{GetType().Name}:s_{_subCount.ToString("e0")}";
+	public String ToTestString( ) => $"{GetType().Name}{(_hub is SignalHubLocal ? "(Local)":"")}:s_{_subCount.ToString("e0")}";
 }
 }

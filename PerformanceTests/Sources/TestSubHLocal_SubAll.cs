@@ -15,11 +15,12 @@ public class TestSubHLocal_SubAll: IPerformanceTest, IToTestString
 	private Int32 _iterations;
 	private Int32 _value;
 	private readonly Int32 _subCount;
+	private ISignalHub _hub;
 	public Int32 Iterations => _iterations;
 
 	public void Before( )
 	{
-		SignalHub.I = IoCExtra.I.CreateSignalHubLocal();
+		_hub = IoCExtra.I.CreateSignalHubLocal();
 	}
 
 	private void HandleMessageStruct(ref MessageStruct message)
@@ -31,7 +32,7 @@ public class TestSubHLocal_SubAll: IPerformanceTest, IToTestString
 	{
 		for ( int i = 0; i < _subCount; i++ )
 		{
-			SignalHub.I.Sub<MessageStruct>(HandleMessageStruct);
+			_hub.Sub<MessageStruct>(HandleMessageStruct);
 		}
 	}
 
