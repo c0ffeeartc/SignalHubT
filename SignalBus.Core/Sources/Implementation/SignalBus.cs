@@ -32,7 +32,7 @@ public partial class SignalBus<T> : ISignalBus<T>
 	{
 		if ( filter == null )
 		{
-			throw new ArgumentNullException( "filter == null" );
+			throw new ArgumentNullException( nameof(filter) );
 		}
 
 		var subscription			= IoC.I.RentSubscription<T>(  )
@@ -79,7 +79,7 @@ public partial class SignalBus<T> : ISignalBus<T>
 	{
 		if ( message == null )
 		{
-			throw new ArgumentNullException( "message == null" );
+			throw new ArgumentNullException( nameof(message) );
 		}
 
 		BeforePublish();
@@ -93,12 +93,12 @@ public partial class SignalBus<T> : ISignalBus<T>
 	{
 		if (filter == null)
 		{
-			throw new ArgumentNullException( "filter == null" );
+			throw new ArgumentNullException( nameof(filter) );
 		}
 
 		if ( message == null )
 		{
-			throw new ArgumentNullException( "message == null" );
+			throw new ArgumentNullException( nameof(message) );
 		}
 
 		BeforePublish();
