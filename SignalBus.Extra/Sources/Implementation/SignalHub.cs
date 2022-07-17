@@ -51,18 +51,6 @@ public partial class SignalHub : ISignalHub
 		return SignalBus<T>.I.Pub(filter, message);
 	}
 
-	public					T						GetPoolable<T>			(  )
-			where T : IPoolable, new()
-	{
-		return IoC.I.Rent<T>();
-	}
-
-	public					void					ReturnPoolable<T>		( T poolable )
-			where T : IPoolable, new()
-	{
-		IoC.I.Repool(poolable);
-	}
-
 	private					void					Track					( ISignalBus signalBus )
 	{
 		_tracked.Add(signalBus);

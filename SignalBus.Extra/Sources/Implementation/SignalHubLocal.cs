@@ -46,18 +46,6 @@ public partial class SignalHubLocal : ISignalHub
 		return GetOrCreateSignalBus<T>(  ).Pub( filter, message );
 	}
 
-	public					T						GetPoolable<T>			(  )
-			where T : IPoolable, new()
-	{
-		return IoC.I.Rent<T>(  );
-	}
-
-	public					void					ReturnPoolable<T>		( T poolable )
-			where T : IPoolable, new()
-	{
-		IoC.I.Repool( poolable );
-	}
-
 	private					ISignalBus<T>			GetOrCreateSignalBus<T>	(  )
 			where T : ISignalData
 	{
