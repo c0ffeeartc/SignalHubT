@@ -16,7 +16,7 @@ public interface ISignalHub
 	void					Publish<T>				( T message ) where T : ISignalData, IPoolable, new();
 	void					Publish<T>				( Object filter, T message ) where T : ISignalData, IPoolable, new();
 
-	T						Args<T>					(  ) where T : ISignalData, IPoolable, new();
+	T						GetPoolable<T>			(  ) where T : ISignalData, IPoolable, new();
 }
 
 public interface ISignalHubTests : ISignalHub

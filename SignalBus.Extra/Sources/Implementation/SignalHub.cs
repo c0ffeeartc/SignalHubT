@@ -63,7 +63,7 @@ public partial class SignalHub : ISignalHub
 		SignalBus<T>.I.Publish(filter, message);
 	}
 
-	public					T						Args<T>					(  )
+	public					T						GetPoolable<T>			(  )
 			where T : ISignalData, IPoolable, new()
 	{
 		return IoC.I.Rent<T>();
